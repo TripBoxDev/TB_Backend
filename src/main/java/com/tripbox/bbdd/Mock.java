@@ -30,7 +30,7 @@ public class Mock implements Querys {
 		mock.put("123456", first);
 	}
 	
-	@Override
+	
 	public User getUser(String id) throws Exception {
 		if(mock.get(id)!=null){
 					

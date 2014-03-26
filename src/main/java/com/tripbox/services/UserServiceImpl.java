@@ -11,7 +11,7 @@ public class UserServiceImpl implements UserService {
 	
 	public UserServiceImpl(){}
 
-	@Override
+	
 	public User getUser(String id) throws Exception {
 		try{
 			return bbdd.getUser(id);
@@ -20,13 +20,13 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 
-	@Override
+	
 	public User putUser(User user) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
+	
 	public void deleteUser(String id) throws Exception {
 		// TODO Auto-generated method stub
 		
