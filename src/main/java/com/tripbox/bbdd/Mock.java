@@ -41,4 +41,12 @@ public class Mock implements Querys {
 		}
 	}
 
+	public User putUser(User user) throws Exception {
+		
+		mock.put(user.getId(), user);
+		
+		return user;
+	}
+	
+
 }
