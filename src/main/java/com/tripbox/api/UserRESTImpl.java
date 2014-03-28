@@ -34,6 +34,7 @@ public class UserRESTImpl implements UserREST {
 		}
 	}
 
+	
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)

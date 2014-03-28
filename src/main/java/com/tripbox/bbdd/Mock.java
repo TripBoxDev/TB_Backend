@@ -8,6 +8,7 @@ import com.tripbox.elements.User;
 
 public class Mock implements Querys {
 
+	
 
 	
 	private static Mock uniqueInstance;
