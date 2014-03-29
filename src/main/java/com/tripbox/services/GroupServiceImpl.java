@@ -3,6 +3,7 @@ package com.tripbox.services;
 import com.tripbox.bbdd.Mock;
 import com.tripbox.bbdd.interfaces.Querys;
 import com.tripbox.elements.Group;
+import com.tripbox.others.IdGenerator;
 import com.tripbox.services.interfaces.GroupService;
 
 public class GroupServiceImpl implements GroupService{
@@ -20,9 +21,24 @@ public class GroupServiceImpl implements GroupService{
 	}
 
 	
-	public Group putUser(Group group) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+	public Group putGroup(Group group) throws Exception {
+		//si el user es nuevo le asignamos una id
+		if(group.getId()==null){
+					
+			String newId = IdGenerator.generateId();
+			group.setId(newId);
+		}
+				
+		try{
+			//insertamos el grupo a la bbdd, no hace falta comprobar si existe, esto lo hace la misma bbdd
+			bbdd.putGroup(group);
+					
+			//devolvemos el elemento Grupo, no hace falta hacer un Get a la bbdd
+			return group;
+		}catch (Exception e){
+			throw new Exception();
+		}
+				
 	}
 
 	
@@ -30,5 +46,7 @@ public class GroupServiceImpl implements GroupService{
 		// TODO Auto-generated method stub
 		
 	}
+
+
 
 }

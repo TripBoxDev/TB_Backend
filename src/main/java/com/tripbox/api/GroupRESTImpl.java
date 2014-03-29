@@ -36,9 +36,12 @@ public class GroupRESTImpl implements GroupREST{
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response putGroup(Group user) {
-		// TODO Auto-generated method stub
-		return null;
+	public Response putGroup(Group group) {
+		try{
+			return Response.ok(groupService.putGroup(group)).build();
+		}catch (Exception e) {
+			throw new ElementNotFoundException("Item not found");
+		}
 	}
 
 	@Override

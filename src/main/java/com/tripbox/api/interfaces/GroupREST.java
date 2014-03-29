@@ -18,7 +18,7 @@ public interface GroupREST {
 	 * @param user: Objecte usuari que ha de ser inserit o modificat a la BD.
 	 * @return: Retorna una resposta 200 si s'ha fet l'operacio correctament.
 	 */
-	public Response putGroup(Group user);
+	public Response putGroup(Group group);
 	
 	/**
 	 * 

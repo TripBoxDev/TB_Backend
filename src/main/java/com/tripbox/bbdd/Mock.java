@@ -75,8 +75,12 @@ public class Mock implements Querys {
 
 	@Override
 	public void putGroup(Group group) throws Exception {
-		// TODO Auto-generated method stub
-		
+		try{
+			//sobreescribimos si ya existe
+			mockGroup.put(group.getId(), group);
+		}catch ( Exception e){
+			throw new Exception();
+		}
 	}
 	
 	
