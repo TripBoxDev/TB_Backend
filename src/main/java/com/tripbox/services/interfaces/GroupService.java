@@ -1,5 +1,9 @@
 package com.tripbox.services.interfaces;
 
-public interface GroupService {
+import com.tripbox.elements.Group;
 
+public interface GroupService {
+	public Group getGroup(String id) throws Exception;
+	public Group putUser(Group group) throws Exception;
+	public void deleteGroup(String id)throws Exception;
 }
