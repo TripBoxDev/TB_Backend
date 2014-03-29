@@ -30,7 +30,7 @@ public class Mock implements Querys {
 		mock.put("123456", first);
 	}
 	
-	@Override
+
 	public User getUser(String id) throws Exception {
 		if(mock.get(id)!=null){
 					
@@ -40,5 +40,17 @@ public class Mock implements Querys {
 			throw new Exception();
 		}
 	}
+
+	public void putUser(User user) throws Exception {
+		try{
+			//sobreescribimos si ya existe
+			mock.put(user.getId(), user);
+		}catch ( Exception e){
+			throw new Exception();
+		}
+		
+	}
+	
+	
 
 }
