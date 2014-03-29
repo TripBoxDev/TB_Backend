@@ -14,6 +14,7 @@ public class UserServiceImpl implements UserService {
 
 	
 	
+	
 	public User getUser(String id) throws Exception {
 		try{
 			return bbdd.getUser(id);

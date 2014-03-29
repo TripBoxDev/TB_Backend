@@ -41,6 +41,7 @@ public class Mock implements Querys {
 			throw new Exception();
 		}
 	}
+	
 
 	public User putUser(User user) throws Exception {
 		
