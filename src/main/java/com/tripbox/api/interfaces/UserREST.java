@@ -16,7 +16,7 @@ public interface UserREST {
 	/**
 	 * Funcio de la API que modifica un usuari a la BD o li assigna una ID i l'inserta si es nou.
 	 * @param user: Objecte usuari que ha de ser inserit o modificat a la BD.
-	 * @return: Retorna una resposta 200 si s'ha fet l'operacio correctament.
+	 * @return: Retorna el user modificat, amb la nova ID si correspont, i una resposta 200 si s'ha fet l'operacio correctament.
 	 */
 	public Response putUser(User user);
 	

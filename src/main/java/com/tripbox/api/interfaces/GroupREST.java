@@ -16,7 +16,7 @@ public interface GroupREST {
 	/**
 	 * Funcio de la API que modifica un grup a la BD o li assigna una ID i l'inserta si es nou.
 	 * @param group: Objecte grup que ha de ser inserit o modificat a la BD.
-	 * @return: Retorna una resposta 200 si s'ha fet l'operacio correctament.
+	 * @return: Retorna el grup modificat, amb la nova ID si correspont, i una resposta 200 si s'ha fet l'operacio correctament.
 	 */
 	public Response putGroup(Group group);
 	
