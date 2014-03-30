@@ -1,6 +1,5 @@
 package com.tripbox.services;
 
-
 import com.tripbox.bbdd.Mock;
 import com.tripbox.bbdd.interfaces.Querys;
 import com.tripbox.elements.User;
@@ -12,7 +11,6 @@ public class UserServiceImpl implements UserService {
 	Querys bbdd = Mock.getInstance();
 	
 	public UserServiceImpl(){}
-
 
 	public User getUser(String id) throws Exception {
 		try{

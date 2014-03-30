@@ -20,12 +20,10 @@ public class UserRESTImpl implements UserREST {
 	
 	UserService userService = new UserServiceImpl();
 	
-	
 	@GET
 	@Path("/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getUser(@PathParam("id") String id) {
-
 		try{
 			return Response.ok(userService.getUser(id)).build();
 		}catch (Exception e) {
