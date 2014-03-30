@@ -46,9 +46,9 @@ public class GroupRESTImpl implements GroupREST{
 
 	@DELETE
 	@Path("/{id}")
-	@Consumes(MediaType.APPLICATION_JSON)
 	public Response deleteGroup(@PathParam("id") String id) {
 		try{
+			groupService.deleteGroup(id);
 			return Response.ok().build();
 		}catch (Exception e) {
 			throw new ElementNotFoundException("Item, " + id + ", is not found");
