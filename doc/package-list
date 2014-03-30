@@ -1,0 +1,10 @@
+com.tripbox.api
+com.tripbox.api.exceptions
+com.tripbox.api.interfaces
+com.tripbox.bbdd
+com.tripbox.bbdd.interfaces
+com.tripbox.elements
+com.tripbox.jsonmapper
+com.tripbox.others
+com.tripbox.services
+com.tripbox.services.interfaces
