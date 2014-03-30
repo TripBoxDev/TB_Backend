@@ -62,7 +62,7 @@ public class Mock implements Querys {
 		
 	}
 
-	@Override
+
 	public Group getGroup(String id) throws Exception {
 		if(mockGroup.get(id)!=null){
 			
@@ -73,7 +73,7 @@ public class Mock implements Querys {
 		}
 	}
 
-	@Override
+
 	public void putGroup(Group group) throws Exception {
 		try{
 			//sobreescribimos si ya existe
@@ -83,6 +83,14 @@ public class Mock implements Querys {
 		}
 	}
 	
+	public void deleteGroup(String id) throws Exception {
+		if(mockGroup.get(id)!=null){
+			mockGroup.remove(id);
+		}else {
+			throw new Exception();
+		}
+		
+	}
 	
 
 }

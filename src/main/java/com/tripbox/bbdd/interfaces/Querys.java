@@ -35,5 +35,7 @@ public interface Querys {
 	 * @throws Exception
 	 */
 	public void putGroup(Group group) throws Exception;
+	
+	public void deleteGroup(String id) throws Exception;
 
 }

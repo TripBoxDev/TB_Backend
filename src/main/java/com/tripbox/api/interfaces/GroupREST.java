@@ -24,5 +24,6 @@ public interface GroupREST {
 	 * Funcio de la API que esborra un grup a partir de la seva ID.
 	 * @param id: Identificador del grup que s'ha d'esborrar
 	 */
-	public void deleteGroup(String id);
+	public Response deleteGroup(String id);
+
 }

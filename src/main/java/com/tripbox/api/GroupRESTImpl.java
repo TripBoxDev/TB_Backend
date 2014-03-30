@@ -1,6 +1,7 @@
 package com.tripbox.api;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -13,9 +14,8 @@ import com.tripbox.api.exceptions.ElementNotFoundException;
 import com.tripbox.api.interfaces.GroupREST;
 import com.tripbox.elements.Group;
 import com.tripbox.services.GroupServiceImpl;
-import com.tripbox.services.UserServiceImpl;
 import com.tripbox.services.interfaces.GroupService;
-import com.tripbox.services.interfaces.UserService;
+
 
 @Path("/group")
 public class GroupRESTImpl implements GroupREST{
@@ -44,9 +44,15 @@ public class GroupRESTImpl implements GroupREST{
 		}
 	}
 
-	@Override
-	public void deleteGroup(String id) {
-		// TODO Auto-generated method stub
+	@DELETE
+	@Path("/{id}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response deleteGroup(@PathParam("id") String id) {
+		try{
+			return Response.ok().build();
+		}catch (Exception e) {
+			throw new ElementNotFoundException("Item, " + id + ", is not found");
+		}
 		
 	}
 
