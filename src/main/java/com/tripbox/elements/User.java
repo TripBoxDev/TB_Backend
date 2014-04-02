@@ -2,6 +2,9 @@ package com.tripbox.elements;
 
 import java.util.ArrayList;
 
+
+
+
 public class User {
 	
 	private String id = null;
@@ -9,7 +12,11 @@ public class User {
 	private String lastName=null;
 	private String email=null;
 	private ArrayList<String> groups = new ArrayList<String>();
+	private String facebookId = null;
+	private String googleId=null;
 	
+	
+
 	public User(){}
 	
 	public User(String id, String name, String lastName, String email,
@@ -21,7 +28,21 @@ public class User {
 		this.email = email;
 		this.groups = groups;
 	}
-	
+	public String getFacebookId() {
+		return facebookId;
+	}
+
+	public void setFacebookId(String facebookId) {
+		this.facebookId = facebookId;
+	}
+
+	public String getGoogleId() {
+		return googleId;
+	}
+
+	public void setGoogleId(String googleId) {
+		this.googleId = googleId;
+	}
 	public String getId() {
 		return id;
 	}

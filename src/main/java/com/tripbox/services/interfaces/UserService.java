@@ -13,7 +13,12 @@ public interface UserService {
 	public User getUser(String id) throws Exception;
 	
 	/**
-	 * Funcio de la API que modifica un usuari a la BD o li assigna una ID i l'inserta si es nou.
+	 * Metodo con doble funcionalidad, si le enviamos un Usuario sin ID y con un facebookId o googleId o un emial comprovamos si 
+	 * existe en la bbdd, en caso afirmativo devolvemos el User entero, en caso negativo creamos un User y lo devolvemos;
+	 * en otro caso, si el User que recibimos no tiene ni ID ni facebookId ni googleId ni email devolvemos una Excepcions tipo
+	 * InvalidIdsException.
+	 * En el caso que el User que recibimos tenga ID comprobamos que la ID sea valida (ya que el cliente no puede modificar
+	 * la ID) y guardamos los cambios.
 	 * @param user Objecte usuari que ha de ser inserit o modificat a la BD.
 	 * @return Retorna una resposta 200 si s'ha fet l'operacio correctament.
 	 * @throws Exception

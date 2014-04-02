@@ -2,7 +2,11 @@ package com.tripbox.bbdd;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
+import com.tripbox.bbdd.exceptions.ItemNotFoundException;
 import com.tripbox.bbdd.interfaces.Querys;
 import com.tripbox.elements.Group;
 import com.tripbox.elements.User;
@@ -90,6 +94,48 @@ public class Mock implements Querys {
 			throw new Exception();
 		}
 		
+	}
+
+
+	public User getUserbyFacebookId(String facebookId) throws Exception {
+		
+		Iterator<User> it = mock.values().iterator();
+		while (it.hasNext()) {
+			User user = it.next();
+			if(user.getFacebookId().equals(facebookId)){
+				return user;
+			}
+		
+		}
+		
+		throw new ItemNotFoundException("El item con facebookId: "+facebookId+" no existe en la bbdd");
+	}
+
+
+	public User getUserbyGoogleId(String googleId) throws Exception {
+		Iterator<User> it = mock.values().iterator();
+		while (it.hasNext()) {
+			User user = it.next();
+			if(user.getFacebookId().equals(googleId)){
+				return user;
+			}
+		
+		}
+		
+		throw new ItemNotFoundException("El item con facebookId: "+googleId+" no existe en la bbdd");
+	}
+
+	public User getUserbyEmail(String email) throws Exception {
+		Iterator<User> it = mock.values().iterator();
+		while (it.hasNext()) {
+			User user = it.next();
+			if(user.getFacebookId().equals(email)){
+				return user;
+			}
+		
+		}
+		
+		throw new ItemNotFoundException("El item con facebookId: "+email+" no existe en la bbdd");
 	}
 	
 

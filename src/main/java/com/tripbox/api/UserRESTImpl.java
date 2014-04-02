@@ -15,6 +15,7 @@ import com.tripbox.elements.User;
 import com.tripbox.services.UserServiceImpl;
 import com.tripbox.services.interfaces.UserService;
 
+
 @Path("/user")
 public class UserRESTImpl implements UserREST {
 	
@@ -22,7 +23,7 @@ public class UserRESTImpl implements UserREST {
 	
 	@GET
 	@Path("/{id}")
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)	
 	public Response getUser(@PathParam("id") String id) {
 		try{
 			return Response.ok(userService.getUser(id)).build();
