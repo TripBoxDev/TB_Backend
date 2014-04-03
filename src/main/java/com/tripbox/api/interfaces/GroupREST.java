@@ -26,4 +26,15 @@ public interface GroupREST {
 	 */
 	public Response deleteGroup(String id);
 
+	/**
+	 * Función de la API que nos permite eliminar un User de un Group. En el caso que el Group se quede sin Users
+	 * se elimina.
+	 * @param groupId
+	 * @param userId
+	 * @return
+	 */
+	public Response deleteUserToGroup(String groupId, String userId);
+	
+	
+
 }

@@ -1,11 +1,16 @@
 
 package com.tripbox.services;
 
+import java.util.ArrayList;
+
 import com.tripbox.bbdd.Mock;
 import com.tripbox.bbdd.interfaces.Querys;
 import com.tripbox.elements.Group;
+import com.tripbox.elements.User;
 import com.tripbox.others.IdGenerator;
+import com.tripbox.services.exceptions.UserNotExistOnGroup;
 import com.tripbox.services.interfaces.GroupService;
+import com.tripbox.services.interfaces.UserService;
 
 public class GroupServiceImpl implements GroupService {
 
@@ -49,6 +54,49 @@ public class GroupServiceImpl implements GroupService {
 			throw new Exception();
 		}
 		
+	}
+
+
+	public void deleteUserToGroup(String groupId, String userId) throws Exception {
+		UserService userService = new UserServiceImpl();
+		try{
+			this.getGroup(groupId);	
+		}catch (Exception e){
+			throw new Exception(groupId.toString());
+		}
+		
+		try{
+			userService.getUser(userId);	
+		}catch (Exception e){
+			throw new Exception(userId.toString());
+		}
+		
+		
+		
+		
+		//eliminamos el user de la lista de users del grupo
+		Group group = this.getGroup(groupId);
+		ArrayList<String> groupUsers = group.getUsers();
+	
+		if(!groupUsers.remove(userId)){
+			throw new UserNotExistOnGroup(userId);
+		}		
+		group.setUsers(groupUsers);
+		
+		//eliminamos el grup de la lista de grupos del usuario
+		User user = userService.getUser(userId);	
+		ArrayList<String> userGroups= user.getGroups();
+		userGroups.remove(groupId);
+		user.setGroups(userGroups);
+		
+		//actualizamos la bbdd
+		if(group.getUsers().isEmpty()){
+			this.deleteGroup(groupId);
+		}else{
+			this.putGroup(group);
+		}
+		
+		userService.putUser(user);
 	}
 
 }

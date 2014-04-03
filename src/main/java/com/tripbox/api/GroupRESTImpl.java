@@ -7,13 +7,16 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.tripbox.api.exceptions.ElementNotFoundException;
+import com.tripbox.api.exceptions.UserNotExistOnGroupREST;
 import com.tripbox.api.interfaces.GroupREST;
 import com.tripbox.elements.Group;
 import com.tripbox.services.GroupServiceImpl;
+import com.tripbox.services.exceptions.UserNotExistOnGroup;
 import com.tripbox.services.interfaces.GroupService;
 
 
@@ -54,6 +57,20 @@ public class GroupRESTImpl implements GroupREST{
 			throw new ElementNotFoundException("Item, " + id + ", is not found");
 		}
 		
+	}
+	
+	@DELETE
+	@Path("/{groupId}/user/{userId}")
+	public Response deleteUserToGroup(@PathParam("groupId") String groupId, @PathParam("userId") String userId) {
+		try{
+			groupService.deleteUserToGroup(groupId, userId);
+			return Response.ok().build();
+		}catch(UserNotExistOnGroup ex){
+			throw new UserNotExistOnGroupREST("User: "+userId+" doesn't exist on this group");
+		}catch (Exception e){
+			
+			throw new ElementNotFoundException("Item, " + e.getMessage() + ", is not found");
+		}
 	}
 
 }

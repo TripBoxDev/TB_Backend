@@ -19,6 +19,7 @@ public class Mock implements Querys {
 		if(uniqueInstance == null){
 			uniqueInstance=new Mock();
 			uniqueInstance.firstUser();
+			uniqueInstance.secondUser();
 			uniqueInstance.firstGroup();
 
 		}
@@ -31,6 +32,13 @@ public class Mock implements Querys {
 		groups.add("98765");
 		User first = new User("123456","Pepitu", "Sigaler", "psigaler@gmail.com",groups );
 		mock.put("123456", first);
+	}
+	private void secondUser(){
+		ArrayList<String> groups = new ArrayList<String>();
+		groups.add("445566");
+		groups.add("98765");
+		User second = new User("165432","Marc", "Sigaler", "msigaler@gmail.com",groups );
+		mock.put("165432", second);
 	}
 	
 	private void firstGroup(){
