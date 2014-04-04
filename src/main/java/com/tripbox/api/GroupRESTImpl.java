@@ -13,6 +13,7 @@ import javax.ws.rs.core.Response;
 
 import com.tripbox.api.exceptions.ElementNotFoundException;
 import com.tripbox.api.exceptions.UserNotExistOnGroupREST;
+import com.tripbox.api.exceptions.MethodNotImplementedException;
 import com.tripbox.api.interfaces.GroupREST;
 import com.tripbox.elements.Group;
 import com.tripbox.services.GroupServiceImpl;
@@ -50,13 +51,7 @@ public class GroupRESTImpl implements GroupREST{
 	@DELETE
 	@Path("/{id}")
 	public Response deleteGroup(@PathParam("id") String id) {
-		try{
-			groupService.deleteGroup(id);
-			return Response.ok().build();
-		}catch (Exception e) {
-			throw new ElementNotFoundException("Item, " + id + ", is not found");
-		}
-		
+			throw new MethodNotImplementedException("Method not implemented");
 	}
 	
 	@DELETE

@@ -1,6 +1,7 @@
 package com.tripbox.api;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -9,6 +10,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.tripbox.api.exceptions.MethodNotImplementedException;
 import com.tripbox.api.exceptions.ElementNotFoundException;
 import com.tripbox.api.interfaces.UserREST;
 import com.tripbox.elements.User;
@@ -42,10 +44,9 @@ public class UserRESTImpl implements UserREST {
 		}
 	}
 
-
-	public void deleteUser(String id) {
-		// TODO Auto-generated method stub
-
+	@DELETE
+	@Path("/{id}")
+	public void deleteUser(@PathParam("id") String id) {
+		throw new MethodNotImplementedException("Method not implemented");
 	}
-
 }
