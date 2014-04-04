@@ -8,25 +8,27 @@ import java.util.ArrayList;
 public class User {
 	
 	private String id = null;
+	private String facebookId = null;
+	private String googleId=null;
 	private String name = null;
 	private String lastName=null;
 	private String email=null;
 	private ArrayList<String> groups = new ArrayList<String>();
-	private String facebookId = null;
-	private String googleId=null;
-	
 	
 
 	public User(){}
 	
-	public User(String id, String name, String lastName, String email,
-			ArrayList<String> groups) {
+	public User(String id, String facebookid, String googleId, String name, 
+			String lastName, String email, ArrayList<String> groups) {
 		super();
 		this.id = id;
+		this.facebookId = facebookid;
+		this.googleId=googleId;
 		this.name = name;
 		this.lastName = lastName;
 		this.email = email;
 		this.groups = groups;
+		
 	}
 	public String getFacebookId() {
 		return facebookId;

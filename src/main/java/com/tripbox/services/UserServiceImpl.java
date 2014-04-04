@@ -25,10 +25,12 @@ public class UserServiceImpl implements UserService {
 
 	public User putUser(User user) throws Exception {
 		
+		
 		//nos llega un User sin id
 		if(user.getId()==null){
 			if(user.getEmail()!=null){
 				try{
+					System.out.println("fbUser ID: " + user.getFacebookId());
 					user = bbdd.getUserbyEmail(user.getEmail());
 				}catch (ItemNotFoundException e){
 					
@@ -42,17 +44,17 @@ public class UserServiceImpl implements UserService {
 					user = putNewUser(user);
 				}
 			}else if(user.getFacebookId()!=null){
+				System.out.println("FB ID");
 				try{
 					user = bbdd.getUserbyFacebookId(user.getFacebookId());
 				}catch (ItemNotFoundException e){
 					user = putNewUser(user);
 				}
 			}else{
-				throw new InvalidIdsException("Ningún identificador definido");
+				throw new InvalidIdsException("Ningun identificador definido");
 			}
 			
 		}else{
-			
 			try{
 				//comprobamos que el id existe
 				bbdd.getUser(user.getId());
