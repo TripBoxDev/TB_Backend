@@ -3,6 +3,7 @@ package com.tripbox.api.exceptions;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
+@SuppressWarnings("serial")
 public class MethodNotImplementedException extends WebApplicationException {
 
 	/**
