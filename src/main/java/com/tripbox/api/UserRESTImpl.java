@@ -12,10 +12,14 @@ import javax.ws.rs.core.Response;
 
 import com.tripbox.api.exceptions.MethodNotImplementedException;
 import com.tripbox.api.exceptions.ElementNotFoundException;
+import com.tripbox.api.exceptions.RequiredParamsFail;
 import com.tripbox.api.interfaces.UserREST;
 import com.tripbox.elements.User;
 import com.tripbox.services.UserServiceImpl;
+import com.tripbox.services.Exceptions.InvalidIdsException;
+import com.tripbox.services.Exceptions.RequiredParametersException;
 import com.tripbox.services.interfaces.UserService;
+
 
 @Path("/user")
 public class UserRESTImpl implements UserREST {
@@ -24,7 +28,7 @@ public class UserRESTImpl implements UserREST {
 	
 	@GET
 	@Path("/{id}")
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)	
 	public Response getUser(@PathParam("id") String id) {
 		try{
 			return Response.ok(userService.getUser(id)).build();
@@ -38,7 +42,12 @@ public class UserRESTImpl implements UserREST {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response putUser(User user) {
 		try{
+			
 			return Response.ok(userService.putUser(user)).build();
+		}catch (RequiredParametersException ex){
+			throw new RequiredParamsFail(ex.getMessage());
+		}catch (InvalidIdsException exc){
+			throw new ElementNotFoundException(exc.getMessage());
 		}catch (Exception e) {
 			throw new ElementNotFoundException("Item not found");
 		}

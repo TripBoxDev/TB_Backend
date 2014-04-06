@@ -1,5 +1,6 @@
 package com.tripbox.bbdd.interfaces;
 
+import com.tripbox.bbdd.exceptions.ItemNotFoundException;
 import com.tripbox.elements.Group;
 import com.tripbox.elements.User;
 
@@ -12,6 +13,30 @@ public interface Querys {
 	 * @throws Exception: En cas que no trobi cap usuari amb la ID indicada.
 	 */
 	public User getUser(String id) throws Exception;
+	
+	/**
+	 * Función que busca y devuelve un objeto User a partir de su facebookId, en caso de no ser encontrado retorna una excepcion.
+	 * @param email String con el facebookId del User
+	 * @return User
+	 * @throws Exception De tipo NotFound
+	 */
+	public User getUserbyFacebookId(String facebookId) throws ItemNotFoundException;
+	
+	/**
+	 * Función que busca y devuelve un objeto User a partir de su googleId, en caso de no ser encontrado retorna una excepcion.
+	 * @param email String con el googleId del User
+	 * @return User
+	 * @throws Exception De tipo NotFound
+	 */
+	public User getUserbyGoogleId(String googleId) throws Exception;
+	
+	/**
+	 * Función que busca y devuelve un objeto User a partir de su email, en caso de no ser encontrado retorna una excepcion.
+	 * @param email String con el email del User
+	 * @return User
+	 * @throws Exception De tipo NotFound
+	 */
+	public User getUserbyEmail(String email) throws Exception;
 	
 	/**
 	 * Funcio de l'objecte Mock que introdueix o sobreescriu un usuari.
@@ -36,6 +61,11 @@ public interface Querys {
 	 */
 	public void putGroup(Group group) throws Exception;
 	
+	/**
+	 * Función que elimina un grupo de la base de datos
+	 * @param id
+	 * @throws Exception De tipo NoExiste
+	 */
 	public void deleteGroup(String id) throws Exception;
 
 }
