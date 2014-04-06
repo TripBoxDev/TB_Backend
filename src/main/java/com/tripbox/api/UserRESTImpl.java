@@ -10,10 +10,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.tripbox.api.exceptions.ElementNotFoundException;
+import com.tripbox.api.exceptions.RequiredParamsFail;
 import com.tripbox.api.interfaces.UserREST;
 import com.tripbox.elements.User;
 import com.tripbox.services.UserServiceImpl;
 import com.tripbox.services.Exceptions.InvalidIdsException;
+import com.tripbox.services.Exceptions.RequiredParametersException;
 import com.tripbox.services.interfaces.UserService;
 
 
@@ -38,8 +40,10 @@ public class UserRESTImpl implements UserREST {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response putUser(User user) {
 		try{
-			return Response.ok(userService.putUser(user)).build();
 			
+			return Response.ok(userService.putUser(user)).build();
+		}catch (RequiredParametersException ex){
+			throw new RequiredParamsFail(ex.getMessage());
 		}catch (InvalidIdsException exc){
 			throw new ElementNotFoundException(exc.getMessage());
 		}catch (Exception e) {

@@ -19,6 +19,8 @@ public interface UserService {
 	 * InvalidIdsException.
 	 * En el caso que el User que recibimos tenga ID comprobamos que la ID sea valida (ya que el cliente no puede modificar
 	 * la ID) y guardamos los cambios.
+	 * El parametro name és obligatorio, si el User que recibimos no tiene name o esta vacio sala una excepcion de tipo
+	 * RequiredParametersException.
 	 * @param user Objecte usuari que ha de ser inserit o modificat a la BD.
 	 * @return Retorna una resposta 200 si s'ha fet l'operacio correctament.
 	 * @throws Exception

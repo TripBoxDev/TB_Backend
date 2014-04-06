@@ -6,6 +6,7 @@ import com.tripbox.bbdd.interfaces.Querys;
 import com.tripbox.elements.User;
 import com.tripbox.others.IdGenerator;
 import com.tripbox.services.Exceptions.InvalidIdsException;
+import com.tripbox.services.Exceptions.RequiredParametersException;
 import com.tripbox.services.interfaces.UserService;
 
 public class UserServiceImpl implements UserService {
@@ -24,7 +25,9 @@ public class UserServiceImpl implements UserService {
 
 
 	public User putUser(User user) throws Exception {
-		
+		if(user.getName()==null || user.getName().equalsIgnoreCase("")){
+			throw new RequiredParametersException("The paramater name is required");
+		}
 		//nos llega un User sin id
 		if(user.getId()==null){
 			if(user.getEmail()!=null){

@@ -14,7 +14,7 @@ public interface UserREST {
 	public Response getUser(String id);
 	
 	/**
-	 * Funcio de la API que modifica un usuari a la BD o li assigna una ID i l'inserta si es nou.
+	 * Funcio de la API que crida a la funció putUser de la classe UserService. 
 	 * @param user Objecte usuari que ha de ser inserit o modificat a la BD.
 	 * @return Retorna el user modificat, amb la nova ID si correspont, i una resposta 200 si s'ha fet l'operacio correctament.
 	 */
