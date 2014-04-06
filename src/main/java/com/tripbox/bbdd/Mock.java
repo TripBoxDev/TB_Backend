@@ -97,7 +97,7 @@ public class Mock implements Querys {
 	}
 
 
-	public User getUserbyFacebookId(String facebookId) throws Exception {
+	public User getUserbyFacebookId(String facebookId) throws ItemNotFoundException {
 		
 		Iterator<User> it = mock.values().iterator();
 		while (it.hasNext()) {

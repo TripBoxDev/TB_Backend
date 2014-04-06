@@ -38,13 +38,14 @@ public class UserServiceImpl implements UserService {
 			}else if(user.getGoogleId()!=null){
 				try{
 					user = bbdd.getUserbyGoogleId(user.getGoogleId());
-				}catch (ItemNotFoundException e){
+				}catch (ItemNotFoundException ex){
 					user = putNewUser(user);
 				}
 			}else if(user.getFacebookId()!=null){
 				try{
 					user = bbdd.getUserbyFacebookId(user.getFacebookId());
-				}catch (ItemNotFoundException e){
+				}catch (ItemNotFoundException exc){
+					System.out.println("entra");
 					user = putNewUser(user);
 				}
 			}else{

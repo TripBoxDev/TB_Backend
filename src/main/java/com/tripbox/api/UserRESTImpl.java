@@ -13,6 +13,7 @@ import com.tripbox.api.exceptions.ElementNotFoundException;
 import com.tripbox.api.interfaces.UserREST;
 import com.tripbox.elements.User;
 import com.tripbox.services.UserServiceImpl;
+import com.tripbox.services.Exceptions.InvalidIdsException;
 import com.tripbox.services.interfaces.UserService;
 
 
@@ -38,6 +39,9 @@ public class UserRESTImpl implements UserREST {
 	public Response putUser(User user) {
 		try{
 			return Response.ok(userService.putUser(user)).build();
+			
+		}catch (InvalidIdsException exc){
+			throw new ElementNotFoundException(exc.getMessage());
 		}catch (Exception e) {
 			throw new ElementNotFoundException("Item not found");
 		}
