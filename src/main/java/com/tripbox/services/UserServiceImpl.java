@@ -38,14 +38,13 @@ public class UserServiceImpl implements UserService {
 			}else if(user.getGoogleId()!=null){
 				try{
 					user = bbdd.getUserbyGoogleId(user.getGoogleId());
-				}catch (ItemNotFoundException ex){
+				}catch (ItemNotFoundException e){
 					user = putNewUser(user);
 				}
 			}else if(user.getFacebookId()!=null){
 				try{
 					user = bbdd.getUserbyFacebookId(user.getFacebookId());
-				}catch (ItemNotFoundException exc){
-					System.out.println("entra");
+				}catch (ItemNotFoundException e){
 					user = putNewUser(user);
 				}
 			}else{
@@ -76,16 +75,19 @@ public class UserServiceImpl implements UserService {
 		while(true){
 			try{
 				//comprovamos si el id existe
-				if(bbdd.getUser(newId)!=null){
+				try{
+					bbdd.getUser(newId);
 					//generamos nueva id
 					throw new Exception();
+				}catch (Exception e){
+					//insertamos el user a la bbdd
+					bbdd.putUser(user);
+					
+					break;
 				}
 				
 				
-				//insertamos el user a la bbdd
-				bbdd.putUser(user);
 				
-				break;
 			} catch(Exception ex){
 				//si el id ya existe probamos con otro id
 				newId = IdGenerator.generateId();

@@ -3,8 +3,7 @@ package com.tripbox.bbdd;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
+
 
 import com.tripbox.bbdd.exceptions.ItemNotFoundException;
 import com.tripbox.bbdd.interfaces.Querys;
@@ -102,8 +101,10 @@ public class Mock implements Querys {
 		Iterator<User> it = mock.values().iterator();
 		while (it.hasNext()) {
 			User user = it.next();
-			if(user.getFacebookId().equals(facebookId)){
-				return user;
+			if(user.getFacebookId()!=null){
+				if(user.getFacebookId().equals(facebookId)){
+					return user;
+				}
 			}
 		
 		}
@@ -116,26 +117,30 @@ public class Mock implements Querys {
 		Iterator<User> it = mock.values().iterator();
 		while (it.hasNext()) {
 			User user = it.next();
-			if(user.getFacebookId().equals(googleId)){
-				return user;
+			if(user.getGoogleId() !=null){
+				if(user.getGoogleId().equals(googleId)){
+					return user;
+				}
 			}
 		
 		}
 		
-		throw new ItemNotFoundException("El item con facebookId: "+googleId+" no existe en la bbdd");
+		throw new ItemNotFoundException("El item con googleId: "+googleId+" no existe en la bbdd");
 	}
 
 	public User getUserbyEmail(String email) throws Exception {
 		Iterator<User> it = mock.values().iterator();
 		while (it.hasNext()) {
 			User user = it.next();
-			if(user.getFacebookId().equals(email)){
-				return user;
+			if(user.getEmail()!=null){
+				if(user.getEmail().equals(email)){
+					return user;
+				}
 			}
 		
 		}
 		
-		throw new ItemNotFoundException("El item con facebookId: "+email+" no existe en la bbdd");
+		throw new ItemNotFoundException("El item con el email: "+email+" no existe en la bbdd");
 	}
 	
 

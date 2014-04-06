@@ -1,5 +1,6 @@
 package com.tripbox.bbdd.interfaces;
 
+import com.tripbox.bbdd.exceptions.ItemNotFoundException;
 import com.tripbox.elements.Group;
 import com.tripbox.elements.User;
 
@@ -19,7 +20,7 @@ public interface Querys {
 	 * @return User
 	 * @throws Exception De tipo NotFound
 	 */
-	public User getUserbyFacebookId(String facebookId) throws Exception;
+	public User getUserbyFacebookId(String facebookId) throws ItemNotFoundException;
 	
 	/**
 	 * Función que busca y devuelve un objeto User a partir de su googleId, en caso de no ser encontrado retorna una excepcion.
