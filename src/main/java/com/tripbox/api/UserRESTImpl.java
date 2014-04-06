@@ -15,9 +15,9 @@ import com.tripbox.api.exceptions.ElementNotFoundException;
 import com.tripbox.api.exceptions.RequiredParamsFail;
 import com.tripbox.api.interfaces.UserREST;
 import com.tripbox.elements.User;
+import com.tripbox.services.exceptions.InvalidIdsException;
+import com.tripbox.services.exceptions.RequiredParametersException;
 import com.tripbox.services.UserServiceImpl;
-import com.tripbox.services.Exceptions.InvalidIdsException;
-import com.tripbox.services.Exceptions.RequiredParametersException;
 import com.tripbox.services.interfaces.UserService;
 
 

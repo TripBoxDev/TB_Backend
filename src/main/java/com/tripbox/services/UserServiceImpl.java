@@ -5,8 +5,8 @@ import com.tripbox.bbdd.exceptions.ItemNotFoundException;
 import com.tripbox.bbdd.interfaces.Querys;
 import com.tripbox.elements.User;
 import com.tripbox.others.IdGenerator;
-import com.tripbox.services.Exceptions.InvalidIdsException;
-import com.tripbox.services.Exceptions.RequiredParametersException;
+import com.tripbox.services.exceptions.InvalidIdsException;
+import com.tripbox.services.exceptions.RequiredParametersException;
 import com.tripbox.services.interfaces.UserService;
 
 public class UserServiceImpl implements UserService {

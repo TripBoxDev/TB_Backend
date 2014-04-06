@@ -1,4 +1,4 @@
-package com.tripbox.services.Exceptions;
+package com.tripbox.services.exceptions;
 
 /**
  * Excepción utilizada para indicar que el elemento que ha recibido el servidor no tiene ningún identificador definido o válido.

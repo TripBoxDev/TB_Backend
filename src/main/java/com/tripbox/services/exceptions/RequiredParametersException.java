@@ -1,4 +1,4 @@
-package com.tripbox.services.Exceptions;
+package com.tripbox.services.exceptions;
 
 @SuppressWarnings("serial")
 public class RequiredParametersException extends Exception {
