@@ -3,6 +3,7 @@ package com.tripbox.services;
 
 import java.util.ArrayList;
 
+import com.tripbox.api.exceptions.ElementNotFoundException;
 import com.tripbox.bbdd.Mock;
 import com.tripbox.bbdd.interfaces.Querys;
 import com.tripbox.elements.Group;
@@ -22,7 +23,7 @@ public class GroupServiceImpl implements GroupService {
 		try{
 			return bbdd.getGroup(id);
 		}catch (Exception e){
-			throw new Exception();
+			throw new ElementNotFoundException("El grup no s'ha trobat.");
 		}
 	}
 
@@ -70,8 +71,6 @@ public class GroupServiceImpl implements GroupService {
 		}catch (Exception e){
 			throw new Exception(userId.toString());
 		}
-		
-		
 		
 		
 		//eliminamos el user de la lista de users del grupo
