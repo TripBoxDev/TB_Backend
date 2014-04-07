@@ -1,4 +1,4 @@
-package com.tripbox.services.tests;
+package com.tripbox.services;
 
 import static org.junit.Assert.*;
 
@@ -88,9 +88,9 @@ public class GroupServiceImplTest {
 		Group grupo = new Group("1254862","prueba1","nada", users);
 		ArrayList<String> groups= new ArrayList<String>();
 		groups.add("1254862");
-		User usuario = new User ("8","jo","ja","jar",groups);
+		User usuario = new User ("8", null, null, "jo","ja","jar",groups);
 		
-		//añadimos usuario
+		//a?adimos usuario
 		try {
 			userService.putUser(usuario);
 		} catch (Exception e1) {
@@ -98,7 +98,7 @@ public class GroupServiceImplTest {
 			e1.printStackTrace();
 		}
 		
-		//añadimos grupo
+		//a?adimos grupo
 		try {
 			grupoServ.putGroup(grupo);
 		} catch (Exception e1) {

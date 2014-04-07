@@ -14,6 +14,7 @@ import org.junit.Test;
 import com.tripbox.bbdd.Mock;
 import com.tripbox.bbdd.interfaces.Querys;
 import com.tripbox.elements.User;
+import com.tripbox.services.UserServiceImpl;
 import com.tripbox.services.exceptions.InvalidIdsException;
 import com.tripbox.services.exceptions.RequiredParametersException;
 
