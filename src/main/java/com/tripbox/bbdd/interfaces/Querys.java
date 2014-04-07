@@ -50,7 +50,7 @@ public interface Querys {
 	 * @param id: Identificador del usuario que sse debe eliminar
 	 * @throws Exception: En caso que no encuentre ningun usuario con la ID indicada.
 	 */
-	public void deleteUser(String id);
+	public void deleteUser(String id) throws Exception;
 	
 	/**
 	 * Funcio de l'objecte Mock que retorna un grup a partir de la seva ID.

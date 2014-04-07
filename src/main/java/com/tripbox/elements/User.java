@@ -19,15 +19,18 @@ public class User {
 
 	public User(){}
 	
-	public User(String id, String name, String lastName, String email,
-			ArrayList<String> groups) {
+	public User(String id, String facebookid, String googleId, String name, 
+			String lastName, String email, ArrayList<String> groups) {
 		super();
 		this.id = id;
+		this.facebookId = facebookid;
+		this.googleId=googleId;
 		this.name = name;
 		this.lastName = lastName;
 		this.email = email;
 		this.groups = groups;
 	}
+	
 	public String getFacebookId() {
 		return facebookId;
 	}
