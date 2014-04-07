@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
 					user = putNewUser(user);
 				}
 			}else{
-				throw new InvalidIdsException("Ningún identificador definido");
+				throw new InvalidIdsException("Ning��n identificador definido");
 			}
 			
 		}else{
@@ -101,7 +101,11 @@ public class UserServiceImpl implements UserService {
 		return user;
 	}
 	public void deleteUser(String id) throws Exception {
-		// TODO Auto-generated method stub
+		try{
+			bbdd.deleteUser(id);
+		}catch (Exception e){
+			throw new Exception();
+		}
 		
 	}
 

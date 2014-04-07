@@ -15,7 +15,7 @@ public interface Querys {
 	public User getUser(String id) throws Exception;
 	
 	/**
-	 * Función que busca y devuelve un objeto User a partir de su facebookId, en caso de no ser encontrado retorna una excepcion.
+	 * Funci��n que busca y devuelve un objeto User a partir de su facebookId, en caso de no ser encontrado retorna una excepcion.
 	 * @param email String con el facebookId del User
 	 * @return User
 	 * @throws Exception De tipo NotFound
@@ -23,7 +23,7 @@ public interface Querys {
 	public User getUserbyFacebookId(String facebookId) throws ItemNotFoundException;
 	
 	/**
-	 * Función que busca y devuelve un objeto User a partir de su googleId, en caso de no ser encontrado retorna una excepcion.
+	 * Funci��n que busca y devuelve un objeto User a partir de su googleId, en caso de no ser encontrado retorna una excepcion.
 	 * @param email String con el googleId del User
 	 * @return User
 	 * @throws Exception De tipo NotFound
@@ -31,7 +31,7 @@ public interface Querys {
 	public User getUserbyGoogleId(String googleId) throws Exception;
 	
 	/**
-	 * Función que busca y devuelve un objeto User a partir de su email, en caso de no ser encontrado retorna una excepcion.
+	 * Funci��n que busca y devuelve un objeto User a partir de su email, en caso de no ser encontrado retorna una excepcion.
 	 * @param email String con el email del User
 	 * @return User
 	 * @throws Exception De tipo NotFound
@@ -45,6 +45,12 @@ public interface Querys {
 	 */
 	public void putUser(User user) throws Exception;
 	
+	/**
+	 * Función que elimina un usuario de la base de datos
+	 * @param id: Identificador del usuario que sse debe eliminar
+	 * @throws Exception: En caso que no encuentre ningun usuario con la ID indicada.
+	 */
+	public void deleteUser(String id);
 	
 	/**
 	 * Funcio de l'objecte Mock que retorna un grup a partir de la seva ID.
@@ -62,7 +68,7 @@ public interface Querys {
 	public void putGroup(Group group) throws Exception;
 	
 	/**
-	 * Función que elimina un grupo de la base de datos
+	 * Funci��n que elimina un grupo de la base de datos
 	 * @param id
 	 * @throws Exception De tipo NoExiste
 	 */
