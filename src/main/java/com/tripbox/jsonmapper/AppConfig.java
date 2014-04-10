@@ -42,6 +42,7 @@ package com.tripbox.jsonmapper;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
+import com.tripbox.elements.Email;
 import com.tripbox.elements.Group;
 import com.tripbox.elements.User;
 
@@ -63,6 +64,7 @@ public class AppConfig extends ResourceConfig {
         		//registrar les classes a mapejar
         		User.class,
         		Group.class,
+        		Email.class,
                 // register Jackson ObjectMapper resolver
                 MapperProvider.class,
                 JacksonFeature.class

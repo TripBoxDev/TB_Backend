@@ -1,13 +1,11 @@
 package com.tripbox.services;
 
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 
 import org.junit.Before;
 import org.junit.Test;
 
-
+import com.tripbox.elements.Email;
 import com.tripbox.services.interfaces.EmailService;
 
 public class EmailServiceImplTest {
@@ -23,10 +21,13 @@ public class EmailServiceImplTest {
 	
 	@Test
 	public void sendInvitationTest() throws Exception {
-
-		String urlInvitation = "https://fbcdn-sphotos-c-a.akamaihd.net/hphotos-ak-prn2/t1.0-9/s403x403/1509246_655343277854015_3223584984530361539_n.jpg";
+		Email email = new Email();
+		email.setInvitationUrl("https://fbcdn-sphotos-c-a.akamaihd.net/hphotos-ak-prn2/t1.0-9/s403x403/1509246_655343277854015_3223584984530361539_n.jpg");
 		ArrayList<String> emails = new ArrayList<String>();
-		emails.add("santi.munozm@gmail.com");
+		
+		//si algú ha de testejar sisplau que posi aqui el seu email ;) 
+		emails.add("sete15santi@hotmail.com");
+		
 //		emails.add("jorge.francisco.ortiz@gmail.com");
 //		emails.add("asanz91@gmail.com");
 //		emails.add("krystyan.fs@gmail.com");
@@ -35,9 +36,10 @@ public class EmailServiceImplTest {
 //		emails.add("correaroman@gmail.com");
 //		emails.add("rubenpt91@gmail.com");
 //		emails.add("alonso_gonzalo_@hotmail.com");
+//		emails.add("santi.munozm@gmail.com");
 
-		
-		emailService.sendInvitation(urlInvitation, emails);
+		email.setEmails(emails);
+		emailService.sendInvitation(email.getInvitationUrl(), email.getEmails());
 			
 		
 	}
