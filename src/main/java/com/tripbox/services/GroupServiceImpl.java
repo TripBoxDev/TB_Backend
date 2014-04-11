@@ -76,12 +76,10 @@ public class GroupServiceImpl implements GroupService {
 		// eliminamos el user de la lista de users del grupo
 		Group group = this.getGroup(groupId);
 		ArrayList<String> groupUsers = group.getUsers();
-
 		if (!groupUsers.remove(userId)) {
 			throw new UserNotExistOnGroup(userId);
 		}
 		group.setUsers(groupUsers);
-
 		// eliminamos el grup de la lista de grupos del usuario
 		User user = userService.getUser(userId);
 		ArrayList<String> userGroups = user.getGroups();

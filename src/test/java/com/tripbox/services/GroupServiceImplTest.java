@@ -29,10 +29,8 @@ public class GroupServiceImplTest {
 	public static void SetUp(){
 		grupo1 = new Group("","prueba1","nada", users);
 		grupo2 = new Group("557842","prueba1","nada", users);
-		usuario = new User("8","jo","ja","ji","gh", "lo", groups);
-		users.add(usuario.getId());
+		usuario = new User(null,"jo","ja","ji","gh", "lo", groups);
 		grupo2.setUsers(users);
-		groups.add(grupo1.getId());
 		groups.add(grupo2.getId());
 		usuario.setGroups(groups);
 		
@@ -54,8 +52,10 @@ public class GroupServiceImplTest {
 			assertNotNull(grupo1.getId());
 			assertNotNull(grupoServ.getGroup(grupo1.getId()));
 			
+			users.add(usuario.getId());
 			grupoServ.putGroup(grupo2);
 			assertEquals(grupo2.getId(),"557842");
+			assertNotNull(grupo2.getUsers());
 			assertNotNull(grupoServ.getGroup(grupo2.getId()));
 			
 		} catch (Exception e) {
