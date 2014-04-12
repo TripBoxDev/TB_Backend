@@ -21,6 +21,15 @@ public interface UserREST {
 	public Response putUser(User user);
 	
 	/**
+	 * Funcio de la API que crida a la funció addGroupToUser de la classe UserService.
+	 * @param id	Identificador de l'usuari al que li inserim el nou grup.
+	 * @param groupId	Identificador del grup per a inserir a l'usuari.
+	 * @param user Objecte usuari que ha de ser modificat a la BD.
+	 * @return
+	 */
+	public Response addGroupToUser(String id, String groupId, User user);
+	
+	/**
 	 * Funcio de la API que esborra un usuari a partir de la seva ID.
 	 * @param id Identificador de l'usuari que s'ha d'esborrar
 	 */

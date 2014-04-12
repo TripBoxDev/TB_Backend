@@ -17,7 +17,9 @@ import com.tripbox.api.interfaces.UserREST;
 import com.tripbox.elements.User;
 import com.tripbox.services.exceptions.InvalidIdsException;
 import com.tripbox.services.exceptions.RequiredParametersException;
+import com.tripbox.services.GroupServiceImpl;
 import com.tripbox.services.UserServiceImpl;
+import com.tripbox.services.interfaces.GroupService;
 import com.tripbox.services.interfaces.UserService;
 
 
@@ -25,6 +27,7 @@ import com.tripbox.services.interfaces.UserService;
 public class UserRESTImpl implements UserREST {
 	
 	UserService userService = new UserServiceImpl();
+	GroupService groupService = new GroupServiceImpl();
 	
 	@GET
 	@Path("/{id}")
@@ -53,6 +56,37 @@ public class UserRESTImpl implements UserREST {
 		}
 	}
 
+	@PUT
+	@Path("/{id}/group/{groupId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response addGroupToUser(@PathParam("id") String id, @PathParam("groupId") String groupId, User user){
+		
+		//comprovem que user existeix
+		try{
+			userService.getUser(id);
+		}catch (Exception e) {
+			throw new ElementNotFoundException("Item, " + id + ", is not found");
+		}
+		
+		//comprovem que grup existeix
+		try{
+			groupService.getGroup(groupId);
+		}catch (Exception e) {
+			throw new ElementNotFoundException("Item, " + id + ", is not found");
+		}
+		
+		try{	
+			return Response.ok(userService.putUser(user)).build();		//cambiar
+		}catch (RequiredParametersException ex){
+			throw new RequiredParamsFail(ex.getMessage());
+		}catch (InvalidIdsException exc){
+			throw new ElementNotFoundException(exc.getMessage());
+		}catch (Exception e) {
+			throw new ElementNotFoundException("Item not found");
+		}
+	}
+	
 	@DELETE
 	@Path("/{id}")
 	public void deleteUser(@PathParam("id") String id) {
