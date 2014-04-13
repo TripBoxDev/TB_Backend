@@ -8,6 +8,8 @@ import com.tripbox.bbdd.interfaces.Querys;
 import com.tripbox.elements.Group;
 import com.tripbox.elements.User;
 import com.tripbox.others.IdGenerator;
+import com.tripbox.services.exceptions.IdAlreadyExistException;
+import com.tripbox.services.exceptions.InvalidIdsException;
 import com.tripbox.services.exceptions.UserNotExistOnGroup;
 import com.tripbox.services.interfaces.GroupService;
 import com.tripbox.services.interfaces.UserService;
@@ -31,22 +33,54 @@ public class GroupServiceImpl implements GroupService {
 		// si el user es nuevo le asignamos una id
 		if (group.getId() == null) {
 
-			String newId = IdGenerator.generateId();
-			group.setId(newId);
+			group=putNewGroup(group);
+		}else{
+
+			try {
+				//comprobamos que el id existe
+				bbdd.getGroup(group.getId());
+	
+				//modificamos el group a la bbdd
+				bbdd.putGroup(group);
+				
+			} catch (Exception e) {
+				throw new InvalidIdsException("El usuario con el ID, "+group.getId()+", no exsiste");
+			}
 		}
+		//devolvemos el elemento Group completo
+		return group;
 
-		try {
-			// insertamos el grupo a la bbdd, no hace falta comprobar si existe,
-			// esto lo hace la misma bbdd
-			bbdd.putGroup(group);
+	}
 
-			// devolvemos el elemento Grupo, no hace falta hacer un Get a la
-			// bbdd
-			return group;
-		} catch (Exception e) {
-			throw new Exception();
+	private Group putNewGroup(Group group) throws Exception {
+		String newId = IdGenerator.generateId();
+		group.setId(newId);
+		while(true){
+			try{
+				//comprovamos si el id existe
+				try{
+					bbdd.getGroup(newId);
+					//generamos nueva id
+					throw new IdAlreadyExistException();
+				}catch (IdAlreadyExistException ex){
+					throw new IdAlreadyExistException();
+				}catch (Exception e){
+					//insertamos el user a la bbdd
+					bbdd.putGroup(group);
+
+					break;
+				}
+
+
+
+			} catch(IdAlreadyExistException ex){
+				//si el id ya existe probamos con otro id
+				newId = IdGenerator.generateId();
+				group.setId(newId);
+				continue;
+			}
 		}
-
+		return group;
 	}
 
 	public void deleteGroup(String id) throws Exception {
