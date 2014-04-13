@@ -188,13 +188,9 @@ public class Mock implements Querys {
 	public void addGroupToUser(User user, Group group)throws Exception{
 		if ((user.getId()!=null)&&(group.getId()!=null)){
 			
-			System.out.println("Mock \n" + "grups del user: " + user.getGroups() + "\tusers del grup: " + group.getUsers());
-			
 			user.getGroups().add(group.getId());
 			group.getUsers().add(user.getId());
-			
-			System.out.println("grups del user: " + user.getGroups() + "users del grup: " + group.getUsers());
-
+	
 		} else {
 			throw new Exception();
 		}

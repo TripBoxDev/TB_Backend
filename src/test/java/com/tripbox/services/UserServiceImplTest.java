@@ -17,7 +17,6 @@ import com.tripbox.bbdd.Mock;
 import com.tripbox.bbdd.interfaces.Querys;
 import com.tripbox.elements.Group;
 import com.tripbox.elements.User;
-import com.tripbox.services.UserServiceImpl;
 import com.tripbox.services.exceptions.InvalidIdsException;
 import com.tripbox.services.exceptions.RequiredParametersException;
 
@@ -49,36 +48,17 @@ public class UserServiceImplTest {
 		googleGroups.add("224466");
 		userList.add("123456");
 		
-		
-		
 		userToAdd = new User(null, "f123", null, "userToAddName", null, null, groups);
 		userToAdd = userSTTest.putUser(userToAdd);
 		
 		emptyUser = new User(null, null, "g567", "emptyUser", null, null, emptyList);
 		emptyUser = userSTTest.putUser(emptyUser);
 		
-		User firstUs = new User(null, null, "1111", "firstUs", null, null, emptyList);
-		firstUs = userSTTest.putUser(firstUs);
-		
-		User secondUs = new User(null, null, "2222", "secondUs", null, null, emptyList);
-		secondUs = userSTTest.putUser(secondUs);
-		
-		User thirdUs = new User(null, null, "3333", "thirdUs", null, null, emptyList);
-		thirdUs = userSTTest.putUser(thirdUs);
-		
 		groupToAdd = new Group(null, "grupo", null, userList);
 		groupToAdd = groupSTTest.putGroup(groupToAdd);
 		
 		emptyGroup = new Group(null, "emptyGroup", null, emptyList);
 		emptyGroup = groupSTTest.putGroup(emptyGroup);
-		
-		System.out.println("userToAdd id: "+userToAdd.getId());
-		System.out.println("userempty id: "+emptyUser.getId());
-		System.out.println("firstUs id: "+firstUs.getId());
-		System.out.println("secondUs id: "+secondUs.getId());
-		System.out.println("thirdUs id: "+thirdUs.getId());
-		System.out.println("groupToAdd id: "+groupToAdd.getId());
-		System.out.println("emptyGroup id: "+emptyGroup.getId());
 	}
 	
 	@Before
@@ -301,20 +281,20 @@ public class UserServiceImplTest {
 		}
 	}
 	
-	//@Test
+	@Test
 	/**
 	 * Test de la funcion añadir una persona a un grupo cuando este grupo
 	 * todavia no tiene nadie dentro ni esa persona está en ningún grupo
 	 * @throws Exception
 	 */
-	/*public void testAddGroupToUserEmptyGroup() throws Exception {
+	public void testAddGroupToUserEmptyGroup() throws Exception {
 		try {
 			userSTTest.addGroupToUser(emptyUser.getId(), emptyGroup.getId());
 			
 		} catch (Exception e) {
 			fail();
 		}
-	}*/
+	}
 	
 	@Test
 	/**
