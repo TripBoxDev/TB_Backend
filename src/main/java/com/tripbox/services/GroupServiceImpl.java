@@ -93,27 +93,30 @@ public class GroupServiceImpl implements GroupService {
 
 	}
 
-	public void deleteUserToGroup(String groupId, String userId)
-			throws Exception {
+	public void deleteUserToGroup(String groupId, String userId) throws Exception {
 		UserService userService = new UserServiceImpl();
 		try {
 			this.getGroup(groupId);
 		} catch (Exception e) {
-			throw new Exception(groupId.toString());
+			throw new InvalidIdsException("El grupo con el ID, "+groupId+", no exsiste");
 		}
 
 		try {
 			userService.getUser(userId);
 		} catch (Exception e) {
-			throw new Exception(userId.toString());
+			throw new InvalidIdsException("El usuario con el ID, "+userId+", no exsiste");
 		}
 
 		// eliminamos el user de la lista de users del grupo
 		Group group = this.getGroup(groupId);
 		ArrayList<String> groupUsers = group.getUsers();
-		if (!groupUsers.remove(userId)) {
-			throw new UserNotExistOnGroup(userId);
+		
+		try {
+			groupUsers.remove(userId);
+		} catch (Exception e) {
+			throw new UserNotExistOnGroup("El usuario con ID: " + userId + "no existe en el grupo");
 		}
+
 		group.setUsers(groupUsers);
 		// eliminamos el grup de la lista de grupos del usuario
 		User user = userService.getUser(userId);

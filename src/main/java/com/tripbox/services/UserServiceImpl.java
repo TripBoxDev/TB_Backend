@@ -1,5 +1,6 @@
 package com.tripbox.services;
 
+import com.tripbox.api.exceptions.ElementNotFoundException;
 import com.tripbox.bbdd.Mock;
 import com.tripbox.bbdd.exceptions.ItemNotFoundException;
 import com.tripbox.bbdd.interfaces.Querys;
@@ -124,13 +125,13 @@ public class UserServiceImpl implements UserService {
 			try {
 				usr = bbdd.getUser(userId);
 			} catch (Exception e) {
-				throw new InvalidIdsException("El usuario con el ID, "+ userId +", no exsiste");
+				throw new ElementNotFoundException("El usuario con el ID, "+ userId +", no exsiste");
 			}
 			
 			try {
 				grupo = bbdd.getGroup(groupId);
 			} catch (Exception e) {
-				throw new InvalidIdsException("El grupo con el ID, "+ groupId +", no exsiste");
+				throw new ElementNotFoundException("El grupo con el ID, "+ groupId +", no exsiste");
 			}
 			
 			try {
