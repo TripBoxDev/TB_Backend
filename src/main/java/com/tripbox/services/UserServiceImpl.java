@@ -14,6 +14,7 @@ import com.tripbox.services.interfaces.UserService;
 public class UserServiceImpl implements UserService {
 	
 	Querys bbdd = Mock.getInstance();
+	IdGenerator idGen=IdGenerator.getInstance();
 	
 	public UserServiceImpl(){}
 
@@ -74,7 +75,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	private User putNewUser(User user) throws Exception{
-		String newId = IdGenerator.generateId();
+		String newId = idGen.generateId();
 		user.setId(newId);
 		while(true){
 			try{
@@ -96,7 +97,7 @@ public class UserServiceImpl implements UserService {
 				
 			} catch(IdAlreadyExistException ex){
 				//si el id ya existe probamos con otro id
-				newId = IdGenerator.generateId();
+				newId = idGen.generateId();
 				user.setId(newId);
 				continue;
 			}

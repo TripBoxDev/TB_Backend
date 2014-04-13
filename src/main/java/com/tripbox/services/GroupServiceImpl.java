@@ -17,6 +17,7 @@ import com.tripbox.services.interfaces.UserService;
 public class GroupServiceImpl implements GroupService {
 
 	Querys bbdd = Mock.getInstance();
+	IdGenerator idGen=IdGenerator.getInstance();
 
 	public GroupServiceImpl() {
 	}
@@ -53,7 +54,7 @@ public class GroupServiceImpl implements GroupService {
 	}
 
 	private Group putNewGroup(Group group) throws Exception {
-		String newId = IdGenerator.generateId();
+		String newId = idGen.generateId();
 		group.setId(newId);
 		while(true){
 			try{
@@ -75,7 +76,7 @@ public class GroupServiceImpl implements GroupService {
 
 			} catch(IdAlreadyExistException ex){
 				//si el id ya existe probamos con otro id
-				newId = IdGenerator.generateId();
+				newId = idGen.generateId();
 				group.setId(newId);
 				continue;
 			}

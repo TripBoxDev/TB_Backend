@@ -8,7 +8,8 @@ public class IdGeneratorTest {
 
 	@Test
 	public void test() {
-		IdGenerator idGen=new IdGenerator();
+		IdGenerator idGen=IdGenerator.getInstance();
+		
 		for(int i=0;i<10;i++){
 			System.out.println(idGen.generateId());
 		}
