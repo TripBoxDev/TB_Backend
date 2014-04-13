@@ -19,7 +19,7 @@ public interface UserService {
 	 * InvalidIdsException.
 	 * En el caso que el User que recibimos tenga ID comprobamos que la ID sea valida (ya que el cliente no puede modificar
 	 * la ID) y guardamos los cambios.
-	 * El parametro name és obligatorio, si el User que recibimos no tiene name o esta vacio sala una excepcion de tipo
+	 * El parametro name ��s obligatorio, si el User que recibimos no tiene name o esta vacio sala una excepcion de tipo
 	 * RequiredParametersException.
 	 * @param user Objecte usuari que ha de ser inserit o modificat a la BD.
 	 * @return Retorna una resposta 200 si s'ha fet l'operacio correctament.
@@ -28,9 +28,17 @@ public interface UserService {
 	public User putUser(User user) throws Exception;
 	
 	/**
-	 * Funcio de la API que esborra un usuari a partir de la seva ID.
-	 * @param id Identificador de l'usuari que s'ha d'esborrar
-	 * @throws Exception: Si no es troba cap usuari amb la ID indicada.
+	 * Funcion que borra un usuario a partir de su ID.
+	 * @param id: Identificador del usuario que debe ser borrado
+	 * @throws Exception: Si no se encuentra ningun usuario con la ID indicada
 	 */
 	public void deleteUser(String id)throws Exception;
+	
+	/**
+	 * Funcion que añade un usuario a un grupo y un grupo a un usuario.
+	 * @param userId:  Identificador del usuario 
+	 * @param groupId: Identificador del grupo
+	 * @throws Exception: Si el grupo o el usuario no existen (id erronea)
+	 */
+	public void addGroupToUser(String userId, String groupId)throws Exception;
 }
