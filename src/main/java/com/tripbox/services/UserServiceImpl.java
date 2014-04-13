@@ -6,6 +6,7 @@ import com.tripbox.bbdd.interfaces.Querys;
 import com.tripbox.elements.Group;
 import com.tripbox.elements.User;
 import com.tripbox.others.IdGenerator;
+import com.tripbox.services.exceptions.IdAlreadyExistException;
 import com.tripbox.services.exceptions.InvalidIdsException;
 import com.tripbox.services.exceptions.RequiredParametersException;
 import com.tripbox.services.interfaces.UserService;
@@ -81,7 +82,9 @@ public class UserServiceImpl implements UserService {
 				try{
 					bbdd.getUser(newId);
 					//generamos nueva id
-					throw new Exception();
+					throw new IdAlreadyExistException();
+				}catch (IdAlreadyExistException ex){
+					throw new IdAlreadyExistException();
 				}catch (Exception e){
 					//insertamos el user a la bbdd
 					bbdd.putUser(user);
@@ -91,7 +94,7 @@ public class UserServiceImpl implements UserService {
 				
 				
 				
-			} catch(Exception ex){
+			} catch(IdAlreadyExistException ex){
 				//si el id ya existe probamos con otro id
 				newId = IdGenerator.generateId();
 				user.setId(newId);
