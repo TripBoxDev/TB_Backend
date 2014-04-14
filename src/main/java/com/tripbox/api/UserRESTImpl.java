@@ -58,4 +58,15 @@ public class UserRESTImpl implements UserREST {
 	public void deleteUser(@PathParam("id") String id) {
 		throw new MethodNotImplementedException("Method not implemented");
 	}
+	
+	@PUT
+	@Path("/{userId}/group/{groupId}")
+	public Response addGroupToUser(@PathParam("userId") String userId, @PathParam("groupId") String groupId ){
+		try{
+			userService.addGroupToUser(userId, groupId);
+			return Response.ok().build();
+		}catch(Exception ex){
+			throw new ElementNotFoundException("Item not found");
+		}
+	}
 }

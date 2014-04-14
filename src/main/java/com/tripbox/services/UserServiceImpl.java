@@ -10,6 +10,7 @@ import com.tripbox.others.IdGenerator;
 import com.tripbox.services.exceptions.IdAlreadyExistException;
 import com.tripbox.services.exceptions.InvalidIdsException;
 import com.tripbox.services.exceptions.RequiredParametersException;
+import com.tripbox.services.interfaces.GroupService;
 import com.tripbox.services.interfaces.UserService;
 
 public class UserServiceImpl implements UserService {
@@ -119,26 +120,30 @@ public class UserServiceImpl implements UserService {
 	public void addGroupToUser(String userId, String groupId) throws Exception {
 		if ((userId!=null)&&(groupId!=null)){
 			
-			User usr=null;
-			Group grupo=null;
-			
+			User user=null;
+			Group group=null;
+			GroupService  groupService = new GroupServiceImpl();
 			try {
-				usr = bbdd.getUser(userId);
+				user = bbdd.getUser(userId);
 			} catch (Exception e) {
 				throw new ElementNotFoundException("El usuario con el ID, "+ userId +", no exsiste");
 			}
 			
 			try {
-				grupo = bbdd.getGroup(groupId);
+				group = bbdd.getGroup(groupId);
 			} catch (Exception e) {
 				throw new ElementNotFoundException("El grupo con el ID, "+ groupId +", no exsiste");
 			}
 			
-			try {
-				bbdd.addGroupToUser(usr, grupo);
-			} catch (Exception e){
+	
+		
+			user.getGroups().add(group.getId());
+			group.getUsers().add(user.getId());
+			
+			this.putUser(user);
+			groupService.putGroup(group);
 				
-			}	
+				
 			
 		} else {
 			throw new InvalidIdsException("La ID del grupo o del usuario son nulas");

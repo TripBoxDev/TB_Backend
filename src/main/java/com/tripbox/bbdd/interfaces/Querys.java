@@ -74,12 +74,6 @@ public interface Querys {
 	 */
 	public void deleteGroup(String id) throws Exception;
 	
-	/**
-	 * Funcion que añade un usuario a un grupo y un grupo a un usuario en la base de datos
-	 * @param user: Usuario introducido en el grupo
-	 * @param group: Grupo del cual formara parte el usuario
-	 * @throws Exception: Si el grupo o el usuario no existen son nulos
-	 */
-	public void addGroupToUser(User user, Group group)throws Exception;
+	
 
 }

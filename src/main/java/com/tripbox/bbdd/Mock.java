@@ -185,16 +185,6 @@ public class Mock implements Querys {
 		throw new ItemNotFoundException("El item con el email: "+email+" no existe en la bbdd");
 	}
 	
-	public void addGroupToUser(User user, Group group)throws Exception{
-		if ((user.getId()!=null)&&(group.getId()!=null)){
-			
-			user.getGroups().add(group.getId());
-			group.getUsers().add(user.getId());
 	
-		} else {
-			throw new Exception();
-		}
-		
-	}
 
 }
