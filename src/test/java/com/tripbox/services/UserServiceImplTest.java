@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.tripbox.api.exceptions.ElementNotFoundException;
 import com.tripbox.bbdd.Mock;
 import com.tripbox.bbdd.interfaces.Querys;
 import com.tripbox.elements.Group;
@@ -35,9 +36,11 @@ public class UserServiceImplTest {
 	static User testUser = new User();
 	static User resultUser = new User();
 	
+	static User userToGet = new User();
 	static User userToAdd = new User();
 	static User emptyUser = new User();
 	static Group groupToAdd = new Group();
+	static Group resultGroup = new Group();
 	static Group emptyGroup = new Group();
 	
 	@BeforeClass
@@ -47,6 +50,9 @@ public class UserServiceImplTest {
 		googleGroups.add("113355");
 		googleGroups.add("224466");
 		userList.add("123456");
+		
+		userToGet = new User(null, null, null, "userToGet", null, "userToGet@mail.com", groups);
+		userToGet = userSTTest.putUser(userToGet);
 		
 		userToAdd = new User(null, "f123", null, "userToAddName", null, null, groups);
 		userToAdd = userSTTest.putUser(userToAdd);
@@ -69,8 +75,8 @@ public class UserServiceImplTest {
 	@Test
 	public void testGetUser() throws Exception {
 		//Test usuario existente
-		testUser = userSTTest.getUser("123456");
-		assertTrue(testUser.getId()=="123456");
+		resultUser = userSTTest.getUser(userToGet.getId());
+		assertTrue(userToGet.getId()==resultUser.getId());
 		
 		//Test usuario no existente
 		try {
@@ -83,18 +89,20 @@ public class UserServiceImplTest {
 	
 	@Test
 	/**
-	 * Test de un usuario que inicialmente solo tiene ID y nombre. Hacemos el PUT y comprobamos que 
-	 * con GET nos devuelve el mismo usuario con todos sus campos actualizados
+	 * Test de un usuario que inicialmente solo tiene facebook ID (para que no de error) y nombre.
+	 * Hacemos el PUT y comprobamos que con GET nos devuelve el mismo usuario con todos sus campos actualizados
 	 * @throws Exception
 	 */
 	public void testPutUserWithId() throws Exception {	
 
 		try{
-			testUser = new User("0", "654321", "543216", "Def", "Usr", "defUsr@hotmail.com",groups); //Actualizamos el usuario anteriormente insertado
+			testUser = new User(null, "654321", null, "idUser", null, null , null);
+			testUser = userSTTest.putUser(testUser);
 			
+			testUser = new User(testUser.getId(), "654321", "543216", "Def", "Usr", "defUsr@hotmail.com",groups); //Actualizamos el usuario anteriormente insertado
 			resultUser = userSTTest.putUser(testUser);
 			
-			assertTrue(resultUser.getId()=="0");
+			assertTrue(resultUser.getId()==testUser.getId());
 			assertTrue(resultUser.getFacebookId()=="654321");
 			assertTrue(resultUser.getGoogleId()=="543216");
 			assertTrue(resultUser.getName()=="Def");
@@ -276,6 +284,16 @@ public class UserServiceImplTest {
 		try{
 			userSTTest.addGroupToUser(userToAdd.getId(), groupToAdd.getId());
 		
+			resultUser = userSTTest.getUser(userToAdd.getId());			//Get del grupo y usuario que acabamos de modificar
+			resultGroup = groupSTTest.getGroup(groupToAdd.getId());
+			
+			groups = resultUser.getGroups();
+			userList = resultGroup.getUsers();
+			
+			assertTrue(groups.contains(groupToAdd.getId()));				//Comprobamos que se han modificado correctamente
+			assertTrue(userList.contains(userToAdd.getId()));
+			
+			
 		} catch (Exception e){
 			fail();
 		}
@@ -290,6 +308,15 @@ public class UserServiceImplTest {
 	public void testAddGroupToUserEmptyGroup() throws Exception {
 		try {
 			userSTTest.addGroupToUser(emptyUser.getId(), emptyGroup.getId());
+			
+			resultUser = userSTTest.getUser(emptyUser.getId());			//Get del grupo y usuario que acabamos de modificar
+			resultGroup = groupSTTest.getGroup(emptyGroup.getId());
+			
+			groups = resultUser.getGroups();
+			userList = resultGroup.getUsers();
+			
+			assertTrue(groups.contains(emptyGroup.getId()));				//Comprobamos que se han modificado correctamente
+			assertTrue(userList.contains(emptyUser.getId()));
 			
 		} catch (Exception e) {
 			fail();
@@ -322,14 +349,14 @@ public class UserServiceImplTest {
 		try {
 			userSTTest.addGroupToUser(userToAdd.getId(), "888");
 			fail();
-		} catch (InvalidIdsException e) {
+		} catch (ElementNotFoundException e) {
 			
 		}
 		
 		try {
 			userSTTest.addGroupToUser("999", groupToAdd.getId());
 			fail();
-		} catch (InvalidIdsException e) {
+		} catch (ElementNotFoundException e) {
 			
 		}
 	}
@@ -348,9 +375,6 @@ public class UserServiceImplTest {
 	
 	@AfterClass
 	public static void tearDown() throws Exception{
-		userSTTest.deleteUser(userToAdd.getId());
-		userSTTest.deleteUser(emptyUser.getId());
-
 		groupSTTest.deleteGroup(groupToAdd.getId());
 		groupSTTest.deleteGroup(emptyGroup.getId());
 	}
