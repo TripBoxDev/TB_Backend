@@ -1,6 +1,7 @@
 package com.tripbox.services;
 
 import com.tripbox.bbdd.Mock;
+import com.tripbox.bbdd.MongoDB;
 import com.tripbox.bbdd.exceptions.ItemNotFoundException;
 import com.tripbox.bbdd.interfaces.Querys;
 import com.tripbox.elements.User;
@@ -17,7 +18,9 @@ public class UserServiceImpl implements UserService {
 
 	public User getUser(String id) throws Exception {
 		try{
-			return bbdd.getUser(id);
+			MongoDB mongo = new MongoDB();
+			
+			return mongo.getUser(id);
 		}catch (Exception e){
 			throw new Exception();
 		}

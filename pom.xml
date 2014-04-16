@@ -43,8 +43,33 @@
 			<artifactId>mail</artifactId>
 			<version>1.4</version>
 		</dependency>
-
-
+	
+    
+  	<dependency>
+    	<groupId>de.undercouch</groupId>
+    	<artifactId>bson4jackson</artifactId>
+    	<version>2.3.1</version>
+  	</dependency>
+  	
+	<dependency>
+  	
+  		<groupId>com.fasterxml.jackson.core</groupId>
+  		<artifactId>jackson-annotations</artifactId>
+  		<version>2.3.0</version>
+	</dependency>
+	
+	<dependency>
+  		<groupId>com.fasterxml.jackson.core</groupId>
+  		<artifactId>jackson-core</artifactId>
+  		<version>2.3.1</version>
+	</dependency>
+	<dependency>
+	
+    	<groupId>org.jongo</groupId>
+    	<artifactId>jongo</artifactId>
+    	<version>1.0</version>
+	</dependency>
+	
 	</dependencies>
 
 	<build>

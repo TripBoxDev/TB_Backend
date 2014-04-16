@@ -2,12 +2,16 @@ package com.tripbox.elements;
 
 import java.util.ArrayList;
 
+import org.jongo.marshall.jackson.oid.ObjectId;
 
 
 
-public class User {
+
+
+public class User  {
 	
-	private String id = null;
+	@ObjectId
+	private String _id = null;
 	private String name = null;
 	private String lastName=null;
 	private String email=null;
@@ -22,7 +26,7 @@ public class User {
 	public User(String id, String facebookid, String googleId, String name, 
 			String lastName, String email, ArrayList<String> groups) {
 		super();
-		this.id = id;
+		this._id = id;
 		this.facebookId = facebookid;
 		this.googleId=googleId;
 		this.name = name;
@@ -47,10 +51,10 @@ public class User {
 		this.googleId = googleId;
 	}
 	public String getId() {
-		return id;
+		return _id;
 	}
 	public void setId(String id) {
-		this.id = id;
+		this._id = id;
 	}
 	public String getName() {
 		return name;
