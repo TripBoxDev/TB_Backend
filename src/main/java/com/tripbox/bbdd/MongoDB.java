@@ -40,7 +40,7 @@ public class MongoDB {
 	public void putUser(User user) throws Exception {
 		try{
 			//sobreescribimos si ya existe
-			mock.put(user.getId(), user);
+			
 		}catch ( Exception e){
 			throw new Exception();
 		}
