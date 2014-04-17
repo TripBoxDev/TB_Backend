@@ -27,7 +27,7 @@ public interface UserREST {
 	 * @param user Objecte usuari que ha de ser modificat a la BD.
 	 * @return
 	 */
-	public Response addGroupToUser(String id, String groupId, User user);
+	public Response addGroupToUser(String id, String groupId);
 	
 	/**
 	 * Funcio de la API que esborra un usuari a partir de la seva ID.

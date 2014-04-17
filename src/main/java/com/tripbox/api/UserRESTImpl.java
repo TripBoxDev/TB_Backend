@@ -57,10 +57,9 @@ public class UserRESTImpl implements UserREST {
 	}
 
 	@PUT
-	@Path("/{id}/group/{groupId}")
-	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("/{userId}/group/{groupId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response addGroupToUser(@PathParam("id") String id, @PathParam("groupId") String groupId, User user){
+	public Response addGroupToUser(@PathParam("userId") String id, @PathParam("groupId") String groupId){
 		
 		//comprovem que user existeix
 		try{
@@ -77,7 +76,7 @@ public class UserRESTImpl implements UserREST {
 		}
 		
 		try{	
-			return Response.ok(userService.putUser(user)).build();		//cambiar
+			return Response.ok(userService.addGroupToUser(id, groupId)).build();		//cambiar
 		}catch (RequiredParametersException ex){
 			throw new RequiredParamsFail(ex.getMessage());
 		}catch (InvalidIdsException exc){
