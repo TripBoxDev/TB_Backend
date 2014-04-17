@@ -76,7 +76,8 @@ public class UserRESTImpl implements UserREST {
 		}
 		
 		try{	
-			return Response.ok(userService.addGroupToUser(id, groupId)).build();		//cambiar
+			userService.addGroupToUser(id, groupId);
+			return Response.ok().build();		
 		}catch (RequiredParametersException ex){
 			throw new RequiredParamsFail(ex.getMessage());
 		}catch (InvalidIdsException exc){

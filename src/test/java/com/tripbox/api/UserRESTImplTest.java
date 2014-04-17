@@ -31,13 +31,9 @@ public class UserRESTImplTest {
 		ClientResponse response = webResource.accept("application/json").put(
 				ClientResponse.class);
 
-		String output = response.getEntity(String.class);
-
 		// comprobamos que la respuesta sea correcta
 		assertTrue(response.getStatus() == 200);
 
-		// comprobamos que se ha añadido el grupo al usuario bien
-		assertTrue(output.contains("445566"));
 
 		
 		
