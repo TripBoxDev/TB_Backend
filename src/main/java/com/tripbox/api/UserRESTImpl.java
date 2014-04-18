@@ -27,7 +27,7 @@ import com.tripbox.services.interfaces.UserService;
 public class UserRESTImpl implements UserREST {
 	
 	UserService userService = new UserServiceImpl();
-	GroupService groupService = new GroupServiceImpl();
+	GroupService grupoServ = new GroupServiceImpl();
 	
 	@GET
 	@Path("/{id}")
@@ -70,7 +70,7 @@ public class UserRESTImpl implements UserREST {
 		
 		//comprovem que grup existeix
 		try{
-			groupService.getGroup(groupId);
+			grupoServ.getGroup(groupId);
 		}catch (Exception e) {
 			throw new ElementNotFoundException("Item, " + id + ", is not found");
 		}
