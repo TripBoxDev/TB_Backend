@@ -7,14 +7,14 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.tripbox.api.exceptions.ElementNotFoundException;
-import com.tripbox.api.exceptions.UserNotExistOnGroupREST;
 import com.tripbox.api.exceptions.MethodNotImplementedException;
+import com.tripbox.api.exceptions.UserNotExistOnGroupREST;
 import com.tripbox.api.interfaces.GroupREST;
+import com.tripbox.elements.Card;
 import com.tripbox.elements.Group;
 import com.tripbox.services.GroupServiceImpl;
 import com.tripbox.services.exceptions.UserNotExistOnGroup;
@@ -67,5 +67,47 @@ public class GroupRESTImpl implements GroupREST{
 			throw new ElementNotFoundException("Item, " + e.getMessage() + ", is not found");
 		}
 	}
-
+	
+	@PUT
+	@Path("/{id}/destination")
+	@Consumes(MediaType.TEXT_PLAIN)
+	public Response putDestination(@PathParam("id") String id, String newDestination){
+		
+		//to implement
+		
+		return null;
+		
+	}
+	
+	
+	@DELETE
+	@Path("/{id}/destination")
+	@Consumes(MediaType.TEXT_PLAIN)
+	public Response deleteDestination(@PathParam("id") String id, String destinationToDelete){
+		
+		//to implement
+		
+		return null;
+	}
+	
+	@PUT
+	@Path("/{id}/card")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response putCard(@PathParam("id") String id, Card card){
+		
+		//to implement
+		
+		return null;
+	}
+	
+	@DELETE
+	@Path("/{groupId}/card/{cardId}")
+	public Response deleteCard(@PathParam("groupId") String groupId, @PathParam("cardId") String cardId){
+		
+		//to implement
+		
+		return null;
+	}
+	
 }

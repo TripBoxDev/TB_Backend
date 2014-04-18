@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.tripbox.api.exceptions.ElementNotFoundException;
 import com.tripbox.bbdd.Mock;
 import com.tripbox.bbdd.interfaces.Querys;
+import com.tripbox.elements.Card;
 import com.tripbox.elements.Group;
 import com.tripbox.elements.User;
 import com.tripbox.others.IdGenerator;
@@ -132,6 +133,32 @@ public class GroupServiceImpl implements GroupService {
 		}
 
 		userService.putUser(user);
+	}
+
+
+	public void putDestination(String groupId, String newDestination)
+			throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	public void deleteDestination(String groupId, String destinationToDelete)
+			throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	public Card putCard(String groupId, Card card) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	public void deleteCard(String groupId, String cardId) throws Exception {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

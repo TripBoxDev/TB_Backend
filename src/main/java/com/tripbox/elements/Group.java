@@ -9,6 +9,14 @@ public class Group {
 	private String description=null;
 	private ArrayList<String> users= new ArrayList<String>();
 	
+	/**
+	 * Array con los destinos creados en un Group.
+	 */
+	private ArrayList<String> destinations = new ArrayList<String>();
+	private ArrayList<Card> transportCards  =  new ArrayList<Card>();
+	private ArrayList<Card> placeToSleepCards  =  new ArrayList<Card>();
+	private ArrayList<Card> otherCards  =  new ArrayList<Card>();
+	
 	public Group(){}
 	
 	public Group(String id, String name, String description,
