@@ -21,53 +21,60 @@ import com.sun.jersey.api.client.WebResource;
 public class UserRESTImplTest {
 	static GroupServiceImpl grupoServ = new GroupServiceImpl();
 	static UserService userService = new UserServiceImpl();
-	static ArrayList<String> list = new ArrayList<String>();
-	static ArrayList<String> list2 = new ArrayList<String>();
+	static ArrayList<String> users = new ArrayList<String>();
+	static ArrayList<String> groups = new ArrayList<String>();
+	static Group group;
+	static User usuario;
 
+	@BeforeClass
+	public static void SetUp(){
+		group = new Group(null,"prueba1","nada", users);
+		usuario = new User(null,"jo","ja","ji","gh", "lo", groups);
+		
+		//añadimos usuario y grupo nuevos
+		try {
+			userService.putUser(usuario);
+			grupoServ.putGroup(group);
+			System.out.println(usuario.getId());
+			System.out.println(group.getId());
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		
+	}
+	
 	@Test
 	public void testAddGroupToUser() {
-
-		// eliminamos el usuario del grupo para despues volver a ponerlo y
-		// comprobamos que se haya borrado
-		try {
-			grupoServ.deleteUserToGroup("445566", "123456");
-			list = grupoServ.getGroup("445566").getUsers();
-			list2 = userService.getUser("123456").getGroups();
-			assertFalse(list.contains("123456"));
-			assertFalse(list2.contains("445566"));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 
 		Client client = Client.create();
 
 		// usuario y grupo existente
 		WebResource webResource = client
-				.resource("http://localhost:8080/TB_Backend/api/user/123456/group/445566");
+				.resource("http://localhost:8080/TB_Backend/api/user/"+usuario.getId()+"/group/"+group.getId());
 
 		ClientResponse response = webResource.accept("application/json").put(
 				ClientResponse.class);
-
+		System.out.println(response);
 		// comprobamos que la respuesta sea correcta
 		assertTrue(response.getStatus() == 200);
 		
 		// comprobamos que el usuario y el grupo estan bien
 		try {
-			list = grupoServ.getGroup("445566").getUsers();
-			list2 = userService.getUser("123456").getGroups();
-			System.out.println(grupoServ.getGroup("445566").getUsers());
-			assertTrue(list.contains("123456"));
-			assertTrue(list2.contains("445566"));
+			users = grupoServ.getGroup(group.getId()).getUsers();
+			groups = userService.getUser(usuario.getId()).getGroups();
+			System.out.println(grupoServ.getGroup(group.getId()).getUsers());
+			assertTrue(users.contains(usuario.getId()));
+			assertTrue(groups.contains(group.getId()));
 
 			// eliminamos para proximas comprobaciones
-			grupoServ.deleteUserToGroup("445566", "123456");
+			grupoServ.deleteUserToGroup(group.getId(), usuario.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		// usuario NO existente y grupo existente
 		WebResource webResource2 = client
-				.resource("http://localhost:8080/TB_Backend/api/user/1234/group/445566");
+				.resource("http://localhost:8080/TB_Backend/api/user/1234/group/"+group.getId());
 
 		ClientResponse response2 = webResource2.accept("application/json").put(
 				ClientResponse.class);
@@ -77,10 +84,10 @@ public class UserRESTImplTest {
 
 		// comprobamos que el usuario y el grupo estan bien
 		try {
-			list = grupoServ.getGroup("445566").getUsers();
-			list2 = userService.getUser("123456").getGroups();
-			assertFalse(list.contains("123456"));
-			assertFalse(list2.contains("445566"));
+			users = grupoServ.getGroup(group.getId()).getUsers();
+			groups = userService.getUser(usuario.getId()).getGroups();
+			assertFalse(users.contains(usuario.getId()));
+			assertFalse(groups.contains(group.getId()));
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -88,7 +95,7 @@ public class UserRESTImplTest {
 
 		// usuario existente y grupo NO existente
 		WebResource webResource3 = client
-				.resource("http://localhost:8080/TB_Backend/api/user/123456/group/44554816");
+				.resource("http://localhost:8080/TB_Backend/api/user/"+usuario.getId()+"/group/44554816");
 
 		ClientResponse response3 = webResource3.accept("application/json").put(
 				ClientResponse.class);
@@ -99,10 +106,10 @@ public class UserRESTImplTest {
 		
 		// comprobamos que el usuario y el grupo estan bien
 		try {
-			list = grupoServ.getGroup("445566").getUsers();
-			list2 = userService.getUser("123456").getGroups();
-			assertFalse(list.contains("123456"));
-			assertFalse(list2.contains("445566"));
+			users = grupoServ.getGroup(group.getId()).getUsers();
+			groups = userService.getUser(usuario.getId()).getGroups();
+			assertFalse(users.contains(usuario.getId()));
+			assertFalse(groups.contains(group.getId()));
 
 		} catch (Exception e) {
 			e.printStackTrace();
