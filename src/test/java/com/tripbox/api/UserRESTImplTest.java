@@ -190,5 +190,20 @@ public class UserRESTImplTest {
 			e.printStackTrace();
 		}
 	}
+	
+	@AfterClass
+	public static void tearDown() throws Exception{
+		WebResource webResource4 = client
+				.resource("http://localhost:8080/TB_Backend/api/group/" + output2);
+
+		ClientResponse response4 = webResource4.accept("application/json").delete(
+				ClientResponse.class);
+		
+		WebResource webResource5 = client
+				.resource("http://localhost:8080/TB_Backend/api/user/" + output);
+
+		ClientResponse response5 = webResource5.accept("application/json").delete(
+				ClientResponse.class);
+	}
 
 }
