@@ -166,6 +166,22 @@ public class GroupServiceImpl implements GroupService {
 		}
 		if(group.getDestinations().contains(destinationToDelete)){
 			group.getDestinations().remove(destinationToDelete);
+			
+			for(Card card:group.getTransportCards()){
+				if(card.getDestination().equalsIgnoreCase(destinationToDelete)){
+					group.getTransportCards().remove(card);
+				}
+			}
+			for(Card card:group.getPlaceToSleepCards()){
+				if(card.getDestination().equalsIgnoreCase(destinationToDelete)){
+					group.getPlaceToSleepCards().remove(card);
+				}
+			}
+			for(Card card:group.getOtherCards()){
+				if(card.getDestination().equalsIgnoreCase(destinationToDelete)){
+					group.getOtherCards().remove(card);
+				}
+			}
 			this.putGroup(group);
 		}else{
 			throw new ElementNotFoundException("Destination "+destinationToDelete+" doesn't exist");
