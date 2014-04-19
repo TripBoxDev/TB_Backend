@@ -60,7 +60,6 @@ public class UserRESTImpl implements UserREST {
 	@Path("/{userId}/group/{groupId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response addGroupToUser(@PathParam("userId") String id, @PathParam("groupId") String groupId){
-		
 		//comprovem que user existeix
 		try{
 			userService.getUser(id);
@@ -72,7 +71,7 @@ public class UserRESTImpl implements UserREST {
 		try{
 			grupoServ.getGroup(groupId);
 		}catch (Exception e) {
-			throw new ElementNotFoundException("Item, " + id + ", is not found");
+			throw new ElementNotFoundException("Item, " + groupId + ", is not found");
 		}
 		
 		try{	

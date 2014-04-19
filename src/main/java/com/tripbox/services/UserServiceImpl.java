@@ -139,7 +139,6 @@ public class UserServiceImpl implements UserService {
 		
 			user.getGroups().add(group.getId());
 			group.getUsers().add(user.getId());
-			
 			this.putUser(user);
 			groupService.putGroup(group);
 				

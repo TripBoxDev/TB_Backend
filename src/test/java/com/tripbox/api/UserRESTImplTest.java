@@ -23,58 +23,102 @@ public class UserRESTImplTest {
 	static UserService userService = new UserServiceImpl();
 	static ArrayList<String> users = new ArrayList<String>();
 	static ArrayList<String> groups = new ArrayList<String>();
-	static Group group;
-	static User usuario;
+	static String output;
+	static String output2;
+	static Client client = Client.create();
 
 	@BeforeClass
-	public static void SetUp(){
-		group = new Group(null,"prueba1","nada", users);
-		usuario = new User(null,"jo","ja","ji","gh", "lo", groups);
-		
-		//añadimos usuario y grupo nuevos
+	public static void SetUp() {
+
+		// añadimos usuario y grupo nuevos
 		try {
-			userService.putUser(usuario);
-			grupoServ.putGroup(group);
-			System.out.println(usuario.getId());
-			System.out.println(group.getId());
+			WebResource webResource = client
+					.resource("http://localhost:8080/TB_Backend/api/user/");
+
+			String input = "{\"facebookId\" : \"\",\"googleId\" : \"\",\"name\" : \"Josep\",\"lastName\" : \"Morato\",\"email\" : \"josepM@gmail.com\",\"groups\" : [ \"445566\", \"98765\" ] }";
+
+			ClientResponse response = webResource.type("application/json").put(
+					ClientResponse.class, input);
+
+			output = response.getEntity(String.class);
+
+			String[] id = output.split(",");
+
+			String[] id2 = id[0].split(":");
+			output = id2[1].substring(2, 14);
+
+			WebResource webResource2 = client
+					.resource("http://localhost:8080/TB_Backend/api/group/");
+
+			String input2 = "{\"name\" : \"Uni\",\"description\" : \"viajee\",\"users\" : [ \"123456\", \"165432\" ] }";
+
+			ClientResponse response2 = webResource2.type("application/json")
+					.put(ClientResponse.class, input2);
+
+			output2 = response2.getEntity(String.class);
+
+			id = output2.split(",");
+
+			id2 = id[0].split(":");
+			output2 = id2[1].substring(2, 14);
+
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
-		
+
 	}
-	
+
 	@Test
-	public void testAddGroupToUser() {
-
-		Client client = Client.create();
-
+	public void testAddGroupToUser() throws Exception {
 		// usuario y grupo existente
 		WebResource webResource = client
-				.resource("http://localhost:8080/TB_Backend/api/user/"+usuario.getId()+"/group/"+group.getId());
+				.resource("http://localhost:8080/TB_Backend/api/user/" + output
+						+ "/group/" + output2);
 
 		ClientResponse response = webResource.accept("application/json").put(
 				ClientResponse.class);
-		System.out.println(response);
+
 		// comprobamos que la respuesta sea correcta
 		assertTrue(response.getStatus() == 200);
-		
+
 		// comprobamos que el usuario y el grupo estan bien
 		try {
-			users = grupoServ.getGroup(group.getId()).getUsers();
-			groups = userService.getUser(usuario.getId()).getGroups();
-			System.out.println(grupoServ.getGroup(group.getId()).getUsers());
-			assertTrue(users.contains(usuario.getId()));
-			assertTrue(groups.contains(group.getId()));
+			// comprobamos que el usuario esta bien
+			WebResource webResource2 = client
+					.resource("http://localhost:8080/TB_Backend/api/user/" + output);
+
+			ClientResponse response2 = webResource2.accept("application/json").get(
+					ClientResponse.class);
+			
+			String out = response2.getEntity(String.class);
+			
+			// comprobamos que el grupo esta bien
+			WebResource webResource3 = client
+					.resource("http://localhost:8080/TB_Backend/api/group/" + output2);
+
+			ClientResponse response3 = webResource3.accept("application/json").get(
+					ClientResponse.class);
+			
+			String out2 = response3.getEntity(String.class);
+
+			assertTrue(out.contains(output2));
+			assertTrue(out2.contains(output));
 
 			// eliminamos para proximas comprobaciones
-			grupoServ.deleteUserToGroup(group.getId(), usuario.getId());
+			WebResource webResource4 = client
+					.resource("http://localhost:8080/TB_Backend/api/group/" + output2 + "/user/" + output);
+
+			ClientResponse response4 = webResource4.accept("application/json").delete(
+					ClientResponse.class);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		// usuario NO existente y grupo existente
 		WebResource webResource2 = client
-				.resource("http://localhost:8080/TB_Backend/api/user/1234/group/"+group.getId());
+				.resource("http://localhost:8080/TB_Backend/api/user/1234/group/"
+						+ output2);
 
 		ClientResponse response2 = webResource2.accept("application/json").put(
 				ClientResponse.class);
@@ -82,12 +126,29 @@ public class UserRESTImplTest {
 		// comprobamos que la respuesta sea item no encontrado
 		assertTrue(response2.getStatus() == 404);
 
-		// comprobamos que el usuario y el grupo estan bien
+
 		try {
-			users = grupoServ.getGroup(group.getId()).getUsers();
-			groups = userService.getUser(usuario.getId()).getGroups();
-			assertFalse(users.contains(usuario.getId()));
-			assertFalse(groups.contains(group.getId()));
+			// comprobamos que el usuario esta bien
+			WebResource webResource5 = client
+					.resource("http://localhost:8080/TB_Backend/api/user/" + output);
+
+			ClientResponse response5 = webResource5.accept("application/json").get(
+					ClientResponse.class);
+			
+			String out = response5.getEntity(String.class);
+			
+			// comprobamos que el grupo esta bien
+			WebResource webResource3 = client
+					.resource("http://localhost:8080/TB_Backend/api/group/" + output2);
+
+			ClientResponse response3 = webResource3.accept("application/json").get(
+					ClientResponse.class);
+			
+			String out2 = response3.getEntity(String.class);
+			
+			assertFalse(out.contains(output2));
+			assertFalse(out2.contains(output));
+
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -95,7 +156,7 @@ public class UserRESTImplTest {
 
 		// usuario existente y grupo NO existente
 		WebResource webResource3 = client
-				.resource("http://localhost:8080/TB_Backend/api/user/"+usuario.getId()+"/group/44554816");
+				.resource("http://localhost:8080/TB_Backend/api/user/123456/group/44554816");
 
 		ClientResponse response3 = webResource3.accept("application/json").put(
 				ClientResponse.class);
@@ -103,14 +164,28 @@ public class UserRESTImplTest {
 		// comprobamos que la respuesta sea item no encontrado
 		assertTrue(response3.getStatus() == 404);
 
-		
-		// comprobamos que el usuario y el grupo estan bien
 		try {
-			users = grupoServ.getGroup(group.getId()).getUsers();
-			groups = userService.getUser(usuario.getId()).getGroups();
-			assertFalse(users.contains(usuario.getId()));
-			assertFalse(groups.contains(group.getId()));
+			
+			// comprobamos que el usuario esta bien
+			WebResource webResource5 = client
+					.resource("http://localhost:8080/TB_Backend/api/user/" + output);
 
+			ClientResponse response5 = webResource5.accept("application/json").get(
+					ClientResponse.class);
+			
+			String out = response5.getEntity(String.class);
+			
+			// comprobamos que el grupo esta bien
+			WebResource webResource6 = client
+					.resource("http://localhost:8080/TB_Backend/api/group/" + output2);
+
+			ClientResponse response6 = webResource6.accept("application/json").get(
+					ClientResponse.class);
+			
+			String out2 = response6.getEntity(String.class);
+
+			assertFalse(out.contains(output2));
+			assertFalse(out2.contains(output));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
