@@ -27,7 +27,7 @@ public interface GroupService {
 	public void putDestination(String groupId, String newDestination) throws Exception;
 	
 	/**
-	 * Eliminamos un destino de un Group.
+	 * Eliminamos un destino de un Group i todas las cards relacionadas con ese destino.
 	 * @param groupId Id del Group al que queremos eliminar el destino.
 	 * @param destinationToDelete Destino que queremos eliminar.
 	 * @throws Exception
