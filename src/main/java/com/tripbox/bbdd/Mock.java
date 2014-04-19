@@ -20,17 +20,17 @@ public class Mock implements Querys {
 	public static Mock getInstance(){
 		if(uniqueInstance == null){
 			uniqueInstance=new Mock();
-			uniqueInstance.firstUser();
+			/*uniqueInstance.firstUser();
 			uniqueInstance.secondUser();
 			uniqueInstance.firstGroup();
 			uniqueInstance.secondGroup();
 			uniqueInstance.thirdGroup();
-			uniqueInstance.user0();
+			uniqueInstance.user0();  */
 
 		}
 		return uniqueInstance;
 	}
-	
+	/*
 	private void firstUser(){
 		ArrayList<String> groups = new ArrayList<String>();
 		groups.add("445566");
@@ -78,7 +78,7 @@ public class Mock implements Querys {
 		User usr = new User("0", null, null, "Pepet", null, null, null );
 		mock.put("0", usr);
 	}
-	
+	*/
 
 	public User getUser(String id) throws Exception {
 		if(mock.get(id)!=null){
