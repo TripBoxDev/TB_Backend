@@ -17,7 +17,9 @@ import com.tripbox.api.interfaces.UserREST;
 import com.tripbox.elements.User;
 import com.tripbox.services.exceptions.InvalidIdsException;
 import com.tripbox.services.exceptions.RequiredParametersException;
+import com.tripbox.services.GroupServiceImpl;
 import com.tripbox.services.UserServiceImpl;
+import com.tripbox.services.interfaces.GroupService;
 import com.tripbox.services.interfaces.UserService;
 
 
@@ -25,6 +27,7 @@ import com.tripbox.services.interfaces.UserService;
 public class UserRESTImpl implements UserREST {
 	
 	UserService userService = new UserServiceImpl();
+	GroupService groupService = new GroupServiceImpl();
 	
 	@GET
 	@Path("/{id}")
@@ -53,20 +56,41 @@ public class UserRESTImpl implements UserREST {
 		}
 	}
 
+	@PUT
+	@Path("/{userId}/group/{groupId}")
+	public Response addGroupToUser(@PathParam("userId") String id, @PathParam("groupId") String groupId){
+		
+		//comprovem que user existeix
+		try{
+			userService.getUser(id);
+		}catch (Exception e) {
+			throw new ElementNotFoundException("Item, " + id + ", is not found");
+		}
+		
+		//comprovem que grup existeix
+		try{
+			groupService.getGroup(groupId);
+		}catch (Exception e) {
+			throw new ElementNotFoundException("Item, " + id + ", is not found");
+		}
+		
+		try{	
+			userService.addGroupToUser(id, groupId);
+			return Response.ok().build();		
+		}catch (RequiredParametersException ex){
+			throw new RequiredParamsFail(ex.getMessage());
+		}catch (InvalidIdsException exc){
+			throw new ElementNotFoundException(exc.getMessage());
+		}catch (Exception e) {
+			throw new ElementNotFoundException("Item not found");
+		}
+	}
+	
 	@DELETE
 	@Path("/{id}")
 	public void deleteUser(@PathParam("id") String id) {
 		throw new MethodNotImplementedException("Method not implemented");
 	}
 	
-	@PUT
-	@Path("/{userId}/group/{groupId}")
-	public Response addGroupToUser(@PathParam("userId") String userId, @PathParam("groupId") String groupId ){
-		try{
-			userService.addGroupToUser(userId, groupId);
-			return Response.ok().build();
-		}catch(Exception ex){
-			throw new ElementNotFoundException("Item not found");
-		}
-	}
+	
 }
