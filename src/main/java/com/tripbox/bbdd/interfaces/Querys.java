@@ -15,7 +15,7 @@ public interface Querys {
 	public User getUser(String id) throws Exception;
 	
 	/**
-	 * Funci������n que busca y devuelve un objeto User a partir de su facebookId, en caso de no ser encontrado retorna una excepcion.
+	 * Funcion que busca y devuelve un objeto User a partir de su facebookId, en caso de no ser encontrado retorna una excepcion.
 	 * @param email String con el facebookId del User
 	 * @return User
 	 * @throws Exception De tipo NotFound
@@ -23,7 +23,7 @@ public interface Querys {
 	public User getUserbyFacebookId(String facebookId) throws ItemNotFoundException;
 	
 	/**
-	 * Funci������n que busca y devuelve un objeto User a partir de su googleId, en caso de no ser encontrado retorna una excepcion.
+	 * Funcion que busca y devuelve un objeto User a partir de su googleId, en caso de no ser encontrado retorna una excepcion.
 	 * @param email String con el googleId del User
 	 * @return User
 	 * @throws Exception De tipo NotFound
@@ -31,7 +31,7 @@ public interface Querys {
 	public User getUserbyGoogleId(String googleId) throws Exception;
 	
 	/**
-	 * Funci������n que busca y devuelve un objeto User a partir de su email, en caso de no ser encontrado retorna una excepcion.
+	 * Funcion que busca y devuelve un objeto User a partir de su email, en caso de no ser encontrado retorna una excepcion.
 	 * @param email String con el email del User
 	 * @return User
 	 * @throws Exception De tipo NotFound
@@ -46,7 +46,7 @@ public interface Querys {
 	public void putUser(User user) throws Exception;
 	
 	/**
-	 * Funci��n que elimina un usuario de la base de datos
+	 * Funcion que elimina un usuario de la base de datos
 	 * @param id: Identificador del usuario que sse debe eliminar
 	 * @throws Exception: En caso que no encuentre ningun usuario con la ID indicada.
 	 */
@@ -68,7 +68,7 @@ public interface Querys {
 	public void putGroup(Group group) throws Exception;
 	
 	/**
-	 * Funci������n que elimina un grupo de la base de datos
+	 * Funcion que elimina un grupo de la base de datos
 	 * @param id
 	 * @throws Exception De tipo NoExiste
 	 */

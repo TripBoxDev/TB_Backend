@@ -9,7 +9,7 @@ import com.tripbox.elements.Card;
 import com.tripbox.elements.Group;
 import com.tripbox.elements.User;
 import com.tripbox.others.IdGenerator;
-import com.tripbox.services.exceptions.DetinationAlreadyExistException;
+import com.tripbox.services.exceptions.DestinationAlreadyExistException;
 import com.tripbox.services.exceptions.IdAlreadyExistException;
 import com.tripbox.services.exceptions.InvalidIdsException;
 import com.tripbox.services.exceptions.UserNotExistOnGroup;
@@ -148,7 +148,7 @@ public class GroupServiceImpl implements GroupService {
 		}
 		if(group.getDestinations().contains(newDestination)){
 			//destination already exist
-			throw new DetinationAlreadyExistException();
+			throw new DestinationAlreadyExistException();
 		}else{
 			group.getDestinations().add(newDestination);
 			this.putGroup(group);
@@ -166,22 +166,6 @@ public class GroupServiceImpl implements GroupService {
 		}
 		if(group.getDestinations().contains(destinationToDelete)){
 			group.getDestinations().remove(destinationToDelete);
-			
-			for(Card card:group.getTransportCards()){
-				if(card.getDestination().equalsIgnoreCase(destinationToDelete)){
-					group.getTransportCards().remove(card);
-				}
-			}
-			for(Card card:group.getPlaceToSleepCards()){
-				if(card.getDestination().equalsIgnoreCase(destinationToDelete)){
-					group.getPlaceToSleepCards().remove(card);
-				}
-			}
-			for(Card card:group.getOtherCards()){
-				if(card.getDestination().equalsIgnoreCase(destinationToDelete)){
-					group.getOtherCards().remove(card);
-				}
-			}
 			this.putGroup(group);
 		}else{
 			throw new ElementNotFoundException("Destination "+destinationToDelete+" doesn't exist");
