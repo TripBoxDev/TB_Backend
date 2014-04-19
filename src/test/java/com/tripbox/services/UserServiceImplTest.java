@@ -276,7 +276,7 @@ public class UserServiceImplTest {
 	
 	@Test
 	/**
-	 * Test de la funcion añadir una persona a un grupo cuando el grupo ya tiene 
+	 * Test de la funcion a??adir una persona a un grupo cuando el grupo ya tiene 
 	 * usuarios y el usuario ya esta en otros grupos
 	 * @throws Exception
 	 */
@@ -301,8 +301,8 @@ public class UserServiceImplTest {
 	
 	@Test
 	/**
-	 * Test de la funcion añadir una persona a un grupo cuando este grupo
-	 * todavia no tiene nadie dentro ni esa persona está en ningún grupo
+	 * Test de la funcion a??adir una persona a un grupo cuando este grupo
+	 * todavia no tiene nadie dentro ni esa persona est?? en ning??n grupo
 	 * @throws Exception
 	 */
 	public void testAddGroupToUserEmptyGroup() throws Exception {
@@ -325,7 +325,7 @@ public class UserServiceImplTest {
 	
 	@Test
 	/**
-	 * Test de la funcion que debería dar excepciones como control de errores.
+	 * Test de la funcion que deber??a dar excepciones como control de errores.
 	 * @throws Exception
 	 */
 	public void testAddGroupToUserWrongInputs() throws Exception {
@@ -372,7 +372,7 @@ public class UserServiceImplTest {
 			fail();
 		}
 	}
-	
+	 
 	@AfterClass
 	public static void tearDown() throws Exception{
 		groupSTTest.deleteGroup(groupToAdd.getId());

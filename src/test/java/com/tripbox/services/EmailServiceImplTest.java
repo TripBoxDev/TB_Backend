@@ -26,7 +26,7 @@ public class EmailServiceImplTest {
 		ArrayList<String> emails = new ArrayList<String>();
 		
 		//si algú ha de testejar sisplau que posi aqui el seu email ;) 
-		emails.add("sete15santi@hotmail.com");
+		//emails.add();
 		
 //		emails.add("jorge.francisco.ortiz@gmail.com");
 //		emails.add("asanz91@gmail.com");
