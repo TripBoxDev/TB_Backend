@@ -13,7 +13,7 @@ public class Group {
 	 * Array con los destinos creados en un Group.
 	 */
 	private ArrayList<String> destinations = new ArrayList<String>();
-	private ArrayList<Card> transportCards  =  new ArrayList<Card>();
+	private ArrayList<Card> transportCards  =  new ArrayList<Card>();	
 	private ArrayList<Card> placeToSleepCards  =  new ArrayList<Card>();
 	private ArrayList<Card> otherCards  =  new ArrayList<Card>();
 	
@@ -51,5 +51,35 @@ public class Group {
 	public void setUsers(ArrayList<String> users) {
 		this.users = users;
 	}
+	public ArrayList<String> getDestinations() {
+		return destinations;
+	}
 
+	public void setDestinations(ArrayList<String> destinations) {
+		this.destinations = destinations;
+	}
+
+	public ArrayList<Card> getTransportCards() {
+		return transportCards;
+	}
+
+	public void setTransportCards(ArrayList<Card> transportCards) {
+		this.transportCards = transportCards;
+	}
+
+	public ArrayList<Card> getPlaceToSleepCards() {
+		return placeToSleepCards;
+	}
+
+	public void setPlaceToSleepCards(ArrayList<Card> placeToSleepCards) {
+		this.placeToSleepCards = placeToSleepCards;
+	}
+
+	public ArrayList<Card> getOtherCards() {
+		return otherCards;
+	}
+
+	public void setOtherCards(ArrayList<Card> otherCards) {
+		this.otherCards = otherCards;
+	}
 }

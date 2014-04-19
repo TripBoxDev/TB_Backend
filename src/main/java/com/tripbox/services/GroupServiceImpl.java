@@ -9,6 +9,7 @@ import com.tripbox.elements.Card;
 import com.tripbox.elements.Group;
 import com.tripbox.elements.User;
 import com.tripbox.others.IdGenerator;
+import com.tripbox.services.exceptions.DetinationAlreadyExistException;
 import com.tripbox.services.exceptions.IdAlreadyExistException;
 import com.tripbox.services.exceptions.InvalidIdsException;
 import com.tripbox.services.exceptions.UserNotExistOnGroup;
@@ -138,14 +139,38 @@ public class GroupServiceImpl implements GroupService {
 
 	public void putDestination(String groupId, String newDestination)
 			throws Exception {
-		// TODO Auto-generated method stub
 		
+		Group group;
+		try{
+			group=bbdd.getGroup(groupId);
+		}catch(Exception e){
+			throw new ElementNotFoundException("Group "+groupId+" not found");
+		}
+		if(group.getDestinations().contains(newDestination)){
+			//destination already exist
+			throw new DetinationAlreadyExistException();
+		}else{
+			group.getDestinations().add(newDestination);
+			this.putGroup(group);
+		}
 	}
 
 
 	public void deleteDestination(String groupId, String destinationToDelete)
 			throws Exception {
-		// TODO Auto-generated method stub
+		Group group;
+		try{
+			group=bbdd.getGroup(groupId);
+		}catch(Exception e){
+			throw new ElementNotFoundException("Group "+groupId+" not found");
+		}
+		if(group.getDestinations().contains(destinationToDelete)){
+			group.getDestinations().remove(destinationToDelete);
+			this.putGroup(group);
+		}else{
+			throw new ElementNotFoundException("Destination "+destinationToDelete+" doesn't exist");
+			
+		}
 		
 	}
 
