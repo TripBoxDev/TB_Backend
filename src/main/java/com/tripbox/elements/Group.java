@@ -19,14 +19,23 @@ public class Group {
 	
 	public Group(){}
 	
+	
 	public Group(String id, String name, String description,
-			ArrayList<String> users) {
+			ArrayList<String> users, ArrayList<String> destinations,
+			ArrayList<Card> transportCards, ArrayList<Card> placeToSleepCards,
+			ArrayList<Card> otherCards) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.users = users;
+		this.destinations = destinations;
+		this.transportCards = transportCards;
+		this.placeToSleepCards = placeToSleepCards;
+		this.otherCards = otherCards;
 	}
+
+
 	public String getId() {
 		return id;
 	}
