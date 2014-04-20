@@ -8,11 +8,11 @@ public class OtherCard extends Card {
 		// TODO Auto-generated constructor stub
 	}
 
-	public OtherCard(String cardId, String cardType, String name,
+	public OtherCard(String cardId,  String name,
 			String description, long creationDate, String link, double price,
 			String destination, String userId, String nameCreator,
 			String lastNameCreator,long eventDate ) {
-		super(cardId, cardType, name, description, creationDate, link, price,
+		super(cardId, "other", name, description, creationDate, link, price,
 				destination, userId, nameCreator, lastNameCreator);
 		// TODO Auto-generated constructor stub
 		this.eventDate=eventDate;

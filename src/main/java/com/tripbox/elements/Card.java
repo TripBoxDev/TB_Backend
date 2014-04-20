@@ -9,7 +9,7 @@ public abstract class Card {
 	private String link=null;
 	private double price;
 	private String destination=null;
-	private String userId=null;
+	private String userIdCreator=null;
 	private String nameCreator=null;
 	private String lastNameCreator=null;
 	
@@ -30,7 +30,7 @@ public abstract class Card {
 		this.link = link;
 		this.price = price;
 		this.destination = destination;
-		this.userId = userId;
+		this.userIdCreator = userId;
 		this.nameCreator = nameCreator;
 		this.lastNameCreator = lastNameCreator;
 	}
@@ -84,11 +84,11 @@ public abstract class Card {
 	public void setDestination(String destination) {
 		this.destination = destination;
 	}
-	public String getUserId() {
-		return userId;
+	public String getUserIdCreator() {
+		return userIdCreator;
 	}
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setUserIdCreator(String userId) {
+		this.userIdCreator = userId;
 	}
 	public String getNameCreator() {
 		return nameCreator;

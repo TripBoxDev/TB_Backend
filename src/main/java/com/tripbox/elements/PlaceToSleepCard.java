@@ -12,12 +12,12 @@ public class PlaceToSleepCard extends Card {
 	
 	public PlaceToSleepCard() {}
 
-	public PlaceToSleepCard(String cardId, String cardType, String name,
+	public PlaceToSleepCard(String cardId,  String name,
 			String description, long creationDate, String link, double price,
 			String destination, String userId, String nameCreator,
 			String lastNameCreator,ArrayList<String> parentCardIds, long initDate,
 			long finalDate, String placeType) {
-		super(cardId, cardType, name, description, creationDate, link, price,
+		super(cardId, "placeToSleep", name, description, creationDate, link, price,
 				destination, userId, nameCreator, lastNameCreator);
 		this.parentCardIds = parentCardIds;
 		this.initDate = initDate;

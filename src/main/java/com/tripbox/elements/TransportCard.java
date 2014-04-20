@@ -8,11 +8,11 @@ public class TransportCard extends Card {
 	
 	public TransportCard(){}
 	
-	public TransportCard(String cardId, String cardType, String name,
+	public TransportCard(String cardId, String name,
 			String description, long creationDate, String link, double price,
 			String destination, String userId, String nameCreator,
 			String lastNameCreator,long initDate, long finalDate, String transportType) {
-		super(cardId, cardType, name, description, creationDate, link, price,
+		super(cardId, "transport", name, description, creationDate, link, price,
 				destination, userId, nameCreator, lastNameCreator);
 		
 		this.initDate = initDate;
