@@ -12,11 +12,14 @@ import javax.ws.rs.core.Response;
 
 import com.tripbox.api.exceptions.ElementNotFoundException;
 import com.tripbox.api.exceptions.MethodNotImplementedException;
+import com.tripbox.api.exceptions.RequiredParamsFail;
 import com.tripbox.api.exceptions.UserNotExistOnGroupREST;
 import com.tripbox.api.interfaces.GroupREST;
 import com.tripbox.elements.Card;
 import com.tripbox.elements.Group;
 import com.tripbox.services.GroupServiceImpl;
+import com.tripbox.services.exceptions.CardTypeException;
+import com.tripbox.services.exceptions.DestinationAlreadyExistException;
 import com.tripbox.services.exceptions.UserNotExistOnGroup;
 import com.tripbox.services.interfaces.GroupService;
 
@@ -64,7 +67,7 @@ public class GroupRESTImpl implements GroupREST{
 			throw new UserNotExistOnGroupREST("User: "+userId+" doesn't exist on this group");
 		}catch (Exception e){
 			
-			throw new ElementNotFoundException("Item, " + e.getMessage() + ", is not found");
+			throw new ElementNotFoundException(e.getMessage());
 		}
 	}
 	
@@ -72,11 +75,14 @@ public class GroupRESTImpl implements GroupREST{
 	@Path("/{id}/destination")
 	@Consumes(MediaType.TEXT_PLAIN)
 	public Response putDestination(@PathParam("id") String id, String newDestination){
-		
-		//to implement
-		
-		return null;
-		
+		try {
+			groupService.putDestination(id, newDestination);
+			return Response.ok().build();
+		} catch (ElementNotFoundException e) {
+			throw new ElementNotFoundException(e.getMessage());
+		} catch (Exception e) {
+			throw new RequiredParamsFail("Destination already exists");
+		}
 	}
 	
 	
@@ -84,10 +90,12 @@ public class GroupRESTImpl implements GroupREST{
 	@Path("/{id}/destination")
 	@Consumes(MediaType.TEXT_PLAIN)
 	public Response deleteDestination(@PathParam("id") String id, String destinationToDelete){
-		
-		//to implement
-		
-		return null;
+		try {
+			groupService.deleteDestination(id, destinationToDelete);
+			return Response.ok().build();
+		} catch (Exception e) {
+			throw new ElementNotFoundException(e.getMessage());
+		}
 	}
 	
 	@PUT
@@ -95,19 +103,26 @@ public class GroupRESTImpl implements GroupREST{
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response putCard(@PathParam("id") String id, Card card){
-		
-		//to implement
-		
-		return null;
+		try {
+			return Response.ok(groupService.putCard(id, card)).build();
+		} catch (ElementNotFoundException e){
+			throw new ElementNotFoundException(e.getMessage());
+		} catch (CardTypeException e) {
+			throw new RequiredParamsFail("Card Type doesn't exist");
+		} catch (Exception e){
+			throw new RequiredParamsFail(e.getMessage());
+		}
 	}
 	
 	@DELETE
 	@Path("/{groupId}/card/{cardId}")
 	public Response deleteCard(@PathParam("groupId") String groupId, @PathParam("cardId") String cardId){
-		
-		//to implement
-		
-		return null;
+		try {
+			groupService.deleteCard(groupId, cardId);
+			return Response.ok().build();
+		} catch (Exception e) {
+			throw new ElementNotFoundException(e.getMessage());
+		}
 	}
 	
 }
