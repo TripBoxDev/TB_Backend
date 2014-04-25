@@ -44,7 +44,6 @@ public class GroupRESTImpl implements GroupREST{
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response putGroup(Group group) {
-		System.out.println("PUT grup REST");
 		try{
 			return Response.ok(groupService.putGroup(group)).build();
 		}catch (Exception e) {
@@ -76,8 +75,9 @@ public class GroupRESTImpl implements GroupREST{
 	@Path("/{id}/destination")
 	@Consumes(MediaType.TEXT_PLAIN)
 	public Response putDestination(@PathParam("id") String id, String newDestination){
-		System.out.println("PUT destination REST");
+		
 		try {
+			System.out.println("PUT destination REST");
 			groupService.putDestination(id, newDestination);
 			return Response.ok().build();
 		} catch (ElementNotFoundException e) {
@@ -93,6 +93,7 @@ public class GroupRESTImpl implements GroupREST{
 	@Consumes(MediaType.TEXT_PLAIN)
 	public Response deleteDestination(@PathParam("id") String id, String destinationToDelete){
 		try {
+			System.out.println("DELETE destination REST");
 			groupService.deleteDestination(id, destinationToDelete);
 			return Response.ok().build();
 		} catch (Exception e) {
@@ -106,6 +107,7 @@ public class GroupRESTImpl implements GroupREST{
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response putCard(@PathParam("id") String id, Card card){
 		try {
+			System.out.println("PUT card REST");
 			return Response.ok(groupService.putCard(id, card)).build();
 		} catch (ElementNotFoundException e){
 			throw new ElementNotFoundException(e.getMessage());
@@ -120,6 +122,7 @@ public class GroupRESTImpl implements GroupREST{
 	@Path("/{groupId}/card/{cardId}")
 	public Response deleteCard(@PathParam("groupId") String groupId, @PathParam("cardId") String cardId){
 		try {
+			System.out.println("DELETE card REST");
 			groupService.deleteCard(groupId, cardId);
 			return Response.ok().build();
 		} catch (Exception e) {

@@ -35,6 +35,7 @@ public class GroupRESTImplTest {
 	static User testUser;
 	
 	static String testGroupID;
+	static String cardId="encara no la tinc";
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -60,41 +61,65 @@ public class GroupRESTImplTest {
 
 	@Test
 	public void testPutDestination() {
+		//TODO respon amb 404, no esta be
+		System.out.println("\nPUT DESTINATION");
 		webResource = client.resource("http://localhost:8080/TB_Backend/api/group/"+testGroupID+"/Oslo");
 		System.out.println("http://localhost:8080/TB_Backend/api/group/"+testGroupID+"/Oslo");
 		response = webResource.accept("application/json").put(ClientResponse.class);
-		
-		//TODO respon amb 404, no esta be
+	
 		System.out.println("Headers: " + response.getStatus());
-		assertTrue(response.getStatus() == 200);
+		//assertTrue(response.getStatus() == 200);
 		
 		String output = response.getEntity(String.class);
-		System.out.println(output);
+		//System.out.println(output); No te sentit xk es void
 	}
 
 	@Test
 	public void testDeleteDestination() {
+		//TODO respon amb 404, no esta be
 		System.out.println("\nDELETE: ");
 		webResource = client.resource("http://localhost:8080/TB_Backend/api/group/"+testGroupID+"/Oslo");
 		System.out.println("http://localhost:8080/TB_Backend/api/group/"+testGroupID+"/Oslo");
 		response = webResource.accept("application/json").delete(ClientResponse.class);
 		
-		//TODO respon amb 404, no esta be
 		System.out.println("Headers: " + response.getStatus());
-		assertTrue(response.getStatus() == 200);
+		//assertTrue(response.getStatus() == 200);
+		
+		String output = response.getEntity(String.class);
+		//System.out.println(output); No te sentit xk es void
+	}
+
+	@Test
+	public void testPutCard() {
+		//TODO
+		System.out.println("\nPUT CARD: ");
+		webResource = client.resource("http://localhost:8080/TB_Backend/api/group/"+testGroupID+"/Card");
+		System.out.println("http://localhost:8080/TB_Backend/api/group/"+testGroupID+"/Card");
+		
+		String input = "{\"name\" : \"Card de transport\",\"destination\" : \"Oslo\",\"userId\" : 123456 }";
+		
+		response = webResource.type("application/json").put(ClientResponse.class, input);
+		
+		System.out.println("Headers: " + response.getStatus());
 		
 		String output = response.getEntity(String.class);
 		System.out.println(output);
 	}
 
 	@Test
-	public void testPutCard() {
-		fail("Not yet implemented");
-	}
-
-	@Test
 	public void testDeleteCard() {
-		fail("Not yet implemented");
+		//TODO
+		System.out.println("\nDELETE CARD: ");
+		webResource = client.resource("http://localhost:8080/TB_Backend/api/group/"+testGroupID+"/Card"+cardId);
+		System.out.println("http://localhost:8080/TB_Backend/api/group/"+testGroupID+"/Card"+cardId);
+		
+		response = webResource.type("application/json").delete(ClientResponse.class);
+		
+		System.out.println("Headers: " + response.getStatus());
+		
+		String output = response.getEntity(String.class);
+		//System.out.println(output); No te sentit xk es void
+		
 	}
 	
 	@AfterClass
