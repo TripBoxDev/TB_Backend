@@ -44,6 +44,7 @@ public class GroupRESTImpl implements GroupREST{
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response putGroup(Group group) {
+		System.out.println("PUT grup REST");
 		try{
 			return Response.ok(groupService.putGroup(group)).build();
 		}catch (Exception e) {
@@ -75,6 +76,7 @@ public class GroupRESTImpl implements GroupREST{
 	@Path("/{id}/destination")
 	@Consumes(MediaType.TEXT_PLAIN)
 	public Response putDestination(@PathParam("id") String id, String newDestination){
+		System.out.println("PUT destination REST");
 		try {
 			groupService.putDestination(id, newDestination);
 			return Response.ok().build();
