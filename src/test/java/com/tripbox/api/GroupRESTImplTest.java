@@ -5,6 +5,8 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 
+import javax.management.Query;
+
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -13,6 +15,7 @@ import org.junit.Test;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import com.tripbox.api.exceptions.ElementNotFoundException;
 import com.tripbox.elements.Group;
 import com.tripbox.elements.User;
 import com.tripbox.services.GroupServiceImpl;
@@ -25,6 +28,7 @@ public class GroupRESTImplTest {
 	
 	static GroupServiceImpl gService;
 	static UserServiceImpl uService;
+	static Query bbdd;
 	
 	static Client client;
 	static ClientResponse response;
@@ -34,6 +38,7 @@ public class GroupRESTImplTest {
 	static Group testGroup;
 	static User testUser;
 	
+	final static String gURL="http://localhost:8080/TB_Backend/api/group/";
 	static String testGroupID;
 	static String cardId="encara no la tinc";
 	
@@ -44,7 +49,7 @@ public class GroupRESTImplTest {
 		//Introduir usuari per testejar
 		webResource = client.resource("http://localhost:8080/TB_Backend/api/group/");
 
-		String input = "{\"name\" : \"Test Group\",\"description\" : \"Grupo para testear la API\",\"users\" : [ \"123456\", \"165432\" ] }";
+		String input = "{\"name\" : \"Test Group\",\"description\" : \"Grupo para testear la API\",\"users\" : [ \"123456\", \"165432\" ],\"destinations\" : [ \"Taiwan\" ] }";
 		response = webResource.type("application/json").put(ClientResponse.class, input);
 		
 		String output = response.getEntity(String.class);
@@ -61,40 +66,53 @@ public class GroupRESTImplTest {
 
 	@Test
 	public void testPutDestination() {
-		//TODO respon amb 404, no esta be
-		System.out.println("\nPUT DESTINATION");
-		webResource = client.resource("http://localhost:8080/TB_Backend/api/group/"+testGroupID+"/Oslo");
-		System.out.println("http://localhost:8080/TB_Backend/api/group/"+testGroupID+"/Oslo");
-		response = webResource.accept("application/json").put(ClientResponse.class);
+		webResource = client.resource(gURL+testGroupID+"/destination");
+		
+		String input = "Oslo";
+		
+		response = webResource.accept("application/json").put(ClientResponse.class, input);
 	
-		System.out.println("Headers: " + response.getStatus());
-		//assertTrue(response.getStatus() == 200);
+		assertTrue(response.getStatus() == 200);
+		
+		//GET y comprobacion del grupo modificado correctamente.
+		webResource = client.resource(gURL+testGroupID);
+		response = webResource.accept("application/json").get(ClientResponse.class);
 		
 		String output = response.getEntity(String.class);
-		//System.out.println(output); No te sentit xk es void
+		assertTrue(output.contains("Oslo"));
 	}
 
 	@Test
 	public void testDeleteDestination() {
-		//TODO respon amb 404, no esta be
-		System.out.println("\nDELETE: ");
-		webResource = client.resource("http://localhost:8080/TB_Backend/api/group/"+testGroupID+"/Oslo");
-		System.out.println("http://localhost:8080/TB_Backend/api/group/"+testGroupID+"/Oslo");
-		response = webResource.accept("application/json").delete(ClientResponse.class);
+		//TODO
+		System.out.println("\nDELETE DESTINATION: ");
+		webResource = client.resource(gURL+testGroupID+"/destination");
+		System.out.println(gURL+testGroupID+"/destination");
+		String input = "{\"destination\" : \"Taiwan\"}";
+		
+		try {
+			response = webResource.accept("application/json").delete(ClientResponse.class, input);
+		} catch (ElementNotFoundException e) {
+			fail();
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+		
 		
 		System.out.println("Headers: " + response.getStatus());
 		//assertTrue(response.getStatus() == 200);
 		
 		String output = response.getEntity(String.class);
-		//System.out.println(output); No te sentit xk es void
+		System.out.println(output); //No te sentit xk es void
 	}
 
 	@Test
 	public void testPutCard() {
 		//TODO
-		System.out.println("\nPUT CARD: ");
-		webResource = client.resource("http://localhost:8080/TB_Backend/api/group/"+testGroupID+"/Card");
-		System.out.println("http://localhost:8080/TB_Backend/api/group/"+testGroupID+"/Card");
+		/*System.out.println("\nPUT CARD: ");
+		webResource = client.resource(gURL+testGroupID+"/Card");
+		System.out.println(gURL+testGroupID+"/Card");
 		
 		String input = "{\"name\" : \"Card de transport\",\"destination\" : \"Oslo\",\"userId\" : 123456 }";
 		
@@ -103,21 +121,21 @@ public class GroupRESTImplTest {
 		System.out.println("Headers: " + response.getStatus());
 		
 		String output = response.getEntity(String.class);
-		System.out.println(output);
+		System.out.println(output);*/
 	}
 
 	@Test
 	public void testDeleteCard() {
 		//TODO
-		System.out.println("\nDELETE CARD: ");
-		webResource = client.resource("http://localhost:8080/TB_Backend/api/group/"+testGroupID+"/Card"+cardId);
-		System.out.println("http://localhost:8080/TB_Backend/api/group/"+testGroupID+"/Card"+cardId);
+		/*System.out.println("\nDELETE CARD: ");
+		webResource = client.resource(gURL+testGroupID+"/Card"+cardId);
+		System.out.println(gURL+testGroupID+"/Card"+cardId);
 		
 		response = webResource.type("application/json").delete(ClientResponse.class);
 		
 		System.out.println("Headers: " + response.getStatus());
 		
-		String output = response.getEntity(String.class);
+		String output = response.getEntity(String.class);*/
 		//System.out.println(output); No te sentit xk es void
 		
 	}
