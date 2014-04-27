@@ -178,7 +178,7 @@ public class GroupServiceImpl implements GroupService {
 			ArrayList<TransportCard> transCardsToDelete = new ArrayList<TransportCard>();
 			for(TransportCard card:transCards){
 				if(card.getDestination().equalsIgnoreCase(destinationToDelete)){
-					//group.getTransportCards().remove(card);
+					
 					transCardsToDelete.add(card);
 				}
 			}
@@ -188,18 +188,27 @@ public class GroupServiceImpl implements GroupService {
 			
 			
 			ArrayList<PlaceToSleepCard> placetoCards = group.getPlaceToSleepCards();
+			ArrayList<PlaceToSleepCard> placetoCardsToDelete = new ArrayList<PlaceToSleepCard>();
 			for(PlaceToSleepCard card:placetoCards){
 				if(card.getDestination().equalsIgnoreCase(destinationToDelete)){
-					group.getPlaceToSleepCards().remove(card);
+					placetoCardsToDelete.add(card);
 				}
+			}
+			for(PlaceToSleepCard cardToDelete:placetoCardsToDelete){
+				group.getPlaceToSleepCards().remove(cardToDelete);
 			}
 			
 			ArrayList<OtherCard> otherCards = group.getOtherCards();
+			ArrayList<OtherCard> otherCardsToDelete = new ArrayList<OtherCard>();
 			for(OtherCard card:otherCards){
 				if(card.getDestination().equalsIgnoreCase(destinationToDelete)){
-					group.getOtherCards().remove(card);
+					otherCardsToDelete.add(card);
 				}
 			}
+			for(OtherCard cardToDelete:otherCardsToDelete){
+				group.getOtherCards().remove(cardToDelete);
+			}
+			
 			this.putGroup(group);
 		}else{
 			throw new ElementNotFoundServiceException("Destination "+destinationToDelete+" doesn't exist");
