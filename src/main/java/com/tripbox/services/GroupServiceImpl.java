@@ -1,13 +1,22 @@
 package com.tripbox.services;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 
-import com.tripbox.api.exceptions.ElementNotFoundException;
 import com.tripbox.bbdd.Mock;
 import com.tripbox.bbdd.interfaces.Querys;
+import com.tripbox.elements.Card;
 import com.tripbox.elements.Group;
+import com.tripbox.elements.OtherCard;
+import com.tripbox.elements.PlaceToSleepCard;
+import com.tripbox.elements.TransportCard;
 import com.tripbox.elements.User;
 import com.tripbox.others.IdGenerator;
+import com.tripbox.services.exceptions.CardTypeException;
+import com.tripbox.services.exceptions.DestinationAlreadyExistException;
+import com.tripbox.services.exceptions.DestinationDoesntExistException;
+import com.tripbox.services.exceptions.ElementNotFoundServiceException;
 import com.tripbox.services.exceptions.IdAlreadyExistException;
 import com.tripbox.services.exceptions.InvalidIdsException;
 import com.tripbox.services.exceptions.UserNotExistOnGroup;
@@ -26,12 +35,12 @@ public class GroupServiceImpl implements GroupService {
 		try {
 			return bbdd.getGroup(id);
 		} catch (Exception e) {
-			throw new ElementNotFoundException("El grup no s'ha trobat.");
+			throw new ElementNotFoundServiceException("El grup no s'ha trobat.");
 		}
 	}
 
 	public Group putGroup(Group group) throws Exception {
-		// si el user es nuevo le asignamos una id
+		// si el Group es nuevo le asignamos una id
 		if (group.getId() == null) {
 
 			group=putNewGroup(group);
@@ -45,7 +54,7 @@ public class GroupServiceImpl implements GroupService {
 				bbdd.putGroup(group);
 				
 			} catch (Exception e) {
-				throw new InvalidIdsException("El usuario con el ID, "+group.getId()+", no exsiste");
+				throw new InvalidIdsException("El Group con el ID, "+group.getId()+", no exsiste");
 			}
 		}
 		//devolvemos el elemento Group completo
@@ -60,13 +69,13 @@ public class GroupServiceImpl implements GroupService {
 			try{
 				//comprovamos si el id existe
 				try{
-					bbdd.getGroup(newId);
+					this.getGroup(newId);
 					//generamos nueva id
 					throw new IdAlreadyExistException();
 				}catch (IdAlreadyExistException ex){
 					throw new IdAlreadyExistException();
 				}catch (Exception e){
-					//insertamos el user a la bbdd
+					//insertamos el Group a la bbdd
 					bbdd.putGroup(group);
 
 					break;
@@ -132,6 +141,231 @@ public class GroupServiceImpl implements GroupService {
 		}
 
 		userService.putUser(user);
+	}
+
+
+	public void putDestination(String groupId, String newDestination)
+			throws Exception {
+		
+		Group group;
+		try{
+			group=this.getGroup(groupId);
+		}catch(Exception e){
+			throw new ElementNotFoundServiceException("Group "+groupId+" not found");
+		}
+		if(group.getDestinations().contains(newDestination)){
+			//destination already exist. do nothing
+			//throw new DestinationAlreadyExistException();
+		}else{
+			group.getDestinations().add(newDestination);
+			this.putGroup(group);
+		}
+	}
+
+
+	public void deleteDestination(String groupId, String destinationToDelete)
+			throws Exception {
+		Group group;
+		try{
+			group=this.getGroup(groupId);
+		}catch(Exception e){
+			throw new ElementNotFoundServiceException("Group "+groupId+" not found");
+		}
+		if(group.getDestinations().contains(destinationToDelete)){
+			group.getDestinations().remove(destinationToDelete);
+			
+			ArrayList<TransportCard> transCards = group.getTransportCards();
+			ArrayList<TransportCard> transCardsToDelete = new ArrayList<TransportCard>();
+			for(TransportCard card:transCards){
+				if(card.getDestination().equalsIgnoreCase(destinationToDelete)){
+					//group.getTransportCards().remove(card);
+					transCardsToDelete.add(card);
+				}
+			}
+			for(TransportCard cardToDelete:transCardsToDelete){
+				group.getTransportCards().remove(cardToDelete);
+			}
+			
+			
+			ArrayList<PlaceToSleepCard> placetoCards = group.getPlaceToSleepCards();
+			for(PlaceToSleepCard card:placetoCards){
+				if(card.getDestination().equalsIgnoreCase(destinationToDelete)){
+					group.getPlaceToSleepCards().remove(card);
+				}
+			}
+			
+			ArrayList<OtherCard> otherCards = group.getOtherCards();
+			for(OtherCard card:otherCards){
+				if(card.getDestination().equalsIgnoreCase(destinationToDelete)){
+					group.getOtherCards().remove(card);
+				}
+			}
+			this.putGroup(group);
+		}else{
+			throw new ElementNotFoundServiceException("Destination "+destinationToDelete+" doesn't exist");
+
+		}
+		
+	}
+
+
+	public Card putCard(String groupId, Card card) throws Exception {
+		Group group;
+		UserServiceImpl userService = new UserServiceImpl();
+		try{
+			group=this.getGroup(groupId);
+		}catch(Exception e){
+			throw new ElementNotFoundServiceException("Group "+groupId+" not found");
+		}
+		
+		//comprobem que el desti existeixi
+		if( card.getDestination()==null || !group.getDestinations().contains(card.getDestination()))
+			throw new DestinationDoesntExistException();
+		
+		//comprobem que l'usuari que ha creat la card existeix
+		try{
+			userService.getUser(card.getUserIdCreator());
+		}catch(Exception e){
+			throw new ElementNotFoundServiceException("User "+card.getUserIdCreator()+" not found");
+		}
+		
+		//si o te id significa que es una nova card
+		if(card.getCardId()==null){
+			card.setCardId(idGen.generateId());
+			card.setCreationDate((new Date()).getTime());
+			
+			switch(card.getCardType()){
+				case "transport":
+						TransportCard auxTransCard = (TransportCard) card;
+						group.getTransportCards().add(auxTransCard);
+					break;
+					
+				case "placeToSleep":
+						PlaceToSleepCard auxPlaceCard = (PlaceToSleepCard) card;
+						
+						//comprobem que els parentCards existeixin
+						for(String parentId:auxPlaceCard.getParentCardIds()){
+							TransportCard parentCard = (TransportCard) cardExistOnArray(parentId,group.getTransportCards());
+							if(parentCard==null){
+								throw new ElementNotFoundServiceException("ParentCard "+parentId+" not found");
+							}else{
+								//heretem les dates de init i final del parent
+								auxPlaceCard.setInitDate(parentCard.getInitDate());
+								auxPlaceCard.setFinalDate(parentCard.getFinalDate());
+							}
+						}
+						
+						
+				
+						group.getPlaceToSleepCards().add(auxPlaceCard);
+					break;
+					
+				case "other":
+						OtherCard auxOtherCard = (OtherCard) card;
+						group.getOtherCards().add(auxOtherCard);
+					break;
+					
+				default:
+					throw new CardTypeException();
+			}
+		}else{ //si te ID el primer que fem es comprobar que aquesta card existeixi de veritat
+			Card foundCard=null;
+			switch(card.getCardType()){
+				case "transport":
+					
+					foundCard=cardExistOnArray(card.getCardId(), group.getTransportCards());
+					if(foundCard!=null){
+						TransportCard auxTransCard = (TransportCard) foundCard;
+						group.getTransportCards().remove(auxTransCard);
+						
+						auxTransCard=(TransportCard) card;
+						group.getTransportCards().add(auxTransCard);
+					}
+					break;
+					
+				case "placeToSleep":
+					foundCard=cardExistOnArray(card.getCardId(), group.getPlaceToSleepCards());
+					if(foundCard!=null){ 
+						PlaceToSleepCard auxPlaceCard = (PlaceToSleepCard) foundCard;
+						group.getPlaceToSleepCards().remove(auxPlaceCard);
+						
+						auxPlaceCard = (PlaceToSleepCard) card;
+						group.getPlaceToSleepCards().add(auxPlaceCard);
+					}
+					break;
+					
+				case "other":
+					foundCard=cardExistOnArray(card.getCardId(), group.getOtherCards());
+					if(foundCard!=null){ 
+						OtherCard auxOtherCard = (OtherCard) foundCard;
+						group.getOtherCards().remove(auxOtherCard);
+						
+						auxOtherCard = (OtherCard) card;
+						group.getOtherCards().add(auxOtherCard);
+					}
+					break;
+					
+				default:
+					throw new CardTypeException();
+		
+		
+			}
+			if(foundCard==null)
+				throw new InvalidIdsException("La Card con el ID, "+card.getCardId()+" de tipo "+card.getCardType()+", no exsiste en ");
+		}
+		this.putGroup(group);
+		return card;
+		
+		
+	}
+	
+	public Card cardExistOnArray(String cardId, ArrayList cardsArray){
+		boolean cardExist=false;
+		Card foundCard=null;
+		Iterator<Card> it = cardsArray.iterator();
+		while(it.hasNext()&&!cardExist){
+			Card transpCard = it.next();
+			if(transpCard.getCardId().equalsIgnoreCase(cardId)){
+				cardExist=true;
+				foundCard=transpCard;
+			}
+		}
+		
+		return foundCard;
+		
+	}
+	
+
+
+	public void deleteCard(String groupId, String cardId) throws Exception {
+		Group group;
+		try{
+			
+			group=this.getGroup(groupId);
+			
+		}catch(Exception e){
+			throw new ElementNotFoundServiceException("Group "+groupId+" not found");
+		}
+
+		Card foundCard=null;
+		foundCard=cardExistOnArray(cardId, group.getTransportCards());
+		if(foundCard!=null){
+			group.getTransportCards().remove(foundCard);
+		}else{
+			foundCard=cardExistOnArray(cardId, group.getPlaceToSleepCards());
+			if(foundCard!=null){
+				group.getPlaceToSleepCards().remove(foundCard);
+			}else{
+				foundCard=cardExistOnArray(cardId, group.getOtherCards());
+				if(foundCard!=null){
+					group.getOtherCards().remove(foundCard);
+				}else{
+					throw new ElementNotFoundServiceException("Card "+cardId+" not found");
+				}
+			}
+		}
+		this.putGroup(group);
+
 	}
 
 }

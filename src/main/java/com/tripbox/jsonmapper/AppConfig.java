@@ -42,8 +42,12 @@ package com.tripbox.jsonmapper;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
+import com.tripbox.elements.Card;
 import com.tripbox.elements.Email;
 import com.tripbox.elements.Group;
+import com.tripbox.elements.OtherCard;
+import com.tripbox.elements.PlaceToSleepCard;
+import com.tripbox.elements.TransportCard;
 import com.tripbox.elements.User;
 
  
@@ -65,6 +69,10 @@ public class AppConfig extends ResourceConfig {
         		User.class,
         		Group.class,
         		Email.class,
+        		Card.class,
+        		TransportCard.class,
+        		PlaceToSleepCard.class,
+        		OtherCard.class,
                 // register Jackson ObjectMapper resolver
                 MapperProvider.class,
                 JacksonFeature.class

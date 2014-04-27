@@ -91,4 +91,5 @@ public class UserRESTImpl implements UserREST {
 	public void deleteUser(@PathParam("id") String id) {
 		throw new MethodNotImplementedException("Method not implemented");
 	}
+
 }

@@ -3,6 +3,9 @@ package com.tripbox.api.interfaces;
 import javax.ws.rs.core.Response;
 
 import com.tripbox.elements.Group;
+import com.tripbox.elements.OtherCard;
+import com.tripbox.elements.PlaceToSleepCard;
+import com.tripbox.elements.TransportCard;
 
 public interface GroupREST {
 	
@@ -27,7 +30,7 @@ public interface GroupREST {
 	public Response deleteGroup(String id);
 
 	/**
-	 * Función de la API que nos permite eliminar un User de un Group. En el caso que el Group se quede sin Users
+	 * Funcion de la API que nos permite eliminar un User de un Group. En el caso que el Group se quede sin Users
 	 * se elimina.
 	 * @param groupId
 	 * @param userId
@@ -35,6 +38,40 @@ public interface GroupREST {
 	 */
 	public Response deleteUserToGroup(String groupId, String userId);
 	
+	/**
+	 * Funcion de la API que nos permite anadir un destino al Group.
+	 * @param id Id del Group donde queremos anadir el destino.
+	 * @param newDestination Nueva destinacion que queremos anadir al Group. 
+	 * @return
+	 */
+	public Response putDestination(String id, String newDestination);
+	
+	/**
+	 * Funcion de la API que nos permite eliminar un destino de un Group.
+	 * @param id Id del Group al que queremos eliminar el destino.
+	 * @param destinationToDelete Destino que queremos eliminar.
+	 * @return
+	 */
+	public Response deleteDestination( String id, String destinationToDelete);
+	
+	/**
+	 * Funcion de la API que nos permite agregar una Card a un Group segun el tipo de Card que es. 
+	 * @param id Id del Group donde queremos anadir la Card.
+	 * @param card Card que queremos anadir. El campo cardType es obligatorio.
+	 * @return
+	 */
+	public Response putCard(String id, TransportCard card);
+	public Response putCard(String id, PlaceToSleepCard card);
+	public Response putCard(String id, OtherCard card);
+	
+	
+	/**
+	 * Funcion de la API que nos permite eliminar una Card de un Group
+	 * @param groupId Id del Group.
+	 * @param cardId Id de la Card que queremos eliminar.
+	 * @return
+	 */
+	public Response deleteCard(String groupId,  String cardId);
 	
 
 }
