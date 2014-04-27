@@ -23,7 +23,10 @@ import com.tripbox.elements.PlaceToSleepCard;
 import com.tripbox.elements.TransportCard;
 import com.tripbox.services.GroupServiceImpl;
 import com.tripbox.services.exceptions.CardTypeException;
+import com.tripbox.services.exceptions.DestinationAlreadyExistException;
+import com.tripbox.services.exceptions.DestinationDoesntExistException;
 import com.tripbox.services.exceptions.ElementNotFoundServiceException;
+import com.tripbox.services.exceptions.InvalidIdsException;
 import com.tripbox.services.exceptions.UserNotExistOnGroup;
 import com.tripbox.services.interfaces.GroupService;
 
@@ -39,9 +42,12 @@ public class GroupRESTImpl implements GroupREST{
 	public Response getGroup(@PathParam("id") String id) {
 		try{
 			return Response.ok(groupService.getGroup(id)).build();
-		}catch (Exception e) {
+		} catch (ElementNotFoundServiceException e) {
 			throw new ElementNotFoundException("Item, " + id + ", is not found");
+		} catch (Exception e){
+			throw new WebApplicationException();
 		}
+		
 	}
 
 	@PUT
@@ -50,8 +56,10 @@ public class GroupRESTImpl implements GroupREST{
 	public Response putGroup(Group group) {
 		try{
 			return Response.ok(groupService.putGroup(group)).build();
-		}catch (Exception e) {
-			throw new ElementNotFoundException("Item not found");
+		}catch (InvalidIdsException e) {
+			throw new ElementNotFoundException(e.getMessage());
+		}catch (Exception e){
+			throw new WebApplicationException();
 		}
 	}
 
@@ -67,11 +75,13 @@ public class GroupRESTImpl implements GroupREST{
 		try{
 			groupService.deleteUserToGroup(groupId, userId);
 			return Response.ok().build();
+		}catch (ElementNotFoundServiceException e) {
+			throw new ElementNotFoundException(e.getMessage());
 		}catch(UserNotExistOnGroup ex){
 			throw new UserNotExistOnGroupREST("User: "+userId+" doesn't exist on this group");
 		}catch (Exception e){
 			
-			throw new ElementNotFoundException(e.getMessage());
+			throw new WebApplicationException();
 		}
 	}
 	
@@ -81,13 +91,12 @@ public class GroupRESTImpl implements GroupREST{
 	public Response putDestination(@PathParam("id") String id, String newDestination){
 		
 		try {
-			System.out.println("PUT destination REST");
 			groupService.putDestination(id, newDestination);
 			return Response.ok().build();
 		} catch (ElementNotFoundServiceException e) {
 			throw new ElementNotFoundException(e.getMessage());
-		} catch (Exception e) {
-			throw new RequiredParamsFail("Destination already exists");
+		}catch (Exception e){
+			throw new WebApplicationException();
 		}
 	}
 	
@@ -97,11 +106,12 @@ public class GroupRESTImpl implements GroupREST{
 	@Consumes(MediaType.TEXT_PLAIN)
 	public Response deleteDestination(@PathParam("id") String id, String destinationToDelete){
 		try {
-			System.out.println("DELETE destination REST");
 			groupService.deleteDestination(id, destinationToDelete);
 			return Response.ok().build();
-		} catch (Exception e) {
+		} catch (ElementNotFoundServiceException e) {
 			throw new ElementNotFoundException(e.getMessage());
+		} catch (Exception e){
+			throw new WebApplicationException();
 		}
 	}
 	
@@ -111,12 +121,15 @@ public class GroupRESTImpl implements GroupREST{
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response putCard(@PathParam("id") String id, TransportCard card){
 		try {
-			System.out.println("PUT transportCard REST");
 			return Response.ok(groupService.putCard(id, card)).build();
 		} catch (ElementNotFoundServiceException e){
 			throw new ElementNotFoundException(e.getMessage());
 		} catch (CardTypeException e) {
 			throw new RequiredParamsFail("Card Type doesn't exist");
+		} catch (DestinationDoesntExistException exDes){
+			throw new ElementNotFoundException("Destination "+card.getDestination()+" doesn't exist");
+		} catch (InvalidIdsException e){
+			throw new ElementNotFoundException(e.getMessage());
 		} catch (Exception e){
 			throw new WebApplicationException();
 		}
@@ -128,14 +141,17 @@ public class GroupRESTImpl implements GroupREST{
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response putCard(@PathParam("id") String id, PlaceToSleepCard card){
 		try {
-			System.out.println("PUT placeToSleepCard REST");
 			return Response.ok(groupService.putCard(id, card)).build();
 		} catch (ElementNotFoundServiceException e){
 			throw new ElementNotFoundException(e.getMessage());
 		} catch (CardTypeException e) {
 			throw new RequiredParamsFail("Card Type doesn't exist");
+		} catch (DestinationDoesntExistException exDes){
+			throw new ElementNotFoundException("Destination "+card.getDestination()+" doesn't exist");
+		} catch (InvalidIdsException e){
+			throw new ElementNotFoundException(e.getMessage());
 		} catch (Exception e){
-			throw new RequiredParamsFail(e.getMessage());
+			throw new WebApplicationException();
 		}
 	}
 	
@@ -145,14 +161,17 @@ public class GroupRESTImpl implements GroupREST{
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response putCard(@PathParam("id") String id, OtherCard card){
 		try {
-			System.out.println("PUT otherCard REST");
 			return Response.ok(groupService.putCard(id, card)).build();
 		} catch (ElementNotFoundServiceException e){
 			throw new ElementNotFoundException(e.getMessage());
 		} catch (CardTypeException e) {
 			throw new RequiredParamsFail("Card Type doesn't exist");
+		} catch (DestinationDoesntExistException exDes){
+			throw new ElementNotFoundException("Destination "+card.getDestination()+" doesn't exist");
+		} catch (InvalidIdsException e){
+			throw new ElementNotFoundException(e.getMessage());
 		} catch (Exception e){
-			throw new RequiredParamsFail(e.getMessage());
+			throw new WebApplicationException();
 		}
 	}
 	
@@ -160,11 +179,12 @@ public class GroupRESTImpl implements GroupREST{
 	@Path("/{groupId}/card/{cardId}")
 	public Response deleteCard(@PathParam("groupId") String groupId, @PathParam("cardId") String cardId){
 		try {
-			System.out.println("DELETE card REST");
 			groupService.deleteCard(groupId, cardId);
 			return Response.ok().build();
-		} catch (Exception e) {
+		} catch (ElementNotFoundServiceException e) {
 			throw new ElementNotFoundException(e.getMessage());
+		} catch (Exception e){
+			throw new WebApplicationException();
 		}
 	}
 
