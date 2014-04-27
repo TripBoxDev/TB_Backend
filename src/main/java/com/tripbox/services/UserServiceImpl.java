@@ -1,5 +1,7 @@
 package com.tripbox.services;
 
+import org.bson.types.ObjectId;
+
 import com.tripbox.bbdd.Mock;
 import com.tripbox.bbdd.MongoDB;
 import com.tripbox.bbdd.exceptions.ItemNotFoundException;
@@ -12,7 +14,7 @@ import com.tripbox.services.interfaces.UserService;
 
 public class UserServiceImpl implements UserService {
 	
-	Querys bbdd = Mock.getInstance();
+	
 	
 	public UserServiceImpl(){}
 
@@ -28,30 +30,34 @@ public class UserServiceImpl implements UserService {
 
 
 	public User putUser(User user) throws Exception {
+		MongoDB mongo = new MongoDB();
 		if(user.getName()==null || user.getName().equalsIgnoreCase("")){
 			throw new RequiredParametersException("The paramater name is required");
 		}
 		//nos llega un User sin id
 		if(user.getId()==null){
+			System.out.println("hola1");
 			if(user.getEmail()!=null){
 				try{
-					user = bbdd.getUserbyEmail(user.getEmail());
+					user = mongo.getUserbyEmail(user.getEmail());
 				}catch (ItemNotFoundException e){
 					
-					user = putNewUser(user);
+					return user = mongo.putUser(user);
 				}
 				
 			}else if(user.getGoogleId()!=null){
 				try{
-					user = bbdd.getUserbyGoogleId(user.getGoogleId());
+					user = mongo.getUserbyGoogleId(user.getGoogleId());
 				}catch (ItemNotFoundException e){
-					user = putNewUser(user);
+					
+					return user = mongo.putUser(user);
 				}
 			}else if(user.getFacebookId()!=null){
 				try{
-					user = bbdd.getUserbyFacebookId(user.getFacebookId());
+					user = mongo.getUserbyFacebookId(user.getFacebookId());
 				}catch (ItemNotFoundException e){
-					user = putNewUser(user);
+					
+					return user = mongo.putUser(user);
 				}
 			}else{
 				throw new InvalidIdsException("Ning��n identificador definido");
@@ -61,9 +67,9 @@ public class UserServiceImpl implements UserService {
 			
 			try{
 				//comprobamos que el id existe
-				bbdd.getUser(user.getId());
+				mongo.getUser(user.getId());
 				//modificamos el User en la bbdd
-				bbdd.putUser(user);
+				mongo.UpdateUser(user);
 			}catch (Exception exc){
 				throw new InvalidIdsException("El usuario con el ID, "+user.getId()+", no exsiste");
 			}
@@ -75,37 +81,11 @@ public class UserServiceImpl implements UserService {
 		
 	}
 
-	private User putNewUser(User user) throws Exception{
-		String newId = IdGenerator.generateId();
-		user.setId(newId);
-		while(true){
-			try{
-				//comprovamos si el id existe
-				try{
-					bbdd.getUser(newId);
-					//generamos nueva id
-					throw new Exception();
-				}catch (Exception e){
-					//insertamos el user a la bbdd
-					bbdd.putUser(user);
-					
-					break;
-				}
-				
-				
-				
-			} catch(Exception ex){
-				//si el id ya existe probamos con otro id
-				newId = IdGenerator.generateId();
-				user.setId(newId);
-				continue;
-			}
-		}
-		return user;
-	}
+	
 	public void deleteUser(String id) throws Exception {
+		MongoDB mongo = new MongoDB();
 		try{
-			bbdd.deleteUser(id);
+			mongo.deleteUser(id);
 		}catch (Exception e){
 			throw new Exception();
 		}

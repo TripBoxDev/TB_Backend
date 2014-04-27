@@ -27,14 +27,14 @@ public class GroupServiceImplTest {
 	
 	@BeforeClass
 	public static void SetUp(){
-		grupo1 = new Group("","prueba1","nada", users);
-		grupo2 = new Group("557842","prueba1","nada", users);
+		grupo1 = new Group(null,"prueba1","nada", users);
+		grupo2 = new Group("535c67c944ae86b776b23b67","prueba1","nada", users);
 		usuario = new User(null,"jo","ja","ji","gh", "lo", groups);
 		grupo2.setUsers(users);
 		groups.add(grupo2.getId());
 		usuario.setGroups(groups);
 		
-		//añadimos usuario para el deleteUserToGroup
+		//aï¿½adimos usuario para el deleteUserToGroup
 		try {
 			userService.putUser(usuario);
 		} catch (Exception e1) {
@@ -54,7 +54,7 @@ public class GroupServiceImplTest {
 			
 			users.add(usuario.getId());
 			grupoServ.putGroup(grupo2);
-			assertEquals(grupo2.getId(),"557842");
+			assertEquals(grupo2.getId(),"535c67c944ae86b776b23b67");
 			assertNotNull(grupo2.getUsers());
 			assertNotNull(grupoServ.getGroup(grupo2.getId()));
 			
@@ -68,8 +68,8 @@ public class GroupServiceImplTest {
 	@Test
 	public void testGetGroup() throws Exception {
 		Group grupo;
-		grupo = grupoServ.getGroup("557842");
-		assertEquals(grupo.getId(),"557842");
+		grupo = grupoServ.getGroup("535c67c944ae86b776b23b67");
+		assertEquals(grupo.getId(),"535c67c944ae86b776b23b67");
 		
 		try {
 			grupoServ.getGroup("123");
