@@ -81,6 +81,25 @@ public class GroupRESTImplTest {
 		String output = response.getEntity(String.class);
 		assertTrue(output.contains("Oslo"));
 	}
+	
+	@Test
+	public void testPutDestinationExceptions() {
+		String input;
+		//Grupo inexistente
+		webResource = client.resource(gURL+"333"+"/destination");
+		input = "Oslo";
+		response = webResource.accept("application/json").put(ClientResponse.class, input);
+	
+		assertTrue(response.getStatus() == 404);
+		
+		//Required params fail: El destino que intentamos introducir ya existe
+		webResource = client.resource(gURL+testGroupID+"/destination");
+		input = "Egipto";
+		response = webResource.accept("application/json").put(ClientResponse.class, input);
+		response = webResource.accept("application/json").put(ClientResponse.class, input);
+		
+		assertTrue(response.getStatus() == 412);
+	}
 
 	@Test
 	public void testDeleteDestination() {

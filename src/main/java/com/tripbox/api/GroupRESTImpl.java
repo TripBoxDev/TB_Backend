@@ -75,9 +75,7 @@ public class GroupRESTImpl implements GroupREST{
 	@Path("/{id}/destination")
 	@Consumes(MediaType.TEXT_PLAIN)
 	public Response putDestination(@PathParam("id") String id, String newDestination){
-		
 		try {
-			System.out.println("PUT destination REST");
 			groupService.putDestination(id, newDestination);
 			return Response.ok().build();
 		} catch (ElementNotFoundException e) {
@@ -92,8 +90,8 @@ public class GroupRESTImpl implements GroupREST{
 	@Path("/{id}/destination")
 	@Consumes(MediaType.TEXT_PLAIN)
 	public Response deleteDestination(@PathParam("id") String id, String destinationToDelete){
+		System.out.println("DELETE destination REST");
 		try {
-			System.out.println("DELETE destination REST");
 			groupService.deleteDestination(id, destinationToDelete);
 			return Response.ok().build();
 		} catch (Exception e) {
