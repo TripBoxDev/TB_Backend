@@ -7,6 +7,7 @@ import com.tripbox.bbdd.interfaces.Querys;
 import com.tripbox.elements.Group;
 import com.tripbox.elements.User;
 import com.tripbox.others.IdGenerator;
+import com.tripbox.services.exceptions.ElementNotFoundServiceException;
 import com.tripbox.services.exceptions.IdAlreadyExistException;
 import com.tripbox.services.exceptions.InvalidIdsException;
 import com.tripbox.services.exceptions.RequiredParametersException;
@@ -126,13 +127,13 @@ public class UserServiceImpl implements UserService {
 			try {
 				user = bbdd.getUser(userId);
 			} catch (Exception e) {
-				throw new ElementNotFoundException("El usuario con el ID, "+ userId +", no exsiste");
+				throw new ElementNotFoundServiceException("El usuario con el ID, "+ userId +", no exsiste");
 			}
 			
 			try {
 				group = bbdd.getGroup(groupId);
 			} catch (Exception e) {
-				throw new ElementNotFoundException("El grupo con el ID, "+ groupId +", no exsiste");
+				throw new ElementNotFoundServiceException("El grupo con el ID, "+ groupId +", no exsiste");
 			}
 			
 	

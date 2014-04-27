@@ -1,10 +1,11 @@
 package com.tripbox.api.interfaces;
 
-import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
-import com.tripbox.elements.Card;
 import com.tripbox.elements.Group;
+import com.tripbox.elements.OtherCard;
+import com.tripbox.elements.PlaceToSleepCard;
+import com.tripbox.elements.TransportCard;
 
 public interface GroupREST {
 	
@@ -59,7 +60,9 @@ public interface GroupREST {
 	 * @param card Card que queremos añadir. El campo cardType es obligatorio.
 	 * @return
 	 */
-	public Response putCard(String id, Card card);
+	public Response putCard(String id, TransportCard card);
+	public Response putCard(String id, PlaceToSleepCard card);
+	public Response putCard(String id, OtherCard card);
 	
 	
 	/**

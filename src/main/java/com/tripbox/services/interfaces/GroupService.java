@@ -46,6 +46,7 @@ public interface GroupService {
 	 */
 	public Card putCard(String groupId, Card card)throws Exception;
 	
+	
 	/**
 	 * Eliminamos la card especificada del Group.
 	 * @param groupId Id del Group

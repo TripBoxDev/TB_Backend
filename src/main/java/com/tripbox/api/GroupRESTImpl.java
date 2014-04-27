@@ -7,6 +7,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -17,9 +18,12 @@ import com.tripbox.api.exceptions.UserNotExistOnGroupREST;
 import com.tripbox.api.interfaces.GroupREST;
 import com.tripbox.elements.Card;
 import com.tripbox.elements.Group;
+import com.tripbox.elements.OtherCard;
+import com.tripbox.elements.PlaceToSleepCard;
+import com.tripbox.elements.TransportCard;
 import com.tripbox.services.GroupServiceImpl;
 import com.tripbox.services.exceptions.CardTypeException;
-import com.tripbox.services.exceptions.DestinationAlreadyExistException;
+import com.tripbox.services.exceptions.ElementNotFoundServiceException;
 import com.tripbox.services.exceptions.UserNotExistOnGroup;
 import com.tripbox.services.interfaces.GroupService;
 
@@ -80,7 +84,7 @@ public class GroupRESTImpl implements GroupREST{
 			System.out.println("PUT destination REST");
 			groupService.putDestination(id, newDestination);
 			return Response.ok().build();
-		} catch (ElementNotFoundException e) {
+		} catch (ElementNotFoundServiceException e) {
 			throw new ElementNotFoundException(e.getMessage());
 		} catch (Exception e) {
 			throw new RequiredParamsFail("Destination already exists");
@@ -102,14 +106,48 @@ public class GroupRESTImpl implements GroupREST{
 	}
 	
 	@PUT
-	@Path("/{id}/card")
+	@Path("/{id}/transportCard")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response putCard(@PathParam("id") String id, Card card){
+	public Response putCard(@PathParam("id") String id, TransportCard card){
 		try {
-			System.out.println("PUT card REST");
+			System.out.println("PUT transportCard REST");
 			return Response.ok(groupService.putCard(id, card)).build();
-		} catch (ElementNotFoundException e){
+		} catch (ElementNotFoundServiceException e){
+			throw new ElementNotFoundException(e.getMessage());
+		} catch (CardTypeException e) {
+			throw new RequiredParamsFail("Card Type doesn't exist");
+		} catch (Exception e){
+			throw new WebApplicationException();
+		}
+	}
+	
+	@PUT
+	@Path("/{id}/placeToSleepCard")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response putCard(@PathParam("id") String id, PlaceToSleepCard card){
+		try {
+			System.out.println("PUT placeToSleepCard REST");
+			return Response.ok(groupService.putCard(id, card)).build();
+		} catch (ElementNotFoundServiceException e){
+			throw new ElementNotFoundException(e.getMessage());
+		} catch (CardTypeException e) {
+			throw new RequiredParamsFail("Card Type doesn't exist");
+		} catch (Exception e){
+			throw new RequiredParamsFail(e.getMessage());
+		}
+	}
+	
+	@PUT
+	@Path("/{id}/otherCard")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response putCard(@PathParam("id") String id, OtherCard card){
+		try {
+			System.out.println("PUT otherCard REST");
+			return Response.ok(groupService.putCard(id, card)).build();
+		} catch (ElementNotFoundServiceException e){
 			throw new ElementNotFoundException(e.getMessage());
 		} catch (CardTypeException e) {
 			throw new RequiredParamsFail("Card Type doesn't exist");
@@ -129,5 +167,6 @@ public class GroupRESTImpl implements GroupREST{
 			throw new ElementNotFoundException(e.getMessage());
 		}
 	}
+
 	
 }

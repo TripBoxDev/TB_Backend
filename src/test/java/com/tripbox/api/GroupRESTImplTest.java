@@ -1,7 +1,6 @@
 package com.tripbox.api;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 
@@ -45,13 +44,13 @@ public class GroupRESTImplTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		client = Client.create();
-		
+
 		//Introduir usuari per testejar
 		webResource = client.resource("http://localhost:8080/TB_Backend/api/group/");
 
 		String input = "{\"name\" : \"Test Group\",\"description\" : \"Grupo para testear la API\",\"users\" : [ \"123456\", \"165432\" ],\"destinations\" : [ \"Taiwan\" ] }";
 		response = webResource.type("application/json").put(ClientResponse.class, input);
-		
+
 		String output = response.getEntity(String.class);
 		System.out.println(output);
 		//Conseguimos la ID del usuario que hemos creado
@@ -67,44 +66,76 @@ public class GroupRESTImplTest {
 	@Test
 	public void testPutDestination() {
 		webResource = client.resource(gURL+testGroupID+"/destination");
-		
+
 		String input = "Oslo";
-		
+
 		response = webResource.accept("application/json").put(ClientResponse.class, input);
-	
+
 		assertTrue(response.getStatus() == 200);
-		
+
 		//GET y comprobacion del grupo modificado correctamente.
 		webResource = client.resource(gURL+testGroupID);
 		response = webResource.accept("application/json").get(ClientResponse.class);
-		
+
 		String output = response.getEntity(String.class);
 		assertTrue(output.contains("Oslo"));
 	}
 
 	@Test
-	public void testDeleteDestination() {
-		//TODO
-		System.out.println("\nDELETE DESTINATION: ");
+	public void testPutDestinationExceptions() {
+		String input;
+
+		//Grupo inexistente
+		webResource = client.resource(gURL+"333"+"/destination");
+		input = "Oslo";
+		response = webResource.accept("application/json").put(ClientResponse.class, input);
+
+		assertTrue(response.getStatus() == 404);
+
+		//Required params fail: El destino que intentamos introducir ya existe
 		webResource = client.resource(gURL+testGroupID+"/destination");
-		System.out.println(gURL+testGroupID+"/destination");
-		String input = "{\"destination\" : \"Taiwan\"}";
-		
+		input = "Egipto";
+		response = webResource.accept("application/json").put(ClientResponse.class, input);
+		response = webResource.accept("application/json").put(ClientResponse.class, input);
+
+		assertTrue(response.getStatus() == 412);
+	}
+
+	@Test
+	public void testDeleteDestination() {
+
+		webResource = client.resource(gURL+testGroupID+"/destination/Taiwan");
+
 		try {
-			response = webResource.accept("application/json").delete(ClientResponse.class, input);
+			response = webResource.accept("application/json").delete(ClientResponse.class);
 		} catch (ElementNotFoundException e) {
 			fail();
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail();
 		}
-		
-		
-		System.out.println("Headers: " + response.getStatus());
-		//assertTrue(response.getStatus() == 200);
-		
+
+		assertTrue(response.getStatus() == 200);
+
+		//GET y comprobacion del grupo modificado correctamente.
+		webResource = client.resource(gURL+testGroupID);
+		response = webResource.accept("application/json").get(ClientResponse.class);
+
 		String output = response.getEntity(String.class);
-		System.out.println(output); //No te sentit xk es void
+		assertFalse(output.contains("Taiwan"));
+	}
+
+	@Test
+	public void testDeleteDestinationExceptions() {
+		webResource = client.resource(gURL+"333"+"/destination/Taiwan");
+		response = webResource.accept("application/json").delete(ClientResponse.class);
+
+		assertTrue(response.getStatus() == 404);
+
+		webResource = client.resource(gURL+testGroupID+"/destination/Pekin");
+		response = webResource.accept("application/json").delete(ClientResponse.class);
+
+		assertTrue(response.getStatus() == 404);
 	}
 
 	@Test

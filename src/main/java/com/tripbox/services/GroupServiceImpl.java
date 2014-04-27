@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 
-import com.tripbox.api.exceptions.ElementNotFoundException;
 import com.tripbox.bbdd.Mock;
 import com.tripbox.bbdd.interfaces.Querys;
 import com.tripbox.elements.Card;
@@ -14,13 +13,10 @@ import com.tripbox.elements.PlaceToSleepCard;
 import com.tripbox.elements.TransportCard;
 import com.tripbox.elements.User;
 import com.tripbox.others.IdGenerator;
-<<<<<<< Upstream, based on origin/DefinicioCards
 import com.tripbox.services.exceptions.CardTypeException;
 import com.tripbox.services.exceptions.DestinationAlreadyExistException;
 import com.tripbox.services.exceptions.DestinationDoesntExistException;
-=======
-import com.tripbox.services.exceptions.DestinationAlreadyExistException;
->>>>>>> 229013c Tests de PutDestination i DeleteDestination implementats
+import com.tripbox.services.exceptions.ElementNotFoundServiceException;
 import com.tripbox.services.exceptions.IdAlreadyExistException;
 import com.tripbox.services.exceptions.InvalidIdsException;
 import com.tripbox.services.exceptions.UserNotExistOnGroup;
@@ -39,7 +35,7 @@ public class GroupServiceImpl implements GroupService {
 		try {
 			return bbdd.getGroup(id);
 		} catch (Exception e) {
-			throw new ElementNotFoundException("El grup no s'ha trobat.");
+			throw new ElementNotFoundServiceException("El grup no s'ha trobat.");
 		}
 	}
 
@@ -155,7 +151,7 @@ public class GroupServiceImpl implements GroupService {
 		try{
 			group=this.getGroup(groupId);
 		}catch(Exception e){
-			throw new ElementNotFoundException("Group "+groupId+" not found");
+			throw new ElementNotFoundServiceException("Group "+groupId+" not found");
 		}
 		if(group.getDestinations().contains(newDestination)){
 			//destination already exist
@@ -173,13 +169,13 @@ public class GroupServiceImpl implements GroupService {
 		try{
 			group=this.getGroup(groupId);
 		}catch(Exception e){
-			throw new ElementNotFoundException("Group "+groupId+" not found");
+			throw new ElementNotFoundServiceException("Group "+groupId+" not found");
 		}
 		if(group.getDestinations().contains(destinationToDelete)){
 			group.getDestinations().remove(destinationToDelete);
 			this.putGroup(group);
 		}else{
-			throw new ElementNotFoundException("Destination "+destinationToDelete+" doesn't exist");
+			throw new ElementNotFoundServiceException("Destination "+destinationToDelete+" doesn't exist");
 			
 		}
 		
@@ -192,7 +188,7 @@ public class GroupServiceImpl implements GroupService {
 		try{
 			group=this.getGroup(groupId);
 		}catch(Exception e){
-			throw new ElementNotFoundException("Group "+groupId+" not found");
+			throw new ElementNotFoundServiceException("Group "+groupId+" not found");
 		}
 		
 		//comprobem que el desti existeixi
@@ -203,7 +199,7 @@ public class GroupServiceImpl implements GroupService {
 		try{
 			userService.getUser(card.getUserIdCreator());
 		}catch(Exception e){
-			throw new ElementNotFoundException("User "+card.getUserIdCreator()+" not found");
+			throw new ElementNotFoundServiceException("User "+card.getUserIdCreator()+" not found");
 		}
 		
 		//si o te id significa que es una nova card
@@ -224,7 +220,7 @@ public class GroupServiceImpl implements GroupService {
 						for(String parentId:auxPlaceCard.getParentCardIds()){
 							TransportCard parentCard = (TransportCard) cardExistOnArray(parentId,group.getTransportCards());
 							if(parentCard==null){
-								throw new ElementNotFoundException("ParentCard "+parentId+"not found");
+								throw new ElementNotFoundServiceException("ParentCard "+parentId+"not found");
 							}else{
 								//heretem les dates de init i final del parent
 								auxPlaceCard.setInitDate(parentCard.getInitDate());
@@ -321,7 +317,7 @@ public class GroupServiceImpl implements GroupService {
 			group=this.getGroup(groupId);
 			
 		}catch(Exception e){
-			throw new ElementNotFoundException("Group "+groupId+" not found");
+			throw new ElementNotFoundServiceException("Group "+groupId+" not found");
 		}
 
 		Card foundCard=null;
@@ -337,7 +333,7 @@ public class GroupServiceImpl implements GroupService {
 				if(foundCard!=null){
 					group.getOtherCards().remove(foundCard);
 				}else{
-					throw new ElementNotFoundException("Card "+cardId+" not found");
+					throw new ElementNotFoundServiceException("Card "+cardId+" not found");
 				}
 			}
 		}
