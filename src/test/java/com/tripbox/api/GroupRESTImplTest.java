@@ -1,7 +1,6 @@
 package com.tripbox.api;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 
@@ -85,6 +84,7 @@ public class GroupRESTImplTest {
 	@Test
 	public void testPutDestinationExceptions() {
 		String input;
+		
 		//Grupo inexistente
 		webResource = client.resource(gURL+"333"+"/destination");
 		input = "Oslo";
@@ -103,14 +103,11 @@ public class GroupRESTImplTest {
 
 	@Test
 	public void testDeleteDestination() {
-		//TODO
-		System.out.println("\nDELETE DESTINATION: ");
-		webResource = client.resource(gURL+testGroupID+"/destination");
-		System.out.println(gURL+testGroupID+"/destination");
-		String input = "{\"destination\" : \"Taiwan\"}";
+	
+		webResource = client.resource(gURL+testGroupID+"/destination/Taiwan");
 		
 		try {
-			response = webResource.accept("application/json").delete(ClientResponse.class, input);
+			response = webResource.accept("application/json").delete(ClientResponse.class);
 		} catch (ElementNotFoundException e) {
 			fail();
 		} catch (Exception e) {
@@ -118,12 +115,27 @@ public class GroupRESTImplTest {
 			fail();
 		}
 		
+		assertTrue(response.getStatus() == 200);
 		
-		System.out.println("Headers: " + response.getStatus());
-		//assertTrue(response.getStatus() == 200);
-		
+		//GET y comprobacion del grupo modificado correctamente.
+		webResource = client.resource(gURL+testGroupID);
+		response = webResource.accept("application/json").get(ClientResponse.class);
+				
 		String output = response.getEntity(String.class);
-		System.out.println(output); //No te sentit xk es void
+		assertFalse(output.contains("Taiwan"));
+	}
+	
+	@Test
+	public void testDeleteDestinationExceptions() {
+		webResource = client.resource(gURL+"333"+"/destination/Taiwan");
+		response = webResource.accept("application/json").delete(ClientResponse.class);
+		
+		assertTrue(response.getStatus() == 404);
+		
+		webResource = client.resource(gURL+testGroupID+"/destination/Pekin");
+		response = webResource.accept("application/json").delete(ClientResponse.class);
+		
+		assertTrue(response.getStatus() == 404);
 	}
 
 	@Test
