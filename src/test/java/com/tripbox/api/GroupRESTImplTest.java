@@ -45,6 +45,7 @@ public class GroupRESTImplTest {
 	public static void setUpBeforeClass() throws Exception {
 		client = Client.create();
 
+
 		//Introduir usuari per testejar
 		webResource = client.resource("http://localhost:8080/TB_Backend/api/group/");
 
@@ -57,6 +58,8 @@ public class GroupRESTImplTest {
 		testGroupID = output.substring(POS_INICIO_ID, POS_FINAL_ID);
 	}
 	
+
+	
 	@Before
 	public void setUp(){
 		webResource = null;
@@ -66,46 +69,46 @@ public class GroupRESTImplTest {
 	@Test
 	public void testPutDestination() {
 		webResource = client.resource(gURL+testGroupID+"/destination");
-
+		
 		String input = "Oslo";
-
+		
 		response = webResource.accept("application/json").put(ClientResponse.class, input);
-
+	
 		assertTrue(response.getStatus() == 200);
-
+		
 		//GET y comprobacion del grupo modificado correctamente.
 		webResource = client.resource(gURL+testGroupID);
 		response = webResource.accept("application/json").get(ClientResponse.class);
-
+		
 		String output = response.getEntity(String.class);
 		assertTrue(output.contains("Oslo"));
 	}
-
+	
 	@Test
 	public void testPutDestinationExceptions() {
 		String input;
-
+		
 		//Grupo inexistente
 		webResource = client.resource(gURL+"333"+"/destination");
 		input = "Oslo";
 		response = webResource.accept("application/json").put(ClientResponse.class, input);
-
+	
 		assertTrue(response.getStatus() == 404);
-
+		
 		//Required params fail: El destino que intentamos introducir ya existe
 		webResource = client.resource(gURL+testGroupID+"/destination");
 		input = "Egipto";
 		response = webResource.accept("application/json").put(ClientResponse.class, input);
 		response = webResource.accept("application/json").put(ClientResponse.class, input);
-
+		
 		assertTrue(response.getStatus() == 412);
 	}
 
 	@Test
 	public void testDeleteDestination() {
-
+	
 		webResource = client.resource(gURL+testGroupID+"/destination/Taiwan");
-
+		
 		try {
 			response = webResource.accept("application/json").delete(ClientResponse.class);
 		} catch (ElementNotFoundException e) {
@@ -114,27 +117,27 @@ public class GroupRESTImplTest {
 			e.printStackTrace();
 			fail();
 		}
-
+		
 		assertTrue(response.getStatus() == 200);
-
+		
 		//GET y comprobacion del grupo modificado correctamente.
 		webResource = client.resource(gURL+testGroupID);
 		response = webResource.accept("application/json").get(ClientResponse.class);
-
+				
 		String output = response.getEntity(String.class);
 		assertFalse(output.contains("Taiwan"));
 	}
-
+	
 	@Test
 	public void testDeleteDestinationExceptions() {
 		webResource = client.resource(gURL+"333"+"/destination/Taiwan");
 		response = webResource.accept("application/json").delete(ClientResponse.class);
-
+		
 		assertTrue(response.getStatus() == 404);
-
+		
 		webResource = client.resource(gURL+testGroupID+"/destination/Pekin");
 		response = webResource.accept("application/json").delete(ClientResponse.class);
-
+		
 		assertTrue(response.getStatus() == 404);
 	}
 
