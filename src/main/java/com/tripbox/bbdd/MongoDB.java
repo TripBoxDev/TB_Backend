@@ -57,6 +57,7 @@ public class MongoDB implements Querys{
 			 
 			
 		}catch ( Exception e){
+			e.printStackTrace();
 			throw new Exception();
 		}
 		
@@ -68,6 +69,7 @@ public class MongoDB implements Querys{
 			users.update(new ObjectId(user.getId())).with(user);
 			
 		}catch ( Exception e){
+			e.printStackTrace();
 			throw new Exception();
 		}
 		
@@ -143,6 +145,7 @@ public class MongoDB implements Querys{
 		
 			
 		}catch ( Exception e){
+			e.printStackTrace();
 			throw new Exception();
 		}
 	}
