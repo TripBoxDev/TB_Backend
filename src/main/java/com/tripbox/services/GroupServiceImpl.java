@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.Iterator;
 
 import com.tripbox.bbdd.Mock;
+import com.tripbox.bbdd.MongoDB;
 import com.tripbox.bbdd.interfaces.Querys;
 import com.tripbox.elements.Card;
 import com.tripbox.elements.Group;
@@ -25,21 +26,27 @@ import com.tripbox.services.interfaces.UserService;
 
 public class GroupServiceImpl implements GroupService {
 
-	Querys bbdd = Mock.getInstance();
+
+	//Querys bbdd = Mock.getInstance();
+	//Querys bbdd=new MongoDB();
 	IdGenerator idGen=IdGenerator.getInstance();
+
+
 
 	public GroupServiceImpl() {
 	}
 
 	public Group getGroup(String id) throws Exception {
+		MongoDB mongo = new MongoDB();
 		try {
-			return bbdd.getGroup(id);
+			return mongo.getGroup(id);
 		} catch (Exception e) {
 			throw new ElementNotFoundServiceException("El grup no s'ha trobat.");
 		}
 	}
 
 	public Group putGroup(Group group) throws Exception {
+
 		// si el Group es nuevo le asignamos una id
 		if (group.getId() == null) {
 
@@ -48,10 +55,12 @@ public class GroupServiceImpl implements GroupService {
 
 			try {
 				//comprobamos que el id existe
-				bbdd.getGroup(group.getId());
+				this.getGroup(group.getId());
 	
 				//modificamos el group a la bbdd
-				bbdd.putGroup(group);
+				//bbdd.putGroup(group);
+				MongoDB mongo = new MongoDB();
+				mongo.putGroup(group);
 				
 			} catch (Exception e) {
 				throw new InvalidIdsException("El Group con el ID, "+group.getId()+", no exsiste");
@@ -59,8 +68,9 @@ public class GroupServiceImpl implements GroupService {
 		}
 		//devolvemos el elemento Group completo
 		return group;
-
 	}
+		
+		
 
 	private Group putNewGroup(Group group) throws Exception {
 		String newId = idGen.generateId();
@@ -76,8 +86,9 @@ public class GroupServiceImpl implements GroupService {
 					throw new IdAlreadyExistException();
 				}catch (Exception e){
 					//insertamos el Group a la bbdd
-					bbdd.putGroup(group);
-
+					//bbdd.putGroup(group);
+					MongoDB mongo = new MongoDB();
+					mongo.putGroup(group);
 					break;
 				}
 
@@ -94,15 +105,18 @@ public class GroupServiceImpl implements GroupService {
 	}
 
 	public void deleteGroup(String id) throws Exception {
+		MongoDB mongo = new MongoDB();
 		try {
-			bbdd.deleteGroup(id);
+			mongo.deleteGroup(id);
 		} catch (Exception e) {
 			throw new Exception();
 		}
 
 	}
 
+
 	public void deleteUserToGroup(String groupId, String userId) throws Exception {
+
 		UserService userService = new UserServiceImpl();
 		try {
 			this.getGroup(groupId);

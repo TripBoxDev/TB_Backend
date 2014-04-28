@@ -13,11 +13,12 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.tripbox.api.exceptions.ElementNotFoundException;
 import com.tripbox.bbdd.Mock;
+import com.tripbox.bbdd.MongoDB;
 import com.tripbox.bbdd.interfaces.Querys;
 import com.tripbox.elements.Group;
 import com.tripbox.elements.User;
+import com.tripbox.services.exceptions.ElementNotFoundServiceException;
 import com.tripbox.services.exceptions.InvalidIdsException;
 import com.tripbox.services.exceptions.RequiredParametersException;
 
@@ -98,10 +99,10 @@ public class UserServiceImplTest {
 		try{
 			testUser = new User(null, "654321", null, "idUser", null, null , null);
 			testUser = userSTTest.putUser(testUser);
-			
+	
 			testUser = new User(testUser.getId(), "654321", "543216", "Def", "Usr", "defUsr@hotmail.com",groups); //Actualizamos el usuario anteriormente insertado
 			resultUser = userSTTest.putUser(testUser);
-			
+	
 			assertTrue(resultUser.getId()==testUser.getId());
 			assertTrue(resultUser.getFacebookId()=="654321");
 			assertTrue(resultUser.getGoogleId()=="543216");
@@ -109,7 +110,6 @@ public class UserServiceImplTest {
 			assertTrue(resultUser.getLastName()=="Usr");
 			assertTrue(resultUser.getEmail()=="defUsr@hotmail.com");
 			assertTrue(resultUser.getGroups()==groups);
-			
 		} catch (RequiredParametersException e) {
 			fail();
 		} catch (InvalidIdsException e) {
@@ -117,6 +117,7 @@ public class UserServiceImplTest {
 		} catch (Exception e){
 			fail();
 		}
+
 	}
 	
 	@Test
@@ -126,19 +127,19 @@ public class UserServiceImplTest {
 	 */
 	public void testPutUserWithFbId() throws Exception {
 		testUser = new User(null, "f654321", null, "Pers1", "Cigarrer", "userFacebook@hotmail.com",groups);
-		
+
 		try {
 			resultUser = userSTTest.putUser(testUser);
-			
+
 			resultUser = bbdd.getUserbyFacebookId("f654321");
-			
+
 			assertNotNull(resultUser.getId());
 			assertTrue(resultUser.getFacebookId()=="f654321");
 			assertNull(resultUser.getGoogleId());
 			assertTrue(resultUser.getName()=="Pers1");
 			assertTrue(resultUser.getLastName()=="Cigarrer");
 			assertTrue(resultUser.getEmail()=="userFacebook@hotmail.com");
-			 
+
 			assertTrue(resultUser.getGroups()==groups);
 
 		} catch (Exception e){
@@ -153,21 +154,21 @@ public class UserServiceImplTest {
 	 */
 	public void testPutUserWithGoogleId() throws Exception {
 		testUser = new User(null, null, "g654321", "googlePers", "cogGoogle", "google@gmail.com", googleGroups);
-		
+
 		try {
 			resultUser = userSTTest.putUser(testUser);
 
 			resultUser = bbdd.getUserbyGoogleId("g654321");
-			
+
 			assertNotNull(resultUser.getId());
 			assertNull(resultUser.getFacebookId());
 			assertTrue(resultUser.getGoogleId()=="g654321");
 			assertTrue(resultUser.getName()=="googlePers");
 			assertTrue(resultUser.getLastName()=="cogGoogle");
 			assertTrue(resultUser.getEmail()=="google@gmail.com");
-			
+
 			testGroups = resultUser.getGroups();
-			
+
 			assertTrue(testGroups==googleGroups);
 
 		} catch (InvalidIdsException e) { 
@@ -349,14 +350,14 @@ public class UserServiceImplTest {
 		try {
 			userSTTest.addGroupToUser(userToAdd.getId(), "888");
 			fail();
-		} catch (ElementNotFoundException e) {
+		} catch (ElementNotFoundServiceException e) {
 			
 		}
 		
 		try {
 			userSTTest.addGroupToUser("999", groupToAdd.getId());
 			fail();
-		} catch (ElementNotFoundException e) {
+		} catch (ElementNotFoundServiceException e) {
 			
 		}
 	}

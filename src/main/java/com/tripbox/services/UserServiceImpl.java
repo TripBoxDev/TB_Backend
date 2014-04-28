@@ -1,7 +1,11 @@
 package com.tripbox.services;
 
-import com.tripbox.api.exceptions.ElementNotFoundException;
+
+import org.bson.types.ObjectId;
+
+
 import com.tripbox.bbdd.Mock;
+import com.tripbox.bbdd.MongoDB;
 import com.tripbox.bbdd.exceptions.ItemNotFoundException;
 import com.tripbox.bbdd.interfaces.Querys;
 import com.tripbox.elements.Group;
@@ -16,14 +20,18 @@ import com.tripbox.services.interfaces.UserService;
 
 public class UserServiceImpl implements UserService {
 	
-	Querys bbdd = Mock.getInstance();
+
+	//Querys bbdd = Mock.getInstance();
 	IdGenerator idGen=IdGenerator.getInstance();
+
 	
 	public UserServiceImpl(){}
 
 	public User getUser(String id) throws Exception {
 		try{
-			return bbdd.getUser(id);
+			MongoDB mongo = new MongoDB();
+			
+			return mongo.getUser(id);
 		}catch (Exception e){
 			throw new Exception();
 		}
@@ -31,14 +39,16 @@ public class UserServiceImpl implements UserService {
 
 
 	public User putUser(User user) throws Exception {
+		MongoDB mongo = new MongoDB();
 		if(user.getName()==null || user.getName().equalsIgnoreCase("")){
 			throw new RequiredParametersException("The paramater name is required");
 		}
 		//nos llega un User sin id
 		if(user.getId()==null){
+			System.out.println("hola1");
 			if(user.getEmail()!=null){
 				try{
-					user = bbdd.getUserbyEmail(user.getEmail());
+					user = mongo.getUserbyEmail(user.getEmail());
 				}catch (ItemNotFoundException e){
 					
 					user = putNewUser(user);
@@ -46,27 +56,29 @@ public class UserServiceImpl implements UserService {
 				
 			}else if(user.getGoogleId()!=null){
 				try{
-					user = bbdd.getUserbyGoogleId(user.getGoogleId());
+					user = mongo.getUserbyGoogleId(user.getGoogleId());
 				}catch (ItemNotFoundException e){
+					
 					user = putNewUser(user);
 				}
 			}else if(user.getFacebookId()!=null){
 				try{
-					user = bbdd.getUserbyFacebookId(user.getFacebookId());
+					user = mongo.getUserbyFacebookId(user.getFacebookId());
 				}catch (ItemNotFoundException e){
+					
 					user = putNewUser(user);
 				}
 			}else{
-				throw new InvalidIdsException("Ning������n identificador definido");
+				throw new InvalidIdsException("Ningún identificador definido");
 			}
 			
 		}else{
 			
 			try{
 				//comprobamos que el id existe
-				bbdd.getUser(user.getId());
+				mongo.getUser(user.getId());
 				//modificamos el User en la bbdd
-				bbdd.putUser(user);
+				mongo.UpdateUser(user);
 			}catch (Exception exc){
 				throw new InvalidIdsException("El usuario con el ID, "+user.getId()+", no exsiste");
 			}
@@ -77,6 +89,7 @@ public class UserServiceImpl implements UserService {
 		
 	}
 
+
 	private User putNewUser(User user) throws Exception{
 		String newId = idGen.generateId();
 		user.setId(newId);
@@ -84,15 +97,16 @@ public class UserServiceImpl implements UserService {
 			try{
 				//comprovamos si el id existe
 				try{
-					bbdd.getUser(newId);
+					this.getUser(newId);
 					//generamos nueva id
 					throw new IdAlreadyExistException();
 				}catch (IdAlreadyExistException ex){
 					throw new IdAlreadyExistException();
 				}catch (Exception e){
 					//insertamos el user a la bbdd
-					bbdd.putUser(user);
-					
+					//bbdd.putUser(user);
+					MongoDB mongo = new MongoDB();
+					mongo.putUser(user);
 					break;
 				}
 				
@@ -107,10 +121,12 @@ public class UserServiceImpl implements UserService {
 		}
 		return user;
 	}
+
 	
 	public void deleteUser(String id) throws Exception {
+		MongoDB mongo = new MongoDB();
 		try{
-			bbdd.deleteUser(id);
+			mongo.deleteUser(id);
 		}catch (Exception e){
 			throw new Exception();
 		}
@@ -125,13 +141,13 @@ public class UserServiceImpl implements UserService {
 			Group group=null;
 			GroupService  groupService = new GroupServiceImpl();
 			try {
-				user = bbdd.getUser(userId);
+				user = this.getUser(userId);
 			} catch (Exception e) {
 				throw new ElementNotFoundServiceException("El usuario con el ID, "+ userId +", no exsiste");
 			}
 			
 			try {
-				group = bbdd.getGroup(groupId);
+				group = groupService.getGroup(groupId);
 			} catch (Exception e) {
 				throw new ElementNotFoundServiceException("El grupo con el ID, "+ groupId +", no exsiste");
 			}

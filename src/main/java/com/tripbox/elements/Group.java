@@ -2,9 +2,15 @@ package com.tripbox.elements;
 
 import java.util.ArrayList;
 
+import org.jongo.marshall.jackson.oid.ObjectId;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Group {
-	
-	private String id = null;
+
+	@ObjectId
+	private String _id = null;
+	public static final String USERS = "users";
 	private String name = null;
 	private String description=null;
 	private ArrayList<String> users= new ArrayList<String>();
@@ -27,7 +33,7 @@ public class Group {
 			ArrayList<PlaceToSleepCard> placeToSleepCards,
 			ArrayList<OtherCard> otherCards) {
 		super();
-		this.id = id;
+		this._id = id;
 		this.name = name;
 		this.description = description;
 		this.users = users;
@@ -37,14 +43,12 @@ public class Group {
 		this.otherCards = otherCards;
 	}
 
-
-
 	public String getId() {
-		return id;
+		return _id;
 	}
 
 	public void setId(String id) {
-		this.id = id;
+		this._id = id;
 	}
 
 	public String getName() {
