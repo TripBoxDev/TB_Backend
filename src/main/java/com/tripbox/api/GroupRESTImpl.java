@@ -131,7 +131,7 @@ public class GroupRESTImpl implements GroupREST{
 		} catch (InvalidIdsException e){
 			throw new ElementNotFoundException(e.getMessage());
 		} catch (Exception e){
-			throw new WebApplicationException();
+			throw new WebApplicationException(e.getStackTrace().toString());
 		}
 	}
 	
@@ -151,7 +151,7 @@ public class GroupRESTImpl implements GroupREST{
 		} catch (InvalidIdsException e){
 			throw new ElementNotFoundException(e.getMessage());
 		} catch (Exception e){
-			throw new WebApplicationException();
+			throw new WebApplicationException(e.getStackTrace().toString());
 		}
 	}
 	
@@ -171,7 +171,7 @@ public class GroupRESTImpl implements GroupREST{
 		} catch (InvalidIdsException e){
 			throw new ElementNotFoundException(e.getMessage());
 		} catch (Exception e){
-			throw new WebApplicationException();
+			throw new WebApplicationException(e.getStackTrace().toString());
 		}
 	}
 	
@@ -184,7 +184,7 @@ public class GroupRESTImpl implements GroupREST{
 		} catch (ElementNotFoundServiceException e) {
 			throw new ElementNotFoundException(e.getMessage());
 		} catch (Exception e){
-			throw new WebApplicationException();
+			throw new WebApplicationException(e.getStackTrace().toString());
 		}
 	}
 

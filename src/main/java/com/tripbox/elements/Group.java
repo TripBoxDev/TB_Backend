@@ -8,8 +8,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Group {
 
-	@ObjectId
-	private String _id = null;
+	//@ObjectId
+	//private String _id = null;
+	
+	@JsonProperty("_id")
+	private String id=null;
 	public static final String USERS = "users";
 	private String name = null;
 	private String description=null;
@@ -33,7 +36,7 @@ public class Group {
 			ArrayList<PlaceToSleepCard> placeToSleepCards,
 			ArrayList<OtherCard> otherCards) {
 		super();
-		this._id = id;
+		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.users = users;
@@ -44,11 +47,11 @@ public class Group {
 	}
 
 	public String getId() {
-		return _id;
+		return id;
 	}
 
 	public void setId(String id) {
-		this._id = id;
+		this.id = id;
 	}
 
 	public String getName() {

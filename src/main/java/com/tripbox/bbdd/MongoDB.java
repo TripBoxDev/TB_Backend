@@ -2,17 +2,14 @@ package com.tripbox.bbdd;
 
 
 import java.net.UnknownHostException;
-import java.util.Iterator;
 
 import org.bson.types.ObjectId;
 import org.jongo.Jongo;
 import org.jongo.MongoCollection;
+import org.jongo.Oid;
 
 import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
-import com.mongodb.WriteResult;
 import com.tripbox.bbdd.exceptions.ItemNotFoundException;
 import com.tripbox.bbdd.interfaces.Querys;
 import com.tripbox.elements.Group;
@@ -38,7 +35,7 @@ public class MongoDB implements Querys{
 		
 		User user;
 		 
-		user = users.findOne(new ObjectId(id)).as(User.class);
+		user = users.findOne("{_id : '"+id+"'}").as(User.class);
 		if (user != null){
 		return user;
 		}
@@ -66,7 +63,7 @@ public class MongoDB implements Querys{
 	public void UpdateUser(User user) throws Exception {
 		try{
 			
-			users.update(new ObjectId(user.getId())).with(user);
+			users.update("{_id : '"+user.getId()+"'}").with(user);
 			
 		}catch ( Exception e){
 			e.printStackTrace();
@@ -79,10 +76,10 @@ public class MongoDB implements Querys{
 		
 		User user;
 		
-		user = users.findOne(new ObjectId(id)).as(User.class);
+		user = users.findOne("{_id : '"+id+"'}").as(User.class);
 		
 		if (user != null){
-			users.remove(new ObjectId(id));
+			users.remove("{_id : '"+id+"'}");
 		}
 		else {
 			throw new Exception();
@@ -121,7 +118,7 @@ public class MongoDB implements Querys{
 	public Group getGroup(String id) throws Exception {
 		Group group;
 		 
-		group = groups.findOne(new ObjectId(id)).as(Group.class);
+		group = groups.findOne("{_id : '"+id+"'}").as(Group.class);
 		if (group != null){
 		return group;
 		}
@@ -133,8 +130,8 @@ public class MongoDB implements Querys{
 	public void putGroup(Group group) throws Exception {
 		try{
 			try{
-			getGroup(group.getId()) ;
-				groups.update(new ObjectId(group.getId())).with(group);
+				this.getGroup(group.getId()) ;
+				groups.update("{_id : '"+group.getId()+"'}").with(group);
 				
 			}
 			catch ( Exception e){
@@ -152,7 +149,7 @@ public class MongoDB implements Querys{
 	
 	public void deleteGroup(String id) throws Exception {
 		if(getGroup(id)!=null){
-			groups.remove(new ObjectId(id));
+			groups.remove("{_id : '"+id+"'}");
 		}else {
 			throw new Exception();
 		}

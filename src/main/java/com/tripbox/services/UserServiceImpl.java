@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
 		}
 		//nos llega un User sin id
 		if(user.getId()==null){
-			System.out.println("hola1");
+
 			if(user.getEmail()!=null){
 				try{
 					user = mongo.getUserbyEmail(user.getEmail());

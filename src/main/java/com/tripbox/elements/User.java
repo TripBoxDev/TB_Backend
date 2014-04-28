@@ -4,14 +4,19 @@ import java.util.ArrayList;
 
 import org.jongo.marshall.jackson.oid.ObjectId;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 
 
 
 
 public class User  {
 	
-	@ObjectId
-	private String _id = null;
+	//@ObjectId
+	//private String _id = null;
+	
+	@JsonProperty("_id")
+	private String id = null;
 	private String name = null;
 	private String lastName=null;
 	private String email=null;
@@ -26,7 +31,7 @@ public class User  {
 	public User(String id, String facebookid, String googleId, String name, 
 			String lastName, String email, ArrayList<String> groups) {
 		super();
-		this._id = id;
+		this.id = id;
 		this.facebookId = facebookid;
 		this.googleId=googleId;
 		this.name = name;
@@ -51,10 +56,10 @@ public class User  {
 		this.googleId = googleId;
 	}
 	public String getId() {
-		return _id;
+		return id;
 	}
 	public void setId(String id) {
-		this._id = id;
+		this.id = id;
 	}
 	public String getName() {
 		return name;
