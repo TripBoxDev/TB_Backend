@@ -310,6 +310,13 @@ public class GroupServiceImpl implements GroupService {
 					foundCard=cardExistOnArray(card.getCardId(), group.getPlaceToSleepCards());
 					if(foundCard!=null){ 
 						PlaceToSleepCard auxPlaceCard = (PlaceToSleepCard) foundCard;
+						//comprobem que els parentCards existeixin
+						for(String parentId:auxPlaceCard.getParentCardIds()){
+							TransportCard parentCard = (TransportCard) cardExistOnArray(parentId,group.getTransportCards());
+							if(parentCard==null){
+								throw new ElementNotFoundServiceException("ParentCard "+parentId+" not found");
+							}
+						}
 						group.getPlaceToSleepCards().remove(auxPlaceCard);
 						
 						auxPlaceCard = (PlaceToSleepCard) card;
