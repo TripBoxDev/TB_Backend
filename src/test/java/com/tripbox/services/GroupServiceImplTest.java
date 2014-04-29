@@ -15,15 +15,15 @@ import com.tripbox.bbdd.Mock;
 import com.tripbox.bbdd.interfaces.Querys;
 import com.tripbox.elements.Card;
 import com.tripbox.elements.Group;
+import com.tripbox.elements.TransportCard;
 import com.tripbox.elements.User;
 import com.tripbox.services.exceptions.DestinationAlreadyExistException;
+import com.tripbox.services.exceptions.ElementNotFoundServiceException;
 import com.tripbox.services.exceptions.InvalidIdsException;
 import com.tripbox.services.exceptions.UserNotExistOnGroup;
 import com.tripbox.services.interfaces.UserService;
 
 public class GroupServiceImplTest {
-	
-	static Querys bbdd = Mock.getInstance();
 	
 	static GroupServiceImpl grupoServ = new GroupServiceImpl();
 	static UserService userService = new UserServiceImpl();
@@ -32,18 +32,19 @@ public class GroupServiceImplTest {
 	static ArrayList<String> destinations= new ArrayList<String>();
 	static Group testGroup;
 	static Group resultGroup;
-	static Group grupo1;
+	static Group putDeleteTestGroup;
 	static Group grupo2;
 	static Group groupToPut;
 	static User usuario;
 	static User userNotInGroup;
 	
+	static Group destTestGroup;
 	static Group cardTestGroup;
 	static Group cardTestGroupWrInputs;
 	
+	static Card destTestCard;
 	
 	@BeforeClass
-
 	public static void SetUpBeforeClass() throws Exception{
 		destinations.add("Roma");
 		destinations.add("Paris");
@@ -53,35 +54,69 @@ public class GroupServiceImplTest {
 		usuario = new User(null,"jo","ja","ji","gh", "lo", groups);
 		userNotInGroup = new User(null,"fID", null, "userNotInGroupName", null, null, groups);
 		
-
+		//TODO
 		users.add(usuario.getId());
-
-		//a�adimos usuario para el deleteUserToGroup
+		System.out.println("Users: " + users);
+		//Anadimos usuario para el deleteUserToGroup
 		try {
-			userService.putUser(usuario);
+			usuario = userService.putUser(usuario);
 		} catch (Exception e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-
 		
-		testGroup = new Group(null, "testGroup", "grupo para tests", users);
-
-		grupo1 = new Group(null,"prueba1","nada", users);
-		grupo2 = new Group(null,"prueba1","nada", users);
-		groupToPut = new Group(null,"groupToPutName","un grupo para anadir", users);
-		cardTestGroup = new Group(null,"cardTestGroupName","grupo para testeo de funciones de las cards", users);
-		cardTestGroupWrInputs = new Group(null,"cardTestGroupWrInputsName","grupo para testeo de funciones de las cards", users);
+		testGroup = new Group();
+		testGroup.setName("testGroup");
+		testGroup.setDescription("grupo para tests");
+		testGroup.setUsers(users);
+		
+		putDeleteTestGroup = new Group();
+		putDeleteTestGroup.setName("putDeleteTestGroup");
+		putDeleteTestGroup.setUsers(users);
+		
+		grupo2 = new Group();
+		grupo2.setName("Grupo 2");
+		grupo2.setUsers(users);
+		
+		groupToPut = new Group();
+		groupToPut.setName("groupToPutName");
+		groupToPut.setDescription("un grupo para anadir");
+		groupToPut.setUsers(users);
+		
+		destTestGroup = new Group();
+		destTestGroup.setName("cardTestGroupName");
+		destTestGroup.setDescription("grupo para testeo de funciones de las cards");
+		destTestGroup.setUsers(users);
+		destTestGroup.setDestinations(destinations);
+		
+		destTestCard = new TransportCard();
+		destTestCard.setUserIdCreator(usuario.getId());
+		destTestCard.setName("Paris transport Card");
+		destTestCard.setCardType("transport");
+		destTestCard.setDestination("Paris");
+		
+		cardTestGroup = new Group();
+		cardTestGroup.setName("cardTestGroupName");
+		cardTestGroup.setDescription("grupo para testeo de funciones de las cards");
+		cardTestGroup.setUsers(users);
+		
+		cardTestGroupWrInputs = new Group();
+		cardTestGroupWrInputs.setName("cardTestGroupWrInputsName");
+		cardTestGroupWrInputs.setDescription("grupo para testeo de funciones de las cards");
+		cardTestGroupWrInputs.setUsers(users);
+		
+		
 		cardTestGroup.setDestinations(destinations);
 		cardTestGroupWrInputs.setDestinations(destinations);
 		
 		grupoServ.putGroup(testGroup);
 		grupoServ.putGroup(grupo2);
+		grupoServ.putGroup(destTestGroup);
+		grupoServ.putCard(destTestGroup.getId(), destTestCard);
+		destTestGroup = grupoServ.getGroup(destTestGroup.getId());
 		grupoServ.putGroup(cardTestGroup);
 		grupoServ.putGroup(cardTestGroupWrInputs);
 		
-	
-		userService.putUser(usuario);
+		
 	}
 	
 	@Before
@@ -93,9 +128,9 @@ public class GroupServiceImplTest {
 	public void testPutGroup() {
 		
 		try {
-			grupoServ.putGroup(grupo1);
-			assertNotNull(grupo1.getId());
-			assertNotNull(grupoServ.getGroup(grupo1.getId()));
+			grupoServ.putGroup(putDeleteTestGroup);
+			assertNotNull(putDeleteTestGroup.getId());
+			assertNotNull(grupoServ.getGroup(putDeleteTestGroup.getId()));
 			
 			users.add(usuario.getId());
 
@@ -116,7 +151,6 @@ public class GroupServiceImplTest {
 	
 	@Test
 	public void testGetGroup() throws Exception {
-		Group grupo;
 		resultGroup = grupoServ.getGroup(testGroup.getId());
 		
 		assertEquals(resultGroup.getName(), "testGroup");
@@ -125,8 +159,10 @@ public class GroupServiceImplTest {
 		try {
 			grupoServ.getGroup("123");
 			fail();   //no puede nunca encontrar este usuario
-		} catch (ElementNotFoundException exc) {
+		} catch (ElementNotFoundServiceException exc) {
 			
+		} catch (Exception e) {
+			fail();
 		}
 		
 	}
@@ -135,7 +171,7 @@ public class GroupServiceImplTest {
 	public void testDeleteGroup() throws Exception {
 		
 		try{
-			grupoServ.deleteGroup(grupo1.getId());
+			grupoServ.deleteGroup(putDeleteTestGroup.getId());
 		} catch(ElementNotFoundException e){
 			fail();		//El grupo existe, asiq ue no tiene que fallar
 		} catch (Exception e) {
@@ -153,8 +189,8 @@ public class GroupServiceImplTest {
 
 	@Test
 	public void testDeleteUserToGroup() throws Exception {
-		
-		//eliminamos usuario existente de grupo existente
+		System.out.println(grupo2.getUsers());
+		//Eliminamos usuario existente de grupo existente
 		try {
 			grupoServ.deleteUserToGroup(grupo2.getId(), usuario.getId());
 			
@@ -167,7 +203,15 @@ public class GroupServiceImplTest {
 			fail();
 		}
 		
-		//eliminamos usuario existente de grupo INEXISTENTE (no tiene que funcionar)
+		//Como "usuario" era el unico user en "grupo2" ahora "grupo2" deberia haber sido borrado
+		try {
+			grupoServ.getGroup(grupo2.getId()); //TODO
+			fail();
+		} catch (Exception e) {
+			
+		}
+		
+		//Eliminamos usuario existente de grupo INEXISTENTE (no tiene que funcionar)
 		try {
 			grupoServ.deleteUserToGroup("0000", usuario.getId());
 			fail();
@@ -175,7 +219,7 @@ public class GroupServiceImplTest {
 			
 		}
 		
-		//eliminamos usuario INEXISTENTE de grupo existente (no tiene que funcionar)
+		//Eliminamos usuario INEXISTENTE de grupo existente (no tiene que funcionar)
 		try {
 			grupoServ.deleteUserToGroup(grupo2.getId(), userNotInGroup.getId());
 			fail();
@@ -184,20 +228,17 @@ public class GroupServiceImplTest {
 		}
 	}
 	
-	/**
-	 * Test de la funcion PutDestination
-	 * @throws Exception
-	 */
+
 	@Test
 	public void testPutDestination() throws Exception {
 		try {
 			grupoServ.putDestination(cardTestGroup.getId(), "Tokyo");
 			
-			resultGroup = bbdd.getGroup(cardTestGroup.getId());
+			resultGroup = grupoServ.getGroup(cardTestGroup.getId());
 			
 			assertTrue(resultGroup.getDestinations().contains("Tokyo"));
 			
-		} catch (ElementNotFoundException e) {
+		} catch (ElementNotFoundServiceException e) {
 			fail();
 		} catch (DestinationAlreadyExistException e) {
 			fail();
@@ -206,17 +247,14 @@ public class GroupServiceImplTest {
 		}
 	}
 	
-	/**
-	 * Test de la funcion PutDestination cuando el grupo no existe y 
-	 * cuando el destino que se quiere anadir ya existe.
-	 * @throws Exception
-	 */
+
 	@Test
 	public void testPutDestinationWrongInputs() throws Exception {
+		//ID del grupo incorrecto
 		try {
 			grupoServ.putDestination("333", "Roma");
 			fail();		
-		} catch (ElementNotFoundException e) {
+		} catch (ElementNotFoundServiceException e) {
 
 		} catch (DestinationAlreadyExistException e) {
 			fail();
@@ -225,37 +263,45 @@ public class GroupServiceImplTest {
 		}
 		
 		
-		
+		//El destino ya existe
 		try {
 			grupoServ.putDestination(cardTestGroupWrInputs.getId(), "Roma");
 			fail();
 			
-		} catch (ElementNotFoundException e2) {
+		} catch (ElementNotFoundServiceException e) {
 			fail();
-		} catch (DestinationAlreadyExistException e2) {
-			resultGroup = bbdd.getGroup(cardTestGroupWrInputs.getId());
+		} catch (DestinationAlreadyExistException e) {
+			resultGroup = grupoServ.getGroup(cardTestGroupWrInputs.getId());
 			assertTrue(resultGroup.getDestinations().contains("Roma"));
-		} catch (Exception e2) {
+		} catch (Exception e) {
 			fail();
 		}
 	}
 	
 	@Test
 	public void testDeleteDestination() throws Exception {
-		cardTestGroup = new Group(null,"cardTestGroupName","grupo para testeo de funciones de las cards", users);
-		cardTestGroup.setDestinations(destinations);
-		grupoServ.putGroup(cardTestGroup);
 		
 		try{
-			grupoServ.deleteDestination(cardTestGroup.getId(), "Paris");
+			ArrayList<TransportCard> tCards = destTestGroup.getTransportCards();
+			//Nos aseguramos que haya una card con destino a Paris
+			assertEquals(tCards.get(0).getDestination(), "Paris");
 			
-			resultGroup = bbdd.getGroup(cardTestGroup.getId());
+			//Se elimina Paris como destino
+			grupoServ.deleteDestination(destTestGroup.getId(), "Paris");
+			
+			resultGroup = grupoServ.getGroup(destTestGroup.getId());
+			
+			//Comprobamos que Paris ya no esta entre las destinaciones del grupo
 			assertFalse(resultGroup.getDestinations().contains("Paris"));
 			
+			//Comprobamos que se hayan eliminado las cards relacionadas con Paris
+			assertFalse(destTestGroup.getTransportCards().contains(destTestCard));
+			
 		//TODO mirar si les cards asociades a aquest desti han sigut esborrades	
-		} catch (ElementNotFoundException e){
+		} catch (ElementNotFoundServiceException e){
 			fail();
 		} catch (Exception e){
+			e.printStackTrace();
 			fail();
 		}
 	}
@@ -267,25 +313,21 @@ public class GroupServiceImplTest {
 	 */
 	@Test
 	public void testDeleteDestinationWrongInputs() throws Exception {
-		cardTestGroup = new Group(null,"cardTestGroupName","grupo para testeo de funciones de las cards", users);
-		cardTestGroup.setDestinations(destinations);
-		grupoServ.putGroup(cardTestGroup);
 		
 		try{
 			grupoServ.deleteDestination("555", "Paris");
 			fail();
-		} catch (ElementNotFoundException e){
+		} catch (ElementNotFoundServiceException e){
 
 		} catch (Exception e){
 			fail();
 		}
 		
 		
-		
 		try{
 			grupoServ.deleteDestination(cardTestGroupWrInputs.getId(), "Tailandia");
 			fail();
-		} catch (ElementNotFoundException e){
+		} catch (ElementNotFoundServiceException e){
 
 		} catch (Exception e){
 			fail();
@@ -294,12 +336,14 @@ public class GroupServiceImplTest {
 	
 	@Test
 	public void testPutCard() throws Exception {
-		// TODO
+		//TODO
+		fail();
 	}
 
 	@Test
 	public void testDeleteCard() throws Exception {
-		// TODO
+		//TODO
+		fail();
 		
 	}
 
@@ -319,7 +363,13 @@ public class GroupServiceImplTest {
 
 		try {
 			userService.deleteUser(usuario.getId());
-			grupoServ.deleteGroup(grupo2.getId());
+			
+			grupoServ.deleteGroup(testGroup.getId());
+			grupoServ.deleteGroup(groupToPut.getId());
+			
+			grupoServ.deleteGroup(destTestGroup.getId());
+			grupoServ.deleteGroup(cardTestGroup.getId());
+			grupoServ.deleteGroup(cardTestGroupWrInputs.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
