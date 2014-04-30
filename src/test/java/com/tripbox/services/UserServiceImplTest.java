@@ -306,13 +306,15 @@ public class UserServiceImplTest {
 		try{
 			userSTTest.addGroupToUser(userToAdd.getId(), groupToAdd.getId());
 		
-			resultUser = userSTTest.getUser(userToAdd.getId());			//Get del grupo y usuario que acabamos de modificar
+			//Get del grupo y usuario que acabamos de modificar
+			resultUser = userSTTest.getUser(userToAdd.getId());
 			resultGroup = groupSTTest.getGroup(groupToAdd.getId());
 			
 			groups = resultUser.getGroups();
 			userList = resultGroup.getUsers();
 			
-			assertTrue(groups.contains(groupToAdd.getId()));				//Comprobamos que se han modificado correctamente
+			//Comprobamos que se han modificado correctamente
+			assertTrue(groups.contains(groupToAdd.getId()));
 			assertTrue(userList.contains(userToAdd.getId()));
 			
 			
@@ -331,13 +333,15 @@ public class UserServiceImplTest {
 		try {
 			userSTTest.addGroupToUser(emptyUser.getId(), emptyGroup.getId());
 			
-			resultUser = userSTTest.getUser(emptyUser.getId());			//Get del grupo y usuario que acabamos de modificar
+			//Get del grupo y usuario que acabamos de modificar
+			resultUser = userSTTest.getUser(emptyUser.getId());
 			resultGroup = groupSTTest.getGroup(emptyGroup.getId());
 			
 			groups = resultUser.getGroups();
 			userList = resultGroup.getUsers();
 			
-			assertTrue(groups.contains(emptyGroup.getId()));				//Comprobamos que se han modificado correctamente
+			//Comprobamos que se han modificado correctamente
+			assertTrue(groups.contains(emptyGroup.getId()));
 			assertTrue(userList.contains(emptyUser.getId()));
 			
 		} catch (Exception e) {
