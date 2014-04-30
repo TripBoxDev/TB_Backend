@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
 
 	//Querys bbdd = Mock.getInstance();
 	IdGenerator idGen=IdGenerator.getInstance();
-
+	
 	
 	public UserServiceImpl(){}
 
@@ -125,7 +125,12 @@ public class UserServiceImpl implements UserService {
 	
 	public void deleteUser(String id) throws Exception {
 		MongoDB mongo = new MongoDB();
+		GroupService groupService = new GroupServiceImpl();
 		try{
+			User user = this.getUser(id);
+			for(String groupId:user.getGroups()){
+				groupService.deleteUserToGroup(groupId, id);
+			}
 			mongo.deleteUser(id);
 		}catch (Exception e){
 			throw new Exception();
@@ -153,9 +158,13 @@ public class UserServiceImpl implements UserService {
 			}
 			
 	
-		
-			user.getGroups().add(group.getId());
-			group.getUsers().add(user.getId());
+			if(!user.getGroups().contains(group.getId())){
+				user.getGroups().add(group.getId());
+			}
+			if(!group.getUsers().contains(user.getId())){
+				group.getUsers().add(user.getId());
+			}
+			
 			this.putUser(user);
 			groupService.putGroup(group);
 				
