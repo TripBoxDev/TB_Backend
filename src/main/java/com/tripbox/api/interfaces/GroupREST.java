@@ -6,6 +6,7 @@ import com.tripbox.elements.Group;
 import com.tripbox.elements.OtherCard;
 import com.tripbox.elements.PlaceToSleepCard;
 import com.tripbox.elements.TransportCard;
+import com.tripbox.elements.Vote;
 
 public interface GroupREST {
 	
@@ -73,5 +74,12 @@ public interface GroupREST {
 	 */
 	public Response deleteCard(String groupId,  String cardId);
 	
-
+	/**
+	 * Función de la API que nos permite añadir un voto a una card
+	 * @param groupId
+	 * @param cardId
+	 * @param vote
+	 * @return
+	 */
+	public Response putVote(String groupId, String cardId, Vote vote);
 }

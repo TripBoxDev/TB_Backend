@@ -1,9 +1,6 @@
 package com.tripbox.elements;
 
 import java.util.ArrayList;
-
-import org.jongo.marshall.jackson.oid.ObjectId;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
@@ -23,6 +20,7 @@ public class User  {
 	private ArrayList<String> groups = new ArrayList<String>();
 	private String facebookId = null;
 	private String googleId=null;
+	private ArrayList<String> cardsVoted = new ArrayList<String>();
 	
 	
 
@@ -84,6 +82,14 @@ public class User  {
 	}
 	public void setGroups(ArrayList<String> groups) {
 		this.groups = groups;
+	}
+
+	public ArrayList<String> getCardsVoted() {
+		return cardsVoted;
+	}
+
+	public void setCardsVoted(ArrayList<String> cardsVoted) {
+		this.cardsVoted = cardsVoted;
 	}
 
 }

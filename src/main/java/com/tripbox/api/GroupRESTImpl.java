@@ -21,6 +21,7 @@ import com.tripbox.elements.Group;
 import com.tripbox.elements.OtherCard;
 import com.tripbox.elements.PlaceToSleepCard;
 import com.tripbox.elements.TransportCard;
+import com.tripbox.elements.Vote;
 import com.tripbox.services.GroupServiceImpl;
 import com.tripbox.services.exceptions.CardTypeException;
 import com.tripbox.services.exceptions.DestinationAlreadyExistException;
@@ -184,6 +185,20 @@ public class GroupRESTImpl implements GroupREST{
 		} catch (ElementNotFoundServiceException e) {
 			throw new ElementNotFoundException(e.getMessage());
 		} catch (Exception e){
+			throw new WebApplicationException(e.getStackTrace().toString());
+		}
+	}
+
+	@PUT
+	@Path("/{groupId}/card/{cardId}/vote")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response putVote(@PathParam("groupId") String groupId, @PathParam("cardId") String cardId, Vote vote) {
+		try{
+			return Response.ok(groupService.putVote(groupId, cardId, vote)).build();
+		}catch (ElementNotFoundServiceException e){
+			throw new ElementNotFoundException(e.getMessage());
+		}catch (Exception e){
 			throw new WebApplicationException(e.getStackTrace().toString());
 		}
 	}

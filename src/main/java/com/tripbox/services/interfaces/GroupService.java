@@ -3,6 +3,7 @@ package com.tripbox.services.interfaces;
 
 import com.tripbox.elements.Card;
 import com.tripbox.elements.Group;
+import com.tripbox.elements.Vote;
 
 public interface GroupService {
 	
@@ -54,5 +55,15 @@ public interface GroupService {
 	 * @throws Exception
 	 */
 	public void deleteCard(String groupId,  String cardId)throws Exception;
+	
+	/**
+	 * Añadimos un voto a una card. Si el usuario ya tiene un voto registrado lo sobreescribimos.
+	 * @param groupId
+	 * @param cardId
+	 * @param vote
+	 * @return
+	 * @throws Exception
+	 */
+	public Card putVote(String groupId, String cardId, Vote vote) throws Exception;
 
 }

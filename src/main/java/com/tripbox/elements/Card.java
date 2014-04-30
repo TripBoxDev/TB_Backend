@@ -1,5 +1,7 @@
 package com.tripbox.elements;
 
+import java.util.ArrayList;
+
 public abstract class Card {
 	private String cardId=null;
 	private String cardType=null;
@@ -12,7 +14,17 @@ public abstract class Card {
 	private String userIdCreator=null;
 	private String nameCreator=null;
 	private String lastNameCreator=null;
+	private ArrayList<Vote> votes = new ArrayList<Vote>();
 	
+	/**
+	 * Valor máximo de un voto.
+	 */
+	final private int MAX_VOTE = 5;
+	
+	/**
+	 * Media de votos de la card.
+	 */
+	private double average;
 	
 	public Card(){}
 	
@@ -102,6 +114,39 @@ public abstract class Card {
 	public void setLastNameCreator(String lastNameCreator) {
 		this.lastNameCreator = lastNameCreator;
 	}
+
+
+	public ArrayList<Vote> getVotes() {
+		return votes;
+	}
+
+
+	public void setVotes(ArrayList<Vote> votes) {
+		this.votes = votes;
+	}
+
+
+	public double getAverage() {
+		return average;
+	}
+
+
+	public void setAverage(double average) {
+		this.average = average;
+	}
 	
+
+	
+	public void calculateAverage(){
+		double totalValue=0;
+		for(Vote vote:votes){
+			totalValue+=vote.getValue();
+		}
+		this.setAverage(totalValue/votes.size());
+	}
+
+
+	
+
 	
 }
