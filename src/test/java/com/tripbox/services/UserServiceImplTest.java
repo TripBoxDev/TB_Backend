@@ -38,7 +38,7 @@ public class UserServiceImplTest {
 	static Group emptyGroup = new Group();
 	
 	@BeforeClass
-	public static void setup() throws Exception{
+	public static void setUpBeforeClass() throws Exception{
 		groups.add("556677");
 		groups.add("335577");
 		googleGroups.add("113355");
@@ -75,7 +75,7 @@ public class UserServiceImplTest {
 	}
 	
 	@Before
-	public void starting() throws Exception{
+	public void setUp() throws Exception{
 		resultUser=null;
 	}
 	
@@ -385,7 +385,7 @@ public class UserServiceImplTest {
 	
 	
 	@After
-	public void deleteUser() throws Exception{
+	public void tearDown() throws Exception{
 		try {
 			if ((resultUser!=null)&&(resultUser.getId()!=null)){
 				userSTTest.deleteUser(resultUser.getId());
@@ -396,7 +396,7 @@ public class UserServiceImplTest {
 	}
 	 
 	@AfterClass
-	public static void tearDown() throws Exception{
+	public static void tearDownAfterClass() throws Exception{
 		groupSTTest.deleteGroup(groupToAdd.getId());
 		groupSTTest.deleteGroup(emptyGroup.getId());
 	}
