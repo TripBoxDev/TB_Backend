@@ -125,22 +125,23 @@ public class GroupServiceImpl implements GroupService {
 
 
 	public void deleteUserToGroup(String groupId, String userId) throws Exception {
-
 		UserService userService = new UserServiceImpl();
+		User user;
+		Group group;
 		try {
-			this.getGroup(groupId);
+			group=this.getGroup(groupId);
 		} catch (Exception e) {
-			throw new InvalidIdsException("El grupo con el ID, "+groupId+", no exsiste");
+			throw new ElementNotFoundServiceException("El grupo con el ID, "+groupId+", no exsiste");
 		}
 
 		try {
-			userService.getUser(userId);
+			user=userService.getUser(userId);
 		} catch (Exception e) {
-			throw new InvalidIdsException("El usuario con el ID, "+userId+", no exsiste");
+			throw new ElementNotFoundServiceException("El usuario con el ID, "+userId+", no exsiste");
 		}
 
 		// eliminamos el user de la lista de users del grupo
-		Group group = this.getGroup(groupId);
+		group = this.getGroup(groupId);
 		ArrayList<String> groupUsers = group.getUsers();
 		
 		try {
@@ -151,7 +152,7 @@ public class GroupServiceImpl implements GroupService {
 
 		group.setUsers(groupUsers);
 		// eliminamos el grup de la lista de grupos del usuario
-		User user = userService.getUser(userId);
+		user = userService.getUser(userId);
 		ArrayList<String> userGroups = user.getGroups();
 		userGroups.remove(groupId);
 		user.setGroups(userGroups);
@@ -163,6 +164,48 @@ public class GroupServiceImpl implements GroupService {
 			this.putGroup(group);
 		}
 
+
+		
+		
+		
+		
+		//eliminamos los votos del user en las cards del grupo
+		ArrayList<String> cardsVoted = user.getCardsVoted();
+		ArrayList<String> cardsVoteDelete=new ArrayList<String>(); //guardamos las cards encontradas en este grupo
+		for(String cardVoted:cardsVoted){ 
+			//buscamos la card dentro de los tres array: transportCards, placeToSleepCards y otherCards
+			Card cardFound=null;
+			cardFound=cardExistOnArray(cardVoted, group.getTransportCards());
+			if(cardFound==null){
+				cardFound=cardExistOnArray(cardVoted, group.getPlaceToSleepCards());
+				if(cardFound==null){
+					cardFound=cardExistOnArray(cardVoted, group.getOtherCards());
+				}
+			}
+			
+			if(cardFound!=null){//si encontramos la card guardamos su id  y buscamos y eliminamos el voto del user
+				cardsVoteDelete.add(cardVoted);
+				
+				boolean voteFound=false;
+				Vote foundVote=null;
+				Iterator<Vote> it = cardFound.getVotes().iterator();
+				while(it.hasNext()&&!voteFound){ //buscamos el voto
+					Vote vote = it.next();
+					if(vote.getUserId().equalsIgnoreCase(userId)){
+						voteFound=true;
+						foundVote=vote;
+					}
+				}
+				
+				cardFound.getVotes().remove(foundVote);//eliminamos el voto
+				cardFound.calculateAverage();
+				this.putCard(groupId, cardFound);
+			}
+		}
+		
+		for(String deleteVoteOnUser: cardsVoteDelete){
+			user.getCardsVoted().remove(deleteVoteOnUser);
+		}
 		userService.putUser(user);
 	}
 
@@ -405,9 +448,9 @@ public class GroupServiceImpl implements GroupService {
 
 	}
 
-
 	public Card putVote(String groupId, String cardId, Vote vote)
 			throws Exception {
+		UserService userService = new UserServiceImpl();
 		Group group;
 		try{
 			group=this.getGroup(groupId);
@@ -437,10 +480,17 @@ public class GroupServiceImpl implements GroupService {
 			}
 			if(!found){
 				foundCard.getVotes().add(vote);
+				//registramos el voto en el user
+				User user =userService.getUser(vote.getUserId());
+				user.getCardsVoted().add(cardId);
+				userService.putUser(user);
 			}
 			//recalculamos el valor medio de votos
-			foundCard.calculateAverage();
+			foundCard.calculateAverage();	
+			
 			this.putCard(groupId, foundCard);
+			
+			
 			return foundCard;
 			
 		}else{

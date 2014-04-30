@@ -82,7 +82,7 @@ public class GroupRESTImpl implements GroupREST{
 			throw new UserNotExistOnGroupREST("User: "+userId+" doesn't exist on this group");
 		}catch (Exception e){
 			
-			throw new WebApplicationException();
+			throw new WebApplicationException(e.getStackTrace().toString());
 		}
 	}
 	
@@ -169,7 +169,7 @@ public class GroupRESTImpl implements GroupREST{
 			throw new RequiredParamsFail("Card Type doesn't exist");
 		} catch (DestinationDoesntExistException exDes){
 			throw new ElementNotFoundException("Destination "+card.getDestination()+" doesn't exist");
-		} catch (InvalidIdsException e){
+		}catch (InvalidIdsException e){
 			throw new ElementNotFoundException(e.getMessage());
 		} catch (Exception e){
 			throw new WebApplicationException(e.getStackTrace().toString());
