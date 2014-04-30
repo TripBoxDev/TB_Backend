@@ -13,6 +13,7 @@ import com.tripbox.elements.OtherCard;
 import com.tripbox.elements.PlaceToSleepCard;
 import com.tripbox.elements.TransportCard;
 import com.tripbox.elements.User;
+import com.tripbox.elements.Vote;
 import com.tripbox.others.IdGenerator;
 import com.tripbox.services.exceptions.CardTypeException;
 import com.tripbox.services.exceptions.DestinationAlreadyExistException;
@@ -354,10 +355,10 @@ public class GroupServiceImpl implements GroupService {
 		Card foundCard=null;
 		Iterator<Card> it = cardsArray.iterator();
 		while(it.hasNext()&&!cardExist){
-			Card transpCard = it.next();
-			if(transpCard.getCardId().equalsIgnoreCase(cardId)){
+			Card card = it.next();
+			if(card.getCardId().equalsIgnoreCase(cardId)){
 				cardExist=true;
-				foundCard=transpCard;
+				foundCard=card;
 			}
 		}
 		
@@ -370,9 +371,7 @@ public class GroupServiceImpl implements GroupService {
 	public void deleteCard(String groupId, String cardId) throws Exception {
 		Group group;
 		try{
-			
 			group=this.getGroup(groupId);
-			
 		}catch(Exception e){
 			throw new ElementNotFoundServiceException("Group "+groupId+" not found");
 		}
@@ -395,6 +394,50 @@ public class GroupServiceImpl implements GroupService {
 			}
 		}
 		this.putGroup(group);
+
+	}
+
+
+	public Card putVote(String groupId, String cardId, Vote vote)
+			throws Exception {
+		Group group;
+		try{
+			group=this.getGroup(groupId);
+		}catch(Exception e){
+			throw new ElementNotFoundServiceException("Group "+groupId+" not found");
+		}
+		Card foundCard=null;
+		foundCard=cardExistOnArray(cardId, group.getTransportCards());
+		if(foundCard==null){
+			foundCard=cardExistOnArray(cardId, group.getPlaceToSleepCards());
+			if(foundCard==null){
+				foundCard=cardExistOnArray(cardId, group.getOtherCards());
+			}
+		}
+		if(foundCard!=null){
+			boolean found=false;
+			Iterator<Vote> it = foundCard.getVotes().iterator();
+			while(it.hasNext()&&!found){
+				Vote cardVote = it.next();
+				if(cardVote.getUserId().equalsIgnoreCase(vote.getUserId())){
+					found=true;
+					//si el usuario ya ha votado la carta eliminamos el voto antiguo
+					foundCard.getVotes().remove(cardVote);
+					//y guardamos el nuevo voto
+					foundCard.getVotes().add(vote);
+				}
+			}
+			if(!found){
+				foundCard.getVotes().add(vote);
+			}
+			//recalculamos el valor medio de votos
+			foundCard.calculateAverage();
+			this.putCard(groupId, foundCard);
+			return foundCard;
+			
+		}else{
+			throw new ElementNotFoundServiceException("Card "+cardId+" not found");
+		}
 
 	}
 

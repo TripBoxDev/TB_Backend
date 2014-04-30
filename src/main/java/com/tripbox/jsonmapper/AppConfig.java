@@ -49,6 +49,7 @@ import com.tripbox.elements.OtherCard;
 import com.tripbox.elements.PlaceToSleepCard;
 import com.tripbox.elements.TransportCard;
 import com.tripbox.elements.User;
+import com.tripbox.elements.Vote;
 
  
 
@@ -73,6 +74,7 @@ public class AppConfig extends ResourceConfig {
         		TransportCard.class,
         		PlaceToSleepCard.class,
         		OtherCard.class,
+        		Vote.class,
                 // register Jackson ObjectMapper resolver
                 MapperProvider.class,
                 JacksonFeature.class
