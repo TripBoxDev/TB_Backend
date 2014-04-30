@@ -1,9 +1,6 @@
 package com.tripbox.services;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 
@@ -13,9 +10,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.tripbox.bbdd.Mock;
-import com.tripbox.bbdd.MongoDB;
-import com.tripbox.bbdd.interfaces.Querys;
 import com.tripbox.elements.Group;
 import com.tripbox.elements.User;
 import com.tripbox.services.exceptions.ElementNotFoundServiceException;
@@ -26,7 +20,6 @@ public class UserServiceImplTest {
 	
 	static UserServiceImpl userSTTest = new UserServiceImpl();
 	static GroupServiceImpl groupSTTest = new GroupServiceImpl();
-	static Querys bbdd = Mock.getInstance();
 	
 	static ArrayList<String> groups = new ArrayList<String>();
 	static ArrayList<String> googleGroups = new ArrayList<String>();
@@ -52,19 +45,32 @@ public class UserServiceImplTest {
 		googleGroups.add("224466");
 		userList.add("123456");
 		
-		userToGet = new User(null, null, null, "userToGet", null, "userToGet@mail.com", groups);
+		userToGet = new User();
+		userToGet.setName("userToGet");
+		userToGet.setEmail("userToGet@mail.com");
+		userToGet.setGroups(groups);
 		userToGet = userSTTest.putUser(userToGet);
 		
-		userToAdd = new User(null, "f123", null, "userToAddName", null, null, groups);
+		userToAdd = new User();
+		userToAdd.setFacebookId("f123");
+		userToAdd.setName("userToAddName");
+		userToAdd.setGroups(groups);
 		userToAdd = userSTTest.putUser(userToAdd);
 		
-		emptyUser = new User(null, null, "g567", "emptyUser", null, null, emptyList);
+		emptyUser = new User();
+		emptyUser.setGoogleId("g567");
+		emptyUser.setName("emptyUser");
+		emptyUser.setGroups(emptyList);
 		emptyUser = userSTTest.putUser(emptyUser);
 		
-		groupToAdd = new Group(null, "grupo", null, userList);
+		groupToAdd = new Group();
+		groupToAdd.setName("grupo");
+		groupToAdd.setUsers(userList);
 		groupToAdd = groupSTTest.putGroup(groupToAdd);
 		
-		emptyGroup = new Group(null, "emptyGroup", null, emptyList);
+		emptyGroup = new Group();
+		emptyGroup.setName("emptyGroup");
+		emptyGroup.setUsers(emptyList);
 		emptyGroup = groupSTTest.putGroup(emptyGroup);
 	}
 	
@@ -77,7 +83,7 @@ public class UserServiceImplTest {
 	public void testGetUser() throws Exception {
 		//Test usuario existente
 		resultUser = userSTTest.getUser(userToGet.getId());
-		assertTrue(userToGet.getId()==resultUser.getId());
+		assertEquals(userToGet.getId(), resultUser.getId());
 		
 		//Test usuario no existente
 		try {
@@ -97,14 +103,23 @@ public class UserServiceImplTest {
 	public void testPutUserWithId() throws Exception {	
 
 		try{
-			testUser = new User(null, "654321", null, "idUser", null, null , null);
+			testUser = new User();
+			testUser.setFacebookId("654321");
+			testUser.setName("Obligatori Name");
 			testUser = userSTTest.putUser(testUser);
-	
-			testUser = new User(testUser.getId(), "654321", "543216", "Def", "Usr", "defUsr@hotmail.com",groups); //Actualizamos el usuario anteriormente insertado
+			
+			//Actualizamos el usuario anteriormente insertado
+			testUser = new User(); 
+			testUser.setFacebookId("321654");
+			testUser.setGoogleId("543216");
+			testUser.setName("Def");
+			testUser.setLastName("Usr");
+			testUser.setEmail("defUsr@hotmail.com");
+			testUser.setGroups(groups);
 			resultUser = userSTTest.putUser(testUser);
 	
 			assertTrue(resultUser.getId()==testUser.getId());
-			assertTrue(resultUser.getFacebookId()=="654321");
+			assertTrue(resultUser.getFacebookId()=="321654");
 			assertTrue(resultUser.getGoogleId()=="543216");
 			assertTrue(resultUser.getName()=="Def");
 			assertTrue(resultUser.getLastName()=="Usr");
@@ -126,21 +141,25 @@ public class UserServiceImplTest {
 	 * @throws Exception
 	 */
 	public void testPutUserWithFbId() throws Exception {
-		testUser = new User(null, "f654321", null, "Pers1", "Cigarrer", "userFacebook@hotmail.com",groups);
+		testUser = new User();
+		testUser.setFacebookId("f654321");
+		testUser.setName("Pers1");
+		testUser.setLastName("Cigarrer");
+		testUser.setEmail("userFacebook@hotmail.com");
+		testUser.setGroups(groups);
 
 		try {
 			resultUser = userSTTest.putUser(testUser);
 
-			resultUser = bbdd.getUserbyFacebookId("f654321");
-
+			resultUser = userSTTest.getUser(resultUser.getId());
 			assertNotNull(resultUser.getId());
-			assertTrue(resultUser.getFacebookId()=="f654321");
+			assertEquals(resultUser.getFacebookId(), "f654321");
 			assertNull(resultUser.getGoogleId());
-			assertTrue(resultUser.getName()=="Pers1");
-			assertTrue(resultUser.getLastName()=="Cigarrer");
-			assertTrue(resultUser.getEmail()=="userFacebook@hotmail.com");
+			assertEquals(resultUser.getName(), "Pers1");
+			assertEquals(resultUser.getLastName(), "Cigarrer");
+			assertEquals(resultUser.getEmail(), "userFacebook@hotmail.com");
 
-			assertTrue(resultUser.getGroups()==groups);
+			assertEquals(resultUser.getGroups(), groups);
 
 		} catch (Exception e){
 			fail();
@@ -153,28 +172,29 @@ public class UserServiceImplTest {
 	 * @throws Exception
 	 */
 	public void testPutUserWithGoogleId() throws Exception {
-		testUser = new User(null, null, "g654321", "googlePers", "cogGoogle", "google@gmail.com", googleGroups);
+		testUser = new User();
+		testUser.setGoogleId("g654321");
+		testUser.setName("googlePers");
+		testUser.setLastName("cogGoogle");
+		testUser.setEmail("google@gmail.com");
+		testUser.setGroups(googleGroups);
 
 		try {
 			resultUser = userSTTest.putUser(testUser);
 
-			resultUser = bbdd.getUserbyGoogleId("g654321");
+			resultUser = userSTTest.getUser(resultUser.getId());
 
 			assertNotNull(resultUser.getId());
 			assertNull(resultUser.getFacebookId());
-			assertTrue(resultUser.getGoogleId()=="g654321");
-			assertTrue(resultUser.getName()=="googlePers");
-			assertTrue(resultUser.getLastName()=="cogGoogle");
-			assertTrue(resultUser.getEmail()=="google@gmail.com");
+			assertEquals(resultUser.getGoogleId(), "g654321");
+			assertEquals(resultUser.getName(), "googlePers");
+			assertEquals(resultUser.getLastName(), "cogGoogle");
+			assertEquals(resultUser.getEmail(), "google@gmail.com");
 
 			testGroups = resultUser.getGroups();
 
-			assertTrue(testGroups==googleGroups);
-
-		} catch (InvalidIdsException e) { 
-			fail();
-		} catch (RequiredParametersException e) {
-			fail();
+			assertEquals(testGroups, googleGroups);
+			
 		} catch (Exception e) {
 			fail();
 		}
@@ -187,21 +207,22 @@ public class UserServiceImplTest {
 	 */
 	public void testPutUserWithMail() throws Exception {
 		
-		testUser = new User(null, null, null, "mailPers", "cogMail", "mail@gmail.com", null);
+		testUser = new User();
+		testUser.setName("mailPers");
+		testUser.setLastName("cogMail");
+		testUser.setEmail("mail@gmail.com");
 		
 		try {
 			resultUser = userSTTest.putUser(testUser);
 
-			resultUser = bbdd.getUserbyEmail("mail@gmail.com");
-			
+			resultUser = userSTTest.getUser(resultUser.getId());
 			assertNotNull(resultUser.getId());
 			assertNull(resultUser.getFacebookId());
 			assertNull(resultUser.getGoogleId());
-			assertTrue(resultUser.getName()=="mailPers");
-			assertTrue(resultUser.getLastName()=="cogMail");
-			assertTrue(resultUser.getEmail()=="mail@gmail.com");
-			
-			assertNull(resultUser.getGroups());
+			assertEquals(resultUser.getName(), "mailPers");
+			assertEquals(resultUser.getLastName(), "cogMail");
+			assertEquals(resultUser.getEmail(), "mail@gmail.com");
+			assertTrue(resultUser.getGroups().isEmpty());
 			
 		} catch (InvalidIdsException e) { 
 			fail();
