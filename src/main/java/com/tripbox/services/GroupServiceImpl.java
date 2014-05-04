@@ -45,7 +45,7 @@ public class GroupServiceImpl implements GroupService {
 	}
 
 	public Group getGroup(String id) throws Exception {
-		mongo = mongo=MongoDB.getInstance();
+		mongo=MongoDB.getInstance();
 		try {
 			return mongo.getGroup(id);
 		} catch (Exception e) {
