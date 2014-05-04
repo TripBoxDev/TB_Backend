@@ -33,7 +33,7 @@ import com.tripbox.services.interfaces.GroupService;
 
 @Path("/group")
 public class GroupRESTImpl implements GroupREST{
-
+	
 	GroupService groupService = new GroupServiceImpl();
 	
 	@GET

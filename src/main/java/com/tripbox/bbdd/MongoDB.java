@@ -14,21 +14,31 @@ import com.tripbox.bbdd.exceptions.ItemNotFoundException;
 import com.tripbox.bbdd.interfaces.Querys;
 import com.tripbox.elements.Group;
 import com.tripbox.elements.User;
+import com.tripbox.others.IdGenerator;
 
 public class MongoDB implements Querys{
 	
-	MongoCollection users;
-	MongoCollection groups;
-	DB db;
-	Jongo jongo;
-	public MongoDB () throws UnknownHostException{
-		db = new MongoClient().getDB("tripbox");
-
-		jongo = new Jongo(db);
-		users = jongo.getCollection("users");
-		groups = jongo.getCollection("groups");
+	private static MongoCollection users;
+	private static MongoCollection groups;
+	private static DB db;
+	private static Jongo jongo;
+	private static MongoDB uniqueInstance;
 	
+	
+	private MongoDB(){}
+	public static MongoDB getInstance() throws UnknownHostException{
+		if(uniqueInstance == null){
+			uniqueInstance=new MongoDB();
+			db = new MongoClient().getDB("tripbox");
+
+			jongo = new Jongo(db);
+			users = jongo.getCollection("users");
+			groups = jongo.getCollection("groups");
+
+		}
+		return uniqueInstance;
 	}
+	
 	
 	public User getUser(String id) throws Exception {
 		

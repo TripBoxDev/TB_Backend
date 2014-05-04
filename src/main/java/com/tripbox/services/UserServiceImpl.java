@@ -23,13 +23,13 @@ public class UserServiceImpl implements UserService {
 
 	//Querys bbdd = Mock.getInstance();
 	IdGenerator idGen=IdGenerator.getInstance();
-
+	MongoDB mongo;
 	
 	public UserServiceImpl(){}
 
 	public User getUser(String id) throws Exception {
 		try{
-			MongoDB mongo = new MongoDB();
+			mongo=MongoDB.getInstance();
 			
 			return mongo.getUser(id);
 		}catch (Exception e){
@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
 
 
 	public User putUser(User user) throws Exception {
-		MongoDB mongo = new MongoDB();
+		mongo=MongoDB.getInstance();
 		if(user.getName()==null || user.getName().equalsIgnoreCase("")){
 			throw new RequiredParametersException("The paramater name is required");
 		}
@@ -105,7 +105,7 @@ public class UserServiceImpl implements UserService {
 				}catch (Exception e){
 					//insertamos el user a la bbdd
 					//bbdd.putUser(user);
-					MongoDB mongo = new MongoDB();
+					mongo=MongoDB.getInstance();
 					mongo.putUser(user);
 					break;
 				}
@@ -124,7 +124,7 @@ public class UserServiceImpl implements UserService {
 
 	
 	public void deleteUser(String id) throws Exception {
-		MongoDB mongo = new MongoDB();
+		mongo=MongoDB.getInstance();
 		try{
 			mongo.deleteUser(id);
 		}catch (Exception e){

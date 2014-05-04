@@ -1,5 +1,6 @@
 package com.tripbox.services;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -30,14 +31,21 @@ public class GroupServiceImpl implements GroupService {
 	//Querys bbdd = Mock.getInstance();
 	//Querys bbdd=new MongoDB();
 	IdGenerator idGen=IdGenerator.getInstance();
-
+	
+	MongoDB mongo;
+			
+	
+	
 
 
 	public GroupServiceImpl() {
+		
+			
+		
 	}
 
 	public Group getGroup(String id) throws Exception {
-		MongoDB mongo = new MongoDB();
+		mongo = mongo=MongoDB.getInstance();
 		try {
 			return mongo.getGroup(id);
 		} catch (Exception e) {
@@ -59,7 +67,7 @@ public class GroupServiceImpl implements GroupService {
 	
 				//modificamos el group a la bbdd
 				//bbdd.putGroup(group);
-				MongoDB mongo = new MongoDB();
+				mongo=MongoDB.getInstance();
 				mongo.putGroup(group);
 				
 			} catch (Exception e) {
@@ -87,7 +95,7 @@ public class GroupServiceImpl implements GroupService {
 				}catch (Exception e){
 					//insertamos el Group a la bbdd
 					//bbdd.putGroup(group);
-					MongoDB mongo = new MongoDB();
+					mongo=MongoDB.getInstance();
 					mongo.putGroup(group);
 					break;
 				}
@@ -105,7 +113,7 @@ public class GroupServiceImpl implements GroupService {
 	}
 
 	public void deleteGroup(String id) throws Exception {
-		MongoDB mongo = new MongoDB();
+		mongo=MongoDB.getInstance();
 		try {
 			mongo.deleteGroup(id);
 		} catch (Exception e) {
