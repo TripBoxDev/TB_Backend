@@ -1,10 +1,13 @@
 package com.tripbox.elements;
 
+import java.util.ArrayList;
+
 public class TransportCard extends Card {
 
 	private long initDate=0l;
 	private long finalDate=0l;
 	private String transportType=null;
+	private ArrayList<String> childCardsId=new ArrayList<String>();
 	
 	public TransportCard(){}
 	
@@ -43,6 +46,14 @@ public class TransportCard extends Card {
 
 	public void setTransportType(String transportType) {
 		this.transportType = transportType;
+	}
+
+	public ArrayList<String> getChildCardsId() {
+		return childCardsId;
+	}
+
+	public void setChildCardsId(ArrayList<String> childCardsId) {
+		this.childCardsId = childCardsId;
 	}
 
 	

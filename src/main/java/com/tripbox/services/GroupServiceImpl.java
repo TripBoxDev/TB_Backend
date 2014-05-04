@@ -268,6 +268,10 @@ public class GroupServiceImpl implements GroupService {
 			switch(card.getCardType()){
 				case "transport":
 						TransportCard auxTransCard = (TransportCard) card;
+						
+						//no es pot afegir elements manualment a childCardsId
+						auxTransCard.setChildCardsId(new ArrayList<String>());
+						
 						group.getTransportCards().add(auxTransCard);
 					break;
 					
@@ -283,6 +287,10 @@ public class GroupServiceImpl implements GroupService {
 								//heretem les dates de init i final del parent
 								auxPlaceCard.setInitDate(parentCard.getInitDate());
 								auxPlaceCard.setFinalDate(parentCard.getFinalDate());
+								
+								//afegim la id d'aquesta card al childCardsId de la parent card
+								parentCard.getChildCardsId().add(auxPlaceCard.getCardId());
+								this.putCard(groupId, parentCard);
 							}
 						}
 						
@@ -309,7 +317,13 @@ public class GroupServiceImpl implements GroupService {
 						TransportCard auxTransCard = (TransportCard) foundCard;
 						group.getTransportCards().remove(auxTransCard);
 						
+						//guardem l'array de childs, per asegurarnos que la nova card no intenta afegir nous valors. aquest string no pot ser modificat per l'usuari
+						ArrayList<String> tempChilds =new ArrayList<String>();
+						tempChilds=auxTransCard.getChildCardsId();
+						
 						auxTransCard=(TransportCard) card;
+						//posem el mateix array de la card original
+						auxTransCard.setChildCardsId(tempChilds);
 						group.getTransportCards().add(auxTransCard);
 					}
 					break;
@@ -323,6 +337,12 @@ public class GroupServiceImpl implements GroupService {
 							TransportCard parentCard = (TransportCard) cardExistOnArray(parentId,group.getTransportCards());
 							if(parentCard==null){
 								throw new ElementNotFoundServiceException("ParentCard "+parentId+" not found");
+							}else{
+								//afegim la id d'aquesta card al childCardsId de la parent card
+								if(!parentCard.getChildCardsId().contains(auxPlaceCard.getCardId())){
+									parentCard.getChildCardsId().add(auxPlaceCard.getCardId());
+									this.putCard(groupId, parentCard);
+								}
 							}
 						}
 						group.getPlaceToSleepCards().remove(auxPlaceCard);
@@ -389,10 +409,29 @@ public class GroupServiceImpl implements GroupService {
 		foundCard=cardExistOnArray(cardId, group.getTransportCards());
 		if(foundCard!=null){
 			group.getTransportCards().remove(foundCard);
+			TransportCard transCard=(TransportCard)foundCard;
+			
+			//actualizamos la lista de parentsId de las childCards
+			for (String childCard:  transCard.getChildCardsId()){
+				PlaceToSleepCard placeCard = (PlaceToSleepCard) cardExistOnArray(childCard, group.getPlaceToSleepCards());
+				group.getPlaceToSleepCards().remove(placeCard);
+				placeCard.getParentCardIds().remove(childCard);
+				group.getPlaceToSleepCards().add(placeCard);
+				
+			}
 		}else{
 			foundCard=cardExistOnArray(cardId, group.getPlaceToSleepCards());
 			if(foundCard!=null){
 				group.getPlaceToSleepCards().remove(foundCard);
+				PlaceToSleepCard placeCard = (PlaceToSleepCard) foundCard;
+				
+				//actualizamos la lista de childCards de las parentCards
+				for(String parentCard: placeCard.getParentCardIds()){
+					TransportCard transportCard = (TransportCard) cardExistOnArray(parentCard, group.getTransportCards());
+					group.getTransportCards().remove(transportCard);
+					transportCard.getChildCardsId().remove(parentCard);
+					group.getTransportCards().add(transportCard);
+				}
 			}else{
 				foundCard=cardExistOnArray(cardId, group.getOtherCards());
 				if(foundCard!=null){
