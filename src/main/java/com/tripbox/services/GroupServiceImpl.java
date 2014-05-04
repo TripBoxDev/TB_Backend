@@ -32,11 +32,10 @@ public class GroupServiceImpl implements GroupService {
 	//Querys bbdd = Mock.getInstance();
 	//Querys bbdd=new MongoDB();
 	IdGenerator idGen=IdGenerator.getInstance();
-	
+
 	MongoDB mongo;
 			
-	
-	
+
 
 
 	public GroupServiceImpl() {
@@ -156,7 +155,8 @@ public class GroupServiceImpl implements GroupService {
 		ArrayList<String> userGroups = user.getGroups();
 		userGroups.remove(groupId);
 		user.setGroups(userGroups);
-
+		
+		
 		// actualizamos la bbdd
 		if (group.getUsers().isEmpty()) {
 			this.deleteGroup(groupId);
@@ -285,8 +285,9 @@ public class GroupServiceImpl implements GroupService {
 
 
 	public Card putCard(String groupId, Card card) throws Exception {
+		UserService userService = new UserServiceImpl();
 		Group group;
-		UserServiceImpl userService = new UserServiceImpl();
+		
 		try{
 			group=this.getGroup(groupId);
 		}catch(Exception e){
@@ -303,7 +304,7 @@ public class GroupServiceImpl implements GroupService {
 		}catch(Exception e){
 			throw new ElementNotFoundServiceException("User "+card.getUserIdCreator()+" not found");
 		}
-		
+				
 		//si o te id significa que es una nova card
 		if(card.getCardId()==null){
 			card.setCardId(idGen.generateId());
