@@ -202,7 +202,8 @@ public class GroupRESTImpl implements GroupREST {
 	@Consumes("image/jpeg")
 	public Response saveGroupImage(@PathParam("groupId") String groupId, File fileImage) {
 
-		String uploadedFileLocation = "/var/www/groupImgs/"
+		//String uploadedFileLocation = "/var/www/groupImgs/"
+		String uploadedFileLocation = "C:/Users/Cristian/Desktop/"
 				+ groupId + ".jpg";
 
 		try {

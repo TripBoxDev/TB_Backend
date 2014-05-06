@@ -339,6 +339,15 @@ public class GroupRESTImplTest {
 
 			ClientResponse reString = webResource.type("image/jpeg").put(
 					ClientResponse.class, f);
+			
+			WebResource webResource2 = client
+					.resource("http://localhost:8080/TB_Backend/api/group/"
+							+ testGroupIMGID);
+
+			response = webResource2.type("application/json").get(
+					ClientResponse.class);
+			String output = response.getEntity(String.class);
+			System.out.println(output);
 
 		} catch (Exception e) {
 

@@ -473,6 +473,7 @@ public class GroupServiceImpl implements GroupService {
 			System.out.println(group.getImage());
 			if (group.getImage() == false) {
 				group.setImage();
+				putGroup(group);
 			}
 		} catch (IOException e) {
 
