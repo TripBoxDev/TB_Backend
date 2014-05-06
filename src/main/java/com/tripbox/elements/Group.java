@@ -26,15 +26,18 @@ public class Group {
 	private ArrayList<PlaceToSleepCard> placeToSleepCards  =  new ArrayList<PlaceToSleepCard>();
 	private ArrayList<OtherCard> otherCards  =  new ArrayList<OtherCard>();
 	
+	/**
+	 * Flag de la imagen
+	 */
+	private boolean flagImage = false;
+	
 	public Group(){}
 	
-	
-
 	public Group(String id, String name, String description,
 			ArrayList<String> users, ArrayList<String> destinations,
 			ArrayList<TransportCard> transportCards,
 			ArrayList<PlaceToSleepCard> placeToSleepCards,
-			ArrayList<OtherCard> otherCards) {
+			ArrayList<OtherCard> otherCards, boolean flagImage) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -44,6 +47,7 @@ public class Group {
 		this.transportCards = transportCards;
 		this.placeToSleepCards = placeToSleepCards;
 		this.otherCards = otherCards;
+		this.flagImage = false;
 	}
 
 	public String getId() {
@@ -70,6 +74,14 @@ public class Group {
 		this.description = description;
 	}
 
+	public boolean getImage() {
+		return flagImage;
+	}
+
+	public void setImage() {
+		this.flagImage = true;
+	}
+	
 	public ArrayList<String> getUsers() {
 		return users;
 	}

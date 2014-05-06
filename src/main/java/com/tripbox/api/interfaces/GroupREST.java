@@ -1,5 +1,7 @@
 package com.tripbox.api.interfaces;
 
+import java.io.File;
+
 import javax.ws.rs.core.Response;
 
 import com.tripbox.elements.Group;
@@ -73,5 +75,11 @@ public interface GroupREST {
 	 */
 	public Response deleteCard(String groupId,  String cardId);
 	
-
+	/**
+	* Funcion para subir una imagen al servidor, el nombre de la imagen es el ID.
+	* @param groupId String indica que grupo es.
+	* @param fileImage Archivo en si.
+	*/
+	public Response saveGroupImage(String groupId, File fileImage);
+	
 }
