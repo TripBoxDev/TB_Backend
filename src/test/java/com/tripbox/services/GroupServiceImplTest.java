@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 
+import javax.mail.Transport;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -15,6 +17,7 @@ import com.tripbox.elements.OtherCard;
 import com.tripbox.elements.PlaceToSleepCard;
 import com.tripbox.elements.TransportCard;
 import com.tripbox.elements.User;
+import com.tripbox.elements.Vote;
 import com.tripbox.services.exceptions.CardTypeException;
 import com.tripbox.services.exceptions.DestinationAlreadyExistException;
 import com.tripbox.services.exceptions.DestinationDoesntExistException;
@@ -29,8 +32,10 @@ public class GroupServiceImplTest {
 	static UserService userService = new UserServiceImpl();
 	static ArrayList<String> groups= new ArrayList<String>();
 	static ArrayList<String> users= new ArrayList<String>();
+	static ArrayList<String> usuarios= new ArrayList<String>();
 	static ArrayList<String> destinations= new ArrayList<String>();
 	static ArrayList<String> destinationsTestCards= new ArrayList<String>();
+	static ArrayList<String> moreDestinations= new ArrayList<String>();
 	
 	static Group testGetGroup;
 	static Group resultGroup;
@@ -38,10 +43,13 @@ public class GroupServiceImplTest {
 	static Group putDeleteTestGroup;
 	
 	static User usuario;
+	static User usuario2;
 	static Group cardTestGroup;
 	static Group cardTestGroupWrInputs;
 	
 	static TransportCard tTestCard;
+	static TransportCard tTestCard2;
+	static TransportCard tTestCard3;
 	static PlaceToSleepCard ptsTestCard;
 	static OtherCard oTestCard;
 	
@@ -53,7 +61,11 @@ public class GroupServiceImplTest {
 		destinations.add("Roma");
 		destinations.add("Paris");
 		destinationsTestCards.add("Argentina");
-
+		moreDestinations.add("Londres");
+		moreDestinations.add("Moscow");
+		moreDestinations.add("Cerdanyola");
+		
+		
 		usuario = new User();
 		usuario.setName("userName");
 		usuario.setLastName("userLastName");
@@ -62,20 +74,45 @@ public class GroupServiceImplTest {
 		usuario.setEmail("myMail@mail.com");
 		usuario.setGroups(groups);
 
+		usuario2 = new User();
+		usuario2.setName("userName2");
+		usuario2.setLastName("userLastName2");
+		usuario2.setFacebookId("fbID2");
+		usuario2.setGoogleId("gID2");
+		usuario2.setEmail("myMail@mail2.com");
+		usuario2.setGroups(groups);
+
+		
 		//Anadimos usuario para el deleteUserToGroup
 		try {
 			usuario = userService.putUser(usuario);
+			usuario2 = userService.putUser(usuario2);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
 		
 		users.add(usuario.getId());
-	
+		usuarios.add(usuario.getId());
+		usuarios.add(usuario2.getId());
+		
+		
 		tTestCard = new TransportCard();
 		tTestCard.setUserIdCreator(usuario.getId());
 		tTestCard.setName("Transport Test Card");
 		tTestCard.setCardType("transport");
 		tTestCard.setDestination("Argentina");
+		
+		tTestCard2 = new TransportCard();
+		tTestCard2.setUserIdCreator(usuario.getId());
+		tTestCard2.setName("Transport Test Card 2");
+		tTestCard2.setCardType("transport");
+		tTestCard2.setDestination("Moscow");
+		
+		tTestCard3 = new TransportCard();
+		tTestCard3.setUserIdCreator(usuario.getId());
+		tTestCard3.setName("Transport Test Card 2");
+		tTestCard3.setCardType("transport");
+		tTestCard3.setDestination("Moscow");
 		
 		tWrongTestCard = new TransportCard();
 		tWrongTestCard.setUserIdCreator(usuario.getId());
@@ -198,7 +235,8 @@ public class GroupServiceImplTest {
 		deleteTestGroup.setName("deletetestGroup");
 		deleteTestGroup.setUsers(users);
 		
-		grupoServ.putGroup(deleteTestGroup);
+		deleteTestGroup = grupoServ.putGroup(deleteTestGroup);
+		deleteTestGroup = grupoServ.getGroup(deleteTestGroup.getId());
 		
 		//Eliminamos usuario existente de grupo existente
 		try {
@@ -212,7 +250,7 @@ public class GroupServiceImplTest {
 		} catch (Exception e) {
 			fail();
 		}
-		
+				
 		//Como "usuario" era el unico user en "deleteTestGroup" ahora "deleteTestGroup" deberia haber sido borrado
 		try {
 			grupoServ.getGroup(deleteTestGroup.getId());
@@ -221,12 +259,16 @@ public class GroupServiceImplTest {
 			
 		}
 		
+		//Como el grupo ha sido borrado, hay que volver a hacer el PUT para seguir con el test
+		deleteTestGroup.setId(null);
+		deleteTestGroup = grupoServ.putGroup(deleteTestGroup);
+		
 		//Eliminamos usuario existente de grupo INEXISTENTE (no tiene que funcionar)
 		try {
 			grupoServ.deleteUserToGroup("0000", usuario.getId());
 			fail();
 		} catch (Exception e) {
-			
+
 		}
 		
 		//Eliminamos usuario INEXISTENTE de grupo existente (no tiene que funcionar)
@@ -234,13 +276,18 @@ public class GroupServiceImplTest {
 		userNotInGroup.setFacebookId("fID");
 		userNotInGroup.setName("userNotInGroupName");
 		userNotInGroup.setGroups(groups);
-		
+
 		try {
 			grupoServ.deleteUserToGroup(deleteTestGroup.getId(), userNotInGroup.getId());
 			fail();
-		} catch (InvalidIdsException e) {
-			
+		} catch (ElementNotFoundServiceException e) {
+
+		} catch (Exception e) {
+			fail();
+			e.printStackTrace();
 		}
+		
+		grupoServ.deleteGroup(deleteTestGroup.getId());
 	}
 	
 
@@ -543,6 +590,187 @@ public class GroupServiceImplTest {
 			fail();
 		}
 	}
+	
+	
+	@Test
+	public void testCardExistOnArray() throws Exception {
+		//Card que si existe
+		Group cardExistGroup = new Group();
+		cardExistGroup.setName("cardExistGroup");
+		cardExistGroup.setDestinations(moreDestinations);
+
+		cardExistGroup = grupoServ.putGroup(cardExistGroup);
+		
+		grupoServ.putCard(cardExistGroup.getId(), tTestCard2);
+		cardExistGroup = grupoServ.getGroup(cardExistGroup.getId());
+		
+		try {
+			TransportCard resultCard = (TransportCard) grupoServ.cardExistOnArray(tTestCard2.getCardId(), cardExistGroup.getTransportCards());
+
+			assertEquals(resultCard.getCardId(), tTestCard2.getCardId());
+			assertEquals(resultCard.getName(), tTestCard2.getName());
+			
+		} catch (Exception e) {
+			fail();
+		}
+		
+		//Card que existe pero no esta en la array
+		try {
+			TransportCard resultCard = (TransportCard) grupoServ.cardExistOnArray(tTestCard2.getCardId(), cardExistGroup.getPlaceToSleepCards());
+
+			assertNull(resultCard);
+			
+		} catch (Exception e) {
+			fail();
+		}
+		
+		grupoServ.deleteGroup(cardExistGroup.getId());
+		
+	}
+	
+	
+	//TODO putVote
+	@Test
+	public void testPutVote() throws Exception {
+		TransportCard resultCard;
+		Group putVoteGroup = new Group();
+		putVoteGroup.setName("cardExistGroup");
+		putVoteGroup.setDestinations(moreDestinations);
+		putVoteGroup.setUsers(usuarios);
+		
+		putVoteGroup = grupoServ.putGroup(putVoteGroup);
+		
+		grupoServ.putCard(putVoteGroup.getId(), tTestCard3);
+		putVoteGroup = grupoServ.getGroup(putVoteGroup.getId());
+		
+		Vote voto = new Vote();
+		voto.setUserId(usuario.getId());
+		voto.setValue(4);
+		
+		Vote voto2 = new Vote();
+		voto2.setUserId(usuario2.getId());
+		voto2.setValue(2);
+				
+		try {
+			//Nuevo voto
+			resultCard = (TransportCard) grupoServ.putVote(putVoteGroup.getId(), tTestCard3.getCardId(), voto);
+			
+			assertTrue(resultCard.getVotes().get(0).getValue()==4);
+			assertTrue(resultCard.getAverage()==4);
+			
+			//Si insertamos mas votos se hace la media correctamente
+			resultCard = (TransportCard) grupoServ.putVote(putVoteGroup.getId(), tTestCard3.getCardId(), voto2);
+			assertTrue(resultCard.getAverage()==3);
+			
+			//Modificar Voto
+			voto2.setValue(0);
+			resultCard = (TransportCard) grupoServ.putVote(putVoteGroup.getId(), tTestCard3.getCardId(), voto2);
+			assertTrue(resultCard.getAverage()==2);
+			
+			//Si sale un usuario del grupo se recalcula la media correctamente
+			grupoServ.deleteUserToGroup(putVoteGroup.getId(), usuario2.getId());
+
+			putVoteGroup = grupoServ.getGroup(putVoteGroup.getId());
+			resultCard = (TransportCard) grupoServ.cardExistOnArray(resultCard.getCardId(), putVoteGroup.getTransportCards());
+
+			assertTrue(resultCard.getAverage() == 4);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+		
+		grupoServ.deleteGroup(putVoteGroup.getId());
+	}
+	
+
+	@Test
+	public void testPutVoteWrongInputs() throws Exception {
+		TransportCard tTestCard4 = new TransportCard();
+		tTestCard4.setUserIdCreator(usuario.getId());
+		tTestCard4.setName("Transport Test Card 2");
+		tTestCard4.setCardType("transport");
+		tTestCard4.setDestination("Moscow");
+		
+		Vote voto = new Vote();
+		voto.setUserId(usuario.getId());
+		voto.setValue(5);
+		
+		Group putVoteGroup = new Group();
+		putVoteGroup.setName("cardExistGroup");
+		putVoteGroup.setDestinations(moreDestinations);
+		putVoteGroup.setUsers(usuarios);
+		
+		putVoteGroup = grupoServ.putGroup(putVoteGroup);
+		
+		try{
+			grupoServ.putCard(putVoteGroup.getId(), tTestCard4);
+			putVoteGroup = grupoServ.getGroup(putVoteGroup.getId());
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+		
+		
+		//Grupo inexistente
+		try {
+			grupoServ.putVote("333", tTestCard4.getCardId(), voto);
+			fail();
+		} catch (ElementNotFoundServiceException e) {
+			
+		} catch (Exception e) {
+			fail();
+		}
+		
+		//ID de la card erroneo
+		try {
+			grupoServ.putVote(putVoteGroup.getId(), "333", voto);
+			fail();
+		} catch (ElementNotFoundServiceException e) {
+			
+		} catch (Exception e) {
+			fail();
+		}
+		
+		//Card existente en un grupo en el cual el usuario no esta
+		Group putVoteGroup2 = new Group();
+		putVoteGroup2.setName("cardExistGroup");
+		putVoteGroup2.setDestinations(moreDestinations);
+		
+		putVoteGroup2 = grupoServ.putGroup(putVoteGroup2);
+		
+		try {
+			grupoServ.putVote(putVoteGroup2.getId(), tTestCard4.getCardId(), voto);
+			fail();
+		} catch (ElementNotFoundServiceException e) {
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+		
+		/* Por ahora no se controla que un voto pueda tener unos valores conretos
+		//Valor voto incorrecto
+		try {
+			voto.setValue(20);
+					
+			grupoServ.putVote(putVoteGroup.getId(), tTestCard4.getCardId(), voto);
+			fail();
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+			
+		try {
+			voto.setValue(-2);
+			
+			grupoServ.putVote(putVoteGroup.getId(), tTestCard4.getCardId(), voto);
+			fail();
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+		*/		
+	}
+	
 	
 	@After
 	public void tearDown() throws Exception{
