@@ -66,4 +66,14 @@ public interface GroupService {
 	 */
 	public Card putVote(String groupId, String cardId, Vote vote) throws Exception;
 
+	/**
+	 * Funcion que permite definir el pack mejor valorado de un destino.
+	 */
+	public void definePack(Group group) throws Exception;
+	
+	/**
+	 * Funcion que permite calcular el porcentaje de destino.
+	 */
+	public void calculatePack() throws Exception;
+
 }

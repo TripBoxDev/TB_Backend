@@ -15,6 +15,7 @@ public abstract class Card {
 	private String nameCreator=null;
 	private String lastNameCreator=null;
 	private ArrayList<Vote> votes = new ArrayList<Vote>();
+	private boolean bestPack = false;
 	
 	/**
 	 * Valor máximo de un voto.
@@ -114,7 +115,15 @@ public abstract class Card {
 	public void setLastNameCreator(String lastNameCreator) {
 		this.lastNameCreator = lastNameCreator;
 	}
-
+	public boolean getBestPack() {
+		return bestPack;
+	}
+	public void setBestPack() {
+		this.bestPack = true;
+	}
+	public void setNoBestPack(){
+		this.bestPack = false;
+	}
 
 	public ArrayList<Vote> getVotes() {
 		return votes;

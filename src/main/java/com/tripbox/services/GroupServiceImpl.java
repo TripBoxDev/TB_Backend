@@ -282,8 +282,7 @@ public class GroupServiceImpl implements GroupService {
 		}
 		
 	}
-
-
+	
 	public Card putCard(String groupId, Card card) throws Exception {
 		UserService userService = new UserServiceImpl();
 		Group group;
@@ -498,6 +497,37 @@ public class GroupServiceImpl implements GroupService {
 			throw new ElementNotFoundServiceException("Card "+cardId+" not found");
 		}
 
+	}
+
+	public void definePack(Group group) throws Exception {
+		TransportCard bestTempTransportCard = null;
+		PlaceToSleepCard bestPlaceToSleepCard = null;
+		double bestTempValoration = 0;
+		
+		for (PlaceToSleepCard pts : group.getPlaceToSleepCards()){
+			double avgPts = pts.getAverage();
+			for (String ptsId : pts.getParentCardIds()) {
+				TransportCard tcCard = (TransportCard) cardExistOnArray(ptsId, pts.getParentCardIds());
+				
+				double avgTc = tcCard.getAverage();
+				
+				//Pensar en la varianza
+				double ponderacion=0; //Funcion ponderacion
+				
+				if (ponderacion > bestTempValoration){
+					
+				}
+				
+				
+				
+			}
+		}
+		
+	}
+
+	public void calculatePack() throws Exception {
+
+		
 	}
 
 }
