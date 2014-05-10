@@ -503,31 +503,38 @@ public class GroupServiceImpl implements GroupService {
 		TransportCard bestTempTransportCard = null;
 		PlaceToSleepCard bestPlaceToSleepCard = null;
 		double bestTempValoration = 0;
+		double avgPts;
+		double avgTc;
+		double ponderation;
 		
-		for (PlaceToSleepCard pts : group.getPlaceToSleepCards()){
-			double avgPts = pts.getAverage();
-			for (String ptsId : pts.getParentCardIds()) {
-				TransportCard tcCard = (TransportCard) cardExistOnArray(ptsId, pts.getParentCardIds());
-				
-				double avgTc = tcCard.getAverage();
+		for (PlaceToSleepCard ptsCard : group.getPlaceToSleepCards()){
+			avgPts = ptsCard.getAverage();
+			for (String ptsId : ptsCard.getParentCardIds()) {
+				TransportCard tcCard = (TransportCard) cardExistOnArray(ptsId, ptsCard.getParentCardIds());
+				avgTc = tcCard.getAverage();
 				
 				//Pensar en la varianza
-				double ponderacion=0; //Funcion ponderacion
+				ponderation = calculatePackPercentage(tcCard, ptsCard);
 				
-				if (ponderacion > bestTempValoration){
-					
-				}
-				
-				
-				
+				if (ponderation > bestTempValoration){
+					bestTempTransportCard = tcCard;
+					bestPlaceToSleepCard = ptsCard;
+				}	
 			}
 		}
 		
+		if (bestTempTransportCard.getBestPack() == false){
+			bestTempTransportCard.setBestPack();
+		}
+		
+		if (bestPlaceToSleepCard.getBestPack() == false){
+			bestPlaceToSleepCard.setBestPack();
+		}
 	}
 
-	public void calculatePack() throws Exception {
+	public double calculatePackPercentage(TransportCard tcCard, PlaceToSleepCard ptsCard) throws Exception {
 
-		
+		return 0.5;
 	}
 
 }

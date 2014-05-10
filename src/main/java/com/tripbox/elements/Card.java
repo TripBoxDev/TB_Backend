@@ -121,7 +121,7 @@ public abstract class Card {
 	public void setBestPack() {
 		this.bestPack = true;
 	}
-	public void setNoBestPack(){
+	public void setDeleteOfBestPack(){
 		this.bestPack = false;
 	}
 

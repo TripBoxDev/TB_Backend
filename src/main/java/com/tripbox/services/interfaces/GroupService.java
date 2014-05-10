@@ -3,6 +3,8 @@ package com.tripbox.services.interfaces;
 
 import com.tripbox.elements.Card;
 import com.tripbox.elements.Group;
+import com.tripbox.elements.PlaceToSleepCard;
+import com.tripbox.elements.TransportCard;
 import com.tripbox.elements.Vote;
 
 public interface GroupService {
@@ -74,6 +76,6 @@ public interface GroupService {
 	/**
 	 * Funcion que permite calcular el porcentaje de destino.
 	 */
-	public void calculatePack() throws Exception;
+	public double calculatePackPercentage(TransportCard tcCard, PlaceToSleepCard ptsCard) throws Exception;
 
 }
