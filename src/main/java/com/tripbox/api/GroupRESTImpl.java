@@ -31,177 +31,184 @@ import com.tripbox.services.exceptions.InvalidIdsException;
 import com.tripbox.services.exceptions.UserNotExistOnGroup;
 import com.tripbox.services.interfaces.GroupService;
 
-
 @Path("/group")
-public class GroupRESTImpl implements GroupREST{
+public class GroupRESTImpl implements GroupREST {
 
-GroupService groupService = new GroupServiceImpl();
+	GroupService groupService = new GroupServiceImpl();
 
-@GET
-@Path("/{id}")
-@Produces(MediaType.APPLICATION_JSON)
-public Response getGroup(@PathParam("id") String id) {
-try{
-return Response.ok(groupService.getGroup(id)).build();
-} catch (ElementNotFoundServiceException e) {
-throw new ElementNotFoundException("Item, " + id + ", is not found");
-} catch (Exception e){
-throw new WebApplicationException();
-}
+	@GET
+	@Path("/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getGroup(@PathParam("id") String id) {
+		try {
+			return Response.ok(groupService.getGroup(id)).build();
+		} catch (ElementNotFoundServiceException e) {
+			throw new ElementNotFoundException("Item, " + id + ", is not found");
+		} catch (Exception e) {
+			throw new WebApplicationException();
+		}
 
-}
+	}
 
-@PUT
-@Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
-public Response putGroup(Group group) {
-try{
-return Response.ok(groupService.putGroup(group)).build();
-}catch (InvalidIdsException e) {
-throw new ElementNotFoundException(e.getMessage());
-}catch (Exception e){
-throw new WebApplicationException();
-}
-}
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response putGroup(Group group) {
+		try {
+			return Response.ok(groupService.putGroup(group)).build();
+		} catch (InvalidIdsException e) {
+			throw new ElementNotFoundException(e.getMessage());
+		} catch (Exception e) {
+			throw new WebApplicationException();
+		}
+	}
 
-@DELETE
-@Path("/{id}")
-public Response deleteGroup(@PathParam("id") String id) {
-throw new MethodNotImplementedException("Method not implemented");
-}
+	@DELETE
+	@Path("/{id}")
+	public Response deleteGroup(@PathParam("id") String id) {
+		throw new MethodNotImplementedException("Method not implemented");
+	}
 
-@DELETE
-@Path("/{groupId}/user/{userId}")
-public Response deleteUserToGroup(@PathParam("groupId") String groupId, @PathParam("userId") String userId) {
-try{
-groupService.deleteUserToGroup(groupId, userId);
-return Response.ok().build();
-}catch (ElementNotFoundServiceException e) {
-throw new ElementNotFoundException(e.getMessage());
-}catch(UserNotExistOnGroup ex){
-throw new UserNotExistOnGroupREST("User: "+userId+" doesn't exist on this group");
-}catch (Exception e){
+	@DELETE
+	@Path("/{groupId}/user/{userId}")
+	public Response deleteUserToGroup(@PathParam("groupId") String groupId,
+			@PathParam("userId") String userId) {
+		try {
+			groupService.deleteUserToGroup(groupId, userId);
+			return Response.ok().build();
+		} catch (ElementNotFoundServiceException e) {
+			throw new ElementNotFoundException(e.getMessage());
+		} catch (UserNotExistOnGroup ex) {
+			throw new UserNotExistOnGroupREST("User: " + userId
+					+ " doesn't exist on this group");
+		} catch (Exception e) {
 
-throw new WebApplicationException(e.getStackTrace().toString());
-}
-}
+			throw new WebApplicationException(e.getStackTrace().toString());
+		}
+	}
 
-@PUT
-@Path("/{id}/destination")
-@Consumes(MediaType.TEXT_PLAIN)
-public Response putDestination(@PathParam("id") String id, String newDestination){
+	@PUT
+	@Path("/{id}/destination")
+	@Consumes(MediaType.TEXT_PLAIN)
+	public Response putDestination(@PathParam("id") String id,
+			String newDestination) {
 
-try {
-groupService.putDestination(id, newDestination);
-return Response.ok().build();
-} catch (ElementNotFoundServiceException e) {
-throw new ElementNotFoundException(e.getMessage());
-}catch (Exception e){
-throw new WebApplicationException();
-}
-}
+		try {
+			groupService.putDestination(id, newDestination);
+			return Response.ok().build();
+		} catch (ElementNotFoundServiceException e) {
+			throw new ElementNotFoundException(e.getMessage());
+		} catch (Exception e) {
+			throw new WebApplicationException();
+		}
+	}
 
+	@DELETE
+	@Path("/{id}/destination")
+	@Consumes(MediaType.TEXT_PLAIN)
+	public Response deleteDestination(@PathParam("id") String id,
+			String destinationToDelete) {
+		try {
+			groupService.deleteDestination(id, destinationToDelete);
+			return Response.ok().build();
+		} catch (ElementNotFoundServiceException e) {
+			throw new ElementNotFoundException(e.getMessage());
+		} catch (Exception e) {
+			throw new WebApplicationException();
+		}
+	}
 
-@DELETE
-@Path("/{id}/destination")
-@Consumes(MediaType.TEXT_PLAIN)
-public Response deleteDestination(@PathParam("id") String id, String destinationToDelete){
-try {
-groupService.deleteDestination(id, destinationToDelete);
-return Response.ok().build();
-} catch (ElementNotFoundServiceException e) {
-throw new ElementNotFoundException(e.getMessage());
-} catch (Exception e){
-throw new WebApplicationException();
-}
-}
+	@PUT
+	@Path("/{id}/transportCard")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response putCard(@PathParam("id") String id, TransportCard card) {
+		try {
+			return Response.ok(groupService.putCard(id, card)).build();
+		} catch (ElementNotFoundServiceException e) {
+			throw new ElementNotFoundException(e.getMessage());
+		} catch (CardTypeException e) {
+			throw new RequiredParamsFail("Card Type doesn't exist");
+		} catch (DestinationDoesntExistException exDes) {
+			throw new ElementNotFoundException("Destination "
+					+ card.getDestination() + " doesn't exist");
+		} catch (InvalidIdsException e) {
+			throw new ElementNotFoundException(e.getMessage());
+		} catch (Exception e) {
+			throw new WebApplicationException(e.getStackTrace().toString());
+		}
+	}
 
-@PUT
-@Path("/{id}/transportCard")
-@Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
-public Response putCard(@PathParam("id") String id, TransportCard card){
-try {
-return Response.ok(groupService.putCard(id, card)).build();
-} catch (ElementNotFoundServiceException e){
-throw new ElementNotFoundException(e.getMessage());
-} catch (CardTypeException e) {
-throw new RequiredParamsFail("Card Type doesn't exist");
-} catch (DestinationDoesntExistException exDes){
-throw new ElementNotFoundException("Destination "+card.getDestination()+" doesn't exist");
-} catch (InvalidIdsException e){
-throw new ElementNotFoundException(e.getMessage());
-} catch (Exception e){
-throw new WebApplicationException(e.getStackTrace().toString());
-}
-}
+	@PUT
+	@Path("/{id}/placeToSleepCard")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response putCard(@PathParam("id") String id, PlaceToSleepCard card) {
+		try {
+			return Response.ok(groupService.putCard(id, card)).build();
+		} catch (ElementNotFoundServiceException e) {
+			throw new ElementNotFoundException(e.getMessage());
+		} catch (CardTypeException e) {
+			throw new RequiredParamsFail("Card Type doesn't exist");
+		} catch (DestinationDoesntExistException exDes) {
+			throw new ElementNotFoundException("Destination "
+					+ card.getDestination() + " doesn't exist");
+		} catch (InvalidIdsException e) {
+			throw new ElementNotFoundException(e.getMessage());
+		} catch (Exception e) {
+			throw new WebApplicationException(e.getStackTrace().toString());
+		}
+	}
 
-@PUT
-@Path("/{id}/placeToSleepCard")
-@Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
-public Response putCard(@PathParam("id") String id, PlaceToSleepCard card){
-try {
-return Response.ok(groupService.putCard(id, card)).build();
-} catch (ElementNotFoundServiceException e){
-throw new ElementNotFoundException(e.getMessage());
-} catch (CardTypeException e) {
-throw new RequiredParamsFail("Card Type doesn't exist");
-} catch (DestinationDoesntExistException exDes){
-throw new ElementNotFoundException("Destination "+card.getDestination()+" doesn't exist");
-} catch (InvalidIdsException e){
-throw new ElementNotFoundException(e.getMessage());
-} catch (Exception e){
-throw new WebApplicationException(e.getStackTrace().toString());
-}
-}
+	@PUT
+	@Path("/{id}/otherCard")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response putCard(@PathParam("id") String id, OtherCard card) {
+		try {
+			return Response.ok(groupService.putCard(id, card)).build();
+		} catch (ElementNotFoundServiceException e) {
+			throw new ElementNotFoundException(e.getMessage());
+		} catch (CardTypeException e) {
+			throw new RequiredParamsFail("Card Type doesn't exist");
+		} catch (DestinationDoesntExistException exDes) {
+			throw new ElementNotFoundException("Destination "
+					+ card.getDestination() + " doesn't exist");
+		} catch (InvalidIdsException e) {
+			throw new ElementNotFoundException(e.getMessage());
+		} catch (Exception e) {
+			throw new WebApplicationException(e.getStackTrace().toString());
+		}
+	}
 
-@PUT
-@Path("/{id}/otherCard")
-@Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
-public Response putCard(@PathParam("id") String id, OtherCard card){
-try {
-return Response.ok(groupService.putCard(id, card)).build();
-} catch (ElementNotFoundServiceException e){
-throw new ElementNotFoundException(e.getMessage());
-} catch (CardTypeException e) {
-throw new RequiredParamsFail("Card Type doesn't exist");
-} catch (DestinationDoesntExistException exDes){
-throw new ElementNotFoundException("Destination "+card.getDestination()+" doesn't exist");
-}catch (InvalidIdsException e){
-throw new ElementNotFoundException(e.getMessage());
-} catch (Exception e){
-throw new WebApplicationException(e.getStackTrace().toString());
-}
-}
+	@DELETE
+	@Path("/{groupId}/card/{cardId}")
+	public Response deleteCard(@PathParam("groupId") String groupId,
+			@PathParam("cardId") String cardId) {
+		try {
+			groupService.deleteCard(groupId, cardId);
+			return Response.ok().build();
+		} catch (ElementNotFoundServiceException e) {
+			throw new ElementNotFoundException(e.getMessage());
+		} catch (Exception e) {
+			throw new WebApplicationException(e.getStackTrace().toString());
+		}
+	}
 
-@DELETE
-@Path("/{groupId}/card/{cardId}")
-public Response deleteCard(@PathParam("groupId") String groupId, @PathParam("cardId") String cardId){
-try {
-groupService.deleteCard(groupId, cardId);
-return Response.ok().build();
-} catch (ElementNotFoundServiceException e) {
-throw new ElementNotFoundException(e.getMessage());
-} catch (Exception e){
-throw new WebApplicationException(e.getStackTrace().toString());
-}
-}
-
-@PUT
-@Path("/{groupId}/card/{cardId}/vote")
-@Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
-public Response putVote(@PathParam("groupId") String groupId, @PathParam("cardId") String cardId, Vote vote) {
-try{
-return Response.ok(groupService.putVote(groupId, cardId, vote)).build();
-}catch (ElementNotFoundServiceException e){
-throw new ElementNotFoundException(e.getMessage());
-}catch (Exception e){
-throw new WebApplicationException(e.getStackTrace().toString());
-}
-}
-
+	@PUT
+	@Path("/{groupId}/card/{cardId}/vote")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response putVote(@PathParam("groupId") String groupId,
+			@PathParam("cardId") String cardId, Vote vote) {
+		try {
+			return Response.ok(groupService.putVote(groupId, cardId, vote))
+					.build();
+		} catch (ElementNotFoundServiceException e) {
+			throw new ElementNotFoundException(e.getMessage());
+		} catch (Exception e) {
+			throw new WebApplicationException(e.getStackTrace().toString());
+		}
+	}
 
 }
