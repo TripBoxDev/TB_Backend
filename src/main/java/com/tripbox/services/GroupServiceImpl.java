@@ -1,11 +1,5 @@
 package com.tripbox.services;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,6 +14,7 @@ import com.tripbox.elements.OtherCard;
 import com.tripbox.elements.PlaceToSleepCard;
 import com.tripbox.elements.TransportCard;
 import com.tripbox.elements.User;
+import com.tripbox.elements.Vote;
 import com.tripbox.others.IdGenerator;
 import com.tripbox.services.exceptions.CardTypeException;
 import com.tripbox.services.exceptions.DestinationAlreadyExistException;
@@ -53,8 +48,10 @@ public class GroupServiceImpl implements GroupService {
 	}
 
 	public Group putGroup(Group group) throws Exception {
+
 		// si el Group es nuevo le asignamos una id
 		if (group.getId() == null) {
+
 			group = putNewGroup(group);
 		} else {
 
@@ -79,7 +76,6 @@ public class GroupServiceImpl implements GroupService {
 	private Group putNewGroup(Group group) throws Exception {
 		String newId = idGen.generateId();
 		group.setId(newId);
-
 		while (true) {
 			try {
 				// comprovamos si el id existe
@@ -94,7 +90,6 @@ public class GroupServiceImpl implements GroupService {
 					// bbdd.putGroup(group);
 					mongo = MongoDB.getInstance();
 					mongo.putGroup(group);
-
 					break;
 				}
 
@@ -120,24 +115,25 @@ public class GroupServiceImpl implements GroupService {
 
 	public void deleteUserToGroup(String groupId, String userId)
 			throws Exception {
-
 		UserService userService = new UserServiceImpl();
+		User user;
+		Group group;
 		try {
-			this.getGroup(groupId);
+			group = this.getGroup(groupId);
 		} catch (Exception e) {
-			throw new InvalidIdsException("El grupo con el ID, " + groupId
-					+ ", no exsiste");
+			throw new ElementNotFoundServiceException("El grupo con el ID, "
+					+ groupId + ", no exsiste");
 		}
 
 		try {
-			userService.getUser(userId);
+			user = userService.getUser(userId);
 		} catch (Exception e) {
-			throw new InvalidIdsException("El usuario con el ID, " + userId
-					+ ", no exsiste");
+			throw new ElementNotFoundServiceException("El usuario con el ID, "
+					+ userId + ", no exsiste");
 		}
 
 		// eliminamos el user de la lista de users del grupo
-		Group group = this.getGroup(groupId);
+		group = this.getGroup(groupId);
 		ArrayList<String> groupUsers = group.getUsers();
 
 		try {
@@ -149,7 +145,7 @@ public class GroupServiceImpl implements GroupService {
 
 		group.setUsers(groupUsers);
 		// eliminamos el grup de la lista de grupos del usuario
-		User user = userService.getUser(userId);
+		user = userService.getUser(userId);
 		ArrayList<String> userGroups = user.getGroups();
 		userGroups.remove(groupId);
 		user.setGroups(userGroups);
@@ -161,6 +157,53 @@ public class GroupServiceImpl implements GroupService {
 			this.putGroup(group);
 		}
 
+		// eliminamos los votos del user en las cards del grupo
+		ArrayList<String> cardsVoted = user.getCardsVoted();
+		ArrayList<String> cardsVoteDelete = new ArrayList<String>(); // guardamos
+																		// las
+																		// cards
+																		// encontradas
+																		// en
+																		// este
+																		// grupo
+		for (String cardVoted : cardsVoted) {
+			// buscamos la card dentro de los tres array: transportCards,
+			// placeToSleepCards y otherCards
+			Card cardFound = null;
+			cardFound = cardExistOnArray(cardVoted, group.getTransportCards());
+			if (cardFound == null) {
+				cardFound = cardExistOnArray(cardVoted,
+						group.getPlaceToSleepCards());
+				if (cardFound == null) {
+					cardFound = cardExistOnArray(cardVoted,
+							group.getOtherCards());
+				}
+			}
+
+			if (cardFound != null) {// si encontramos la card guardamos su id y
+									// buscamos y eliminamos el voto del user
+				cardsVoteDelete.add(cardVoted);
+
+				boolean voteFound = false;
+				Vote foundVote = null;
+				Iterator<Vote> it = cardFound.getVotes().iterator();
+				while (it.hasNext() && !voteFound) { // buscamos el voto
+					Vote vote = it.next();
+					if (vote.getUserId().equalsIgnoreCase(userId)) {
+						voteFound = true;
+						foundVote = vote;
+					}
+				}
+
+				cardFound.getVotes().remove(foundVote);// eliminamos el voto
+				cardFound.calculateAverage();
+				this.putCard(groupId, cardFound);
+			}
+		}
+
+		for (String deleteVoteOnUser : cardsVoteDelete) {
+			user.getCardsVoted().remove(deleteVoteOnUser);
+		}
 		userService.putUser(user);
 	}
 
@@ -240,8 +283,9 @@ public class GroupServiceImpl implements GroupService {
 	}
 
 	public Card putCard(String groupId, Card card) throws Exception {
+		UserService userService = new UserServiceImpl();
 		Group group;
-		UserServiceImpl userService = new UserServiceImpl();
+
 		try {
 			group = this.getGroup(groupId);
 		} catch (Exception e) {
@@ -270,10 +314,6 @@ public class GroupServiceImpl implements GroupService {
 			switch (card.getCardType()) {
 			case "transport":
 				TransportCard auxTransCard = (TransportCard) card;
-
-				// no es pot afegir elements manualment a childCardsId
-				auxTransCard.setChildCardsId(new ArrayList<String>());
-
 				group.getTransportCards().add(auxTransCard);
 				break;
 
@@ -291,12 +331,6 @@ public class GroupServiceImpl implements GroupService {
 						// heretem les dates de init i final del parent
 						auxPlaceCard.setInitDate(parentCard.getInitDate());
 						auxPlaceCard.setFinalDate(parentCard.getFinalDate());
-
-						// afegim la id d'aquesta card al childCardsId de la
-						// parent card
-						parentCard.getChildCardsId().add(
-								auxPlaceCard.getCardId());
-						this.putCard(groupId, parentCard);
 					}
 				}
 
@@ -322,6 +356,7 @@ public class GroupServiceImpl implements GroupService {
 				if (foundCard != null) {
 					TransportCard auxTransCard = (TransportCard) foundCard;
 					group.getTransportCards().remove(auxTransCard);
+
 					auxTransCard = (TransportCard) card;
 					group.getTransportCards().add(auxTransCard);
 				}
@@ -339,15 +374,6 @@ public class GroupServiceImpl implements GroupService {
 						if (parentCard == null) {
 							throw new ElementNotFoundServiceException(
 									"ParentCard " + parentId + " not found");
-						} else {
-							// afegim la id d'aquesta card al childCardsId de la
-							// parent card
-							if (!parentCard.getChildCardsId().contains(
-									auxPlaceCard.getCardId())) {
-								parentCard.getChildCardsId().add(
-										auxPlaceCard.getCardId());
-								this.putCard(groupId, parentCard);
-							}
 						}
 					}
 					group.getPlaceToSleepCards().remove(auxPlaceCard);
@@ -388,10 +414,10 @@ public class GroupServiceImpl implements GroupService {
 		Card foundCard = null;
 		Iterator<Card> it = cardsArray.iterator();
 		while (it.hasNext() && !cardExist) {
-			Card transpCard = it.next();
-			if (transpCard.getCardId().equalsIgnoreCase(cardId)) {
+			Card card = it.next();
+			if (card.getCardId().equalsIgnoreCase(cardId)) {
 				cardExist = true;
-				foundCard = transpCard;
+				foundCard = card;
 			}
 		}
 
@@ -402,9 +428,7 @@ public class GroupServiceImpl implements GroupService {
 	public void deleteCard(String groupId, String cardId) throws Exception {
 		Group group;
 		try {
-
 			group = this.getGroup(groupId);
-
 		} catch (Exception e) {
 			throw new ElementNotFoundServiceException("Group " + groupId
 					+ " not found");
@@ -414,32 +438,10 @@ public class GroupServiceImpl implements GroupService {
 		foundCard = cardExistOnArray(cardId, group.getTransportCards());
 		if (foundCard != null) {
 			group.getTransportCards().remove(foundCard);
-			TransportCard transCard = (TransportCard) foundCard;
-
-			// actualizamos la lista de parentsId de las childCards
-			for (String childCard : transCard.getChildCardsId()) {
-				PlaceToSleepCard placeCard = (PlaceToSleepCard) cardExistOnArray(
-						childCard, group.getPlaceToSleepCards());
-				group.getPlaceToSleepCards().remove(placeCard);
-				placeCard.getParentCardIds().remove(transCard.getCardId());
-				group.getPlaceToSleepCards().add(placeCard);
-
-			}
 		} else {
 			foundCard = cardExistOnArray(cardId, group.getPlaceToSleepCards());
 			if (foundCard != null) {
 				group.getPlaceToSleepCards().remove(foundCard);
-				PlaceToSleepCard placeCard = (PlaceToSleepCard) foundCard;
-
-				// actualizamos la lista de childCards de las parentCards
-				for (String parentCard : placeCard.getParentCardIds()) {
-					TransportCard transportCard = (TransportCard) cardExistOnArray(
-							parentCard, group.getTransportCards());
-					group.getTransportCards().remove(transportCard);
-					transportCard.getChildCardsId().remove(
-							placeCard.getCardId());
-					group.getTransportCards().add(transportCard);
-				}
 			} else {
 				foundCard = cardExistOnArray(cardId, group.getOtherCards());
 				if (foundCard != null) {
@@ -454,30 +456,55 @@ public class GroupServiceImpl implements GroupService {
 
 	}
 
-	public void saveGroupImage(String groupId, File fileImage,
-			String uploadedFileLocation) throws Exception {
-		InputStream is = new FileInputStream (fileImage);
+	public Card putVote(String groupId, String cardId, Vote vote)
+			throws Exception {
+		UserService userService = new UserServiceImpl();
 		Group group;
 		try {
-			OutputStream out = null;
-			int read = 0;
-			byte[] bytes = new byte[1024];
-
-			out = new FileOutputStream(new File(uploadedFileLocation));
-			while ((read = is.read(bytes)) != -1) {
-				out.write(bytes, 0, read);
+			group = this.getGroup(groupId);
+		} catch (Exception e) {
+			throw new ElementNotFoundServiceException("Group " + groupId
+					+ " not found");
+		}
+		Card foundCard = null;
+		foundCard = cardExistOnArray(cardId, group.getTransportCards());
+		if (foundCard == null) {
+			foundCard = cardExistOnArray(cardId, group.getPlaceToSleepCards());
+			if (foundCard == null) {
+				foundCard = cardExistOnArray(cardId, group.getOtherCards());
 			}
-			out.flush();
-			out.close();
-			group = getGroup(groupId);
-
-			if (group.getImage() == false) {
-				group.setImage();
-				putGroup(group);
+		}
+		if (foundCard != null) {
+			boolean found = false;
+			Iterator<Vote> it = foundCard.getVotes().iterator();
+			while (it.hasNext() && !found) {
+				Vote cardVote = it.next();
+				if (cardVote.getUserId().equalsIgnoreCase(vote.getUserId())) {
+					found = true;
+					// si el usuario ya ha votado la carta eliminamos el voto
+					// antiguo
+					foundCard.getVotes().remove(cardVote);
+					// y guardamos el nuevo voto
+					foundCard.getVotes().add(vote);
+				}
 			}
-		} catch (IOException e) {
+			if (!found) {
+				foundCard.getVotes().add(vote);
+				// registramos el voto en el user
+				User user = userService.getUser(vote.getUserId());
+				user.getCardsVoted().add(cardId);
+				userService.putUser(user);
+			}
+			// recalculamos el valor medio de votos
+			foundCard.calculateAverage();
 
-			e.printStackTrace();
+			this.putCard(groupId, foundCard);
+
+			return foundCard;
+
+		} else {
+			throw new ElementNotFoundServiceException("Card " + cardId
+					+ " not found");
 		}
 
 	}

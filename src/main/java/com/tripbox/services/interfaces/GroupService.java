@@ -1,9 +1,8 @@
 package com.tripbox.services.interfaces;
 
-import java.io.File;
-
 import com.tripbox.elements.Card;
 import com.tripbox.elements.Group;
+import com.tripbox.elements.Vote;
 
 public interface GroupService {
 
@@ -14,7 +13,7 @@ public interface GroupService {
 	public void deleteGroup(String id) throws Exception;
 
 	/**
-	 * FunciÃ³n que permite eliminar un User de un Group
+	 * Función que permite eliminar un User de un Group
 	 * 
 	 * @param groupId
 	 * @param userId
@@ -24,12 +23,12 @@ public interface GroupService {
 			throws Exception;
 
 	/**
-	 * AÃ±adimos un destino al array destinations de un Group.
+	 * Añadimos un destino al array destinations de un Group.
 	 * 
 	 * @param groupId
-	 *            Id del Group donde queremos aÃ±adir el destino.
+	 *            Id del Group donde queremos añadir el destino.
 	 * @param newDestination
-	 *            Nueva destinaciÃ³n que queremos aÃ±adir al Group.
+	 *            Nueva destinación que queremos añadir al Group.
 	 * @throws Exception
 	 */
 	public void putDestination(String groupId, String newDestination)
@@ -49,17 +48,17 @@ public interface GroupService {
 			throws Exception;
 
 	/**
-	 * AÃ±adimos una Card a un Group. A partir del atributo cardType de la Card
-	 * la aÃ±adimos al array correspondiente del Group. Si cardType=="transport"
-	 * aÃ±adimos la Card al array transportCards del Group. Si
-	 * cardType=="placeToSleep" aÃ±adimos la Card al array placeToSleepCards del
-	 * Group. Si cardType=="other" aÃ±adimos la Card al array otherCards del
+	 * Añadimos una Card a un Group. A partir del atributo cardType de la Card
+	 * la añadimos al array correspondiente del Group. Si cardType=="transport"
+	 * añadimos la Card al array transportCards del Group. Si
+	 * cardType=="placeToSleep" añadimos la Card al array placeToSleepCards del
+	 * Group. Si cardType=="other" añadimos la Card al array otherCards del
 	 * Group.
 	 * 
 	 * @param groupId
-	 *            Id del Group donde queremos aÃ±adir la Card
+	 *            Id del Group donde queremos añadir la Card
 	 * @param card
-	 *            Card que queremos aÃ±adir. El campo cardType es obligatorio.
+	 *            Card que queremos añadir. El campo cardType es obligatorio.
 	 * @return
 	 * @throws Exception
 	 */
@@ -77,12 +76,16 @@ public interface GroupService {
 	public void deleteCard(String groupId, String cardId) throws Exception;
 
 	/**
-	 * Función que permite subir una imagen al servidor.
-	 * @param groupId String Id del Group.
-	 * @param fileImage File Archivo en si.
-	 * @param uploadedFileLocation String Localització on guardar l'arxiu.
+	 * Añadimos un voto a una card. Si el usuario ya tiene un voto registrado lo
+	 * sobreescribimos.
+	 * 
+	 * @param groupId
+	 * @param cardId
+	 * @param vote
+	 * @return
+	 * @throws Exception
 	 */
-	public void saveGroupImage(String groupId, File fileImage,
-			String uploadedFileLocation) throws Exception;
+	public Card putVote(String groupId, String cardId, Vote vote)
+			throws Exception;
 
 }

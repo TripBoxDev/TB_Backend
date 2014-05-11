@@ -15,16 +15,18 @@ import com.tripbox.services.interfaces.EmailService;
 public class EmailRESTImpl implements EmailREST {
 
 	EmailService emailService = new EmailServiceImpl();
-	
+
 	@Path("/invitation")
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response invitation(Email email) {
-		try{
-			emailService.sendInvitation(email.getInvitationUrl(), email.getEmails());
+		try {
+			emailService.sendInvitation(email.getInvitationUrl(),
+					email.getEmails());
 			return Response.ok().build();
-		}catch (Exception e){
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		} catch (Exception e) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+					.build();
 		}
 	}
 

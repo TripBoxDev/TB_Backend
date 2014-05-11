@@ -1,8 +1,6 @@
 package com.tripbox.services;
 
-
 import org.bson.types.ObjectId;
-
 
 import com.tripbox.bbdd.Mock;
 import com.tripbox.bbdd.MongoDB;
@@ -19,101 +17,100 @@ import com.tripbox.services.interfaces.GroupService;
 import com.tripbox.services.interfaces.UserService;
 
 public class UserServiceImpl implements UserService {
-	
 
-	//Querys bbdd = Mock.getInstance();
-	IdGenerator idGen=IdGenerator.getInstance();
+	// Querys bbdd = Mock.getInstance();
+	IdGenerator idGen = IdGenerator.getInstance();
+
 	MongoDB mongo;
-	
-	public UserServiceImpl(){}
+
+	public UserServiceImpl() {
+	}
 
 	public User getUser(String id) throws Exception {
-		try{
-			mongo=MongoDB.getInstance();
-			
+		try {
+			mongo = MongoDB.getInstance();
+
 			return mongo.getUser(id);
-		}catch (Exception e){
+		} catch (Exception e) {
 			throw new Exception();
 		}
 	}
 
-
 	public User putUser(User user) throws Exception {
-		mongo=MongoDB.getInstance();
-		if(user.getName()==null || user.getName().equalsIgnoreCase("")){
-			throw new RequiredParametersException("The paramater name is required");
+		mongo = MongoDB.getInstance();
+		if (user.getName() == null || user.getName().equalsIgnoreCase("")) {
+			throw new RequiredParametersException(
+					"The paramater name is required");
 		}
-		//nos llega un User sin id
-		if(user.getId()==null){
+		// nos llega un User sin id
+		if (user.getId() == null) {
 
-			if(user.getEmail()!=null){
-				try{
+			if (user.getEmail() != null) {
+				try {
 					user = mongo.getUserbyEmail(user.getEmail());
-				}catch (ItemNotFoundException e){
-					
+				} catch (ItemNotFoundException e) {
+
 					user = putNewUser(user);
 				}
-				
-			}else if(user.getGoogleId()!=null){
-				try{
+
+			} else if (user.getGoogleId() != null) {
+				try {
 					user = mongo.getUserbyGoogleId(user.getGoogleId());
-				}catch (ItemNotFoundException e){
-					
+				} catch (ItemNotFoundException e) {
+
 					user = putNewUser(user);
 				}
-			}else if(user.getFacebookId()!=null){
-				try{
+			} else if (user.getFacebookId() != null) {
+				try {
 					user = mongo.getUserbyFacebookId(user.getFacebookId());
-				}catch (ItemNotFoundException e){
-					
+				} catch (ItemNotFoundException e) {
+
 					user = putNewUser(user);
 				}
-			}else{
-				throw new InvalidIdsException("NingÃºn identificador definido");
+			} else {
+				throw new InvalidIdsException("Ningún identificador definido");
 			}
-			
-		}else{
-			
-			try{
-				//comprobamos que el id existe
+
+		} else {
+
+			try {
+				// comprobamos que el id existe
 				mongo.getUser(user.getId());
-				//modificamos el User en la bbdd
+				// modificamos el User en la bbdd
 				mongo.UpdateUser(user);
-			}catch (Exception exc){
-				throw new InvalidIdsException("El usuario con el ID, "+user.getId()+", no exsiste");
+			} catch (Exception exc) {
+				throw new InvalidIdsException("El usuario con el ID, "
+						+ user.getId() + ", no exsiste");
 			}
-			
+
 		}
-		//devolvemos el elemento User completo
+		// devolvemos el elemento User completo
 		return user;
-		
+
 	}
 
-
-	private User putNewUser(User user) throws Exception{
+	private User putNewUser(User user) throws Exception {
 		String newId = idGen.generateId();
 		user.setId(newId);
-		while(true){
-			try{
-				//comprovamos si el id existe
-				try{
+		while (true) {
+			try {
+				// comprovamos si el id existe
+				try {
 					this.getUser(newId);
-					//generamos nueva id
+					// generamos nueva id
 					throw new IdAlreadyExistException();
-				}catch (IdAlreadyExistException ex){
+				} catch (IdAlreadyExistException ex) {
 					throw new IdAlreadyExistException();
-				}catch (Exception e){
-					//insertamos el user a la bbdd
-					//bbdd.putUser(user);
-					mongo=MongoDB.getInstance();
+				} catch (Exception e) {
+					// insertamos el user a la bbdd
+					// bbdd.putUser(user);
+					mongo = MongoDB.getInstance();
 					mongo.putUser(user);
 					break;
 				}
-				
-				
-				
-			} catch(IdAlreadyExistException ex){
-				//si el id ya existe probamos con otro id
+
+			} catch (IdAlreadyExistException ex) {
+				// si el id ya existe probamos con otro id
 				newId = idGen.generateId();
 				user.setId(newId);
 				continue;
@@ -122,47 +119,56 @@ public class UserServiceImpl implements UserService {
 		return user;
 	}
 
-	
 	public void deleteUser(String id) throws Exception {
-		mongo=MongoDB.getInstance();
-		try{
+
+		mongo = MongoDB.getInstance();
+
+		GroupService groupService = new GroupServiceImpl();
+		try {
+			User user = this.getUser(id);
+			for (String groupId : user.getGroups()) {
+				groupService.deleteUserToGroup(groupId, id);
+			}
 			mongo.deleteUser(id);
-		}catch (Exception e){
+		} catch (Exception e) {
 			throw new Exception();
 		}
-		
+
 	}
 
-
 	public void addGroupToUser(String userId, String groupId) throws Exception {
-		if ((userId!=null)&&(groupId!=null)){
-			
-			User user=null;
-			Group group=null;
-			GroupService  groupService = new GroupServiceImpl();
+		if ((userId != null) && (groupId != null)) {
+
+			User user = null;
+			Group group = null;
+			GroupService groupService = new GroupServiceImpl();
 			try {
 				user = this.getUser(userId);
 			} catch (Exception e) {
-				throw new ElementNotFoundServiceException("El usuario con el ID, "+ userId +", no exsiste");
+				throw new ElementNotFoundServiceException(
+						"El usuario con el ID, " + userId + ", no exsiste");
 			}
-			
+
 			try {
 				group = groupService.getGroup(groupId);
 			} catch (Exception e) {
-				throw new ElementNotFoundServiceException("El grupo con el ID, "+ groupId +", no exsiste");
+				throw new ElementNotFoundServiceException(
+						"El grupo con el ID, " + groupId + ", no exsiste");
 			}
-			
-	
-		
-			user.getGroups().add(group.getId());
-			group.getUsers().add(user.getId());
+
+			if (!user.getGroups().contains(group.getId())) {
+				user.getGroups().add(group.getId());
+			}
+			if (!group.getUsers().contains(user.getId())) {
+				group.getUsers().add(user.getId());
+			}
+
 			this.putUser(user);
 			groupService.putGroup(group);
-				
-				
-			
+
 		} else {
-			throw new InvalidIdsException("La ID del grupo o del usuario son nulas");
+			throw new InvalidIdsException(
+					"La ID del grupo o del usuario son nulas");
 		}
 	}
 
