@@ -531,8 +531,7 @@ public class GroupServiceImpl implements GroupService {
 						TransportCard tcCard = (TransportCard) cardExistOnArray(ptsId, ptsCard.getParentCardIds());
 						tcCard.setDeleteOfBestPack();		//aprovechamos el for para reiniciar los packs
 						avgTc = tcCard.getAverage();
-
-						ponderation = calculatePackPercentage(tcCard, ptsCard);
+						ponderation = calculatePackPercentage(tcCard, ptsCard, group);
 
 						if (ponderation > bestTempValoration) {
 							bestTempTransportCard = tcCard;
@@ -548,9 +547,29 @@ public class GroupServiceImpl implements GroupService {
 	}
 
 	public double calculatePackPercentage(TransportCard tcCard,
-			PlaceToSleepCard ptsCard) throws Exception {
-
-		return 0.5;
+			PlaceToSleepCard ptsCard, Group group) throws Exception {
+		int members;
+		double avg, avg2, resultTrans, resultAloj, otherResult;
+		
+		
+		members = group.getUsers().size();
+		
+		//Votacion transporte
+		avg = tcCard.getAverage() * 0.7;
+		avg2 = (tcCard.getVotes().size()/tcCard.getVotes().size()) * 0.3;
+		resultTrans = (avg+avg2)*0.4;
+		
+		//Votacion alojamiento
+		avg = ptsCard.getAverage() * 0.7;
+		avg2 = (ptsCard.getVotes().size()/ptsCard.getVotes().size()) * 0.3;
+		resultAloj = (avg+avg2)*0.4;
+		
+		//Votacion other cards
+		for (OtherCard otherCard : group.getOtherCards()) {
+			if (ptsCard.getDestination().equals(destination)) {
+		
+		result2 = resultTrans + resultAloj + otherResult;
+		return result2;
 	}
 
 }

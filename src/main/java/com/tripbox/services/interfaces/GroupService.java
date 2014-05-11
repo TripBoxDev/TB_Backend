@@ -76,6 +76,6 @@ public interface GroupService {
 	/**
 	 * Funcion que permite calcular el porcentaje de destino.
 	 */
-	public double calculatePackPercentage(TransportCard tcCard, PlaceToSleepCard ptsCard) throws Exception;
+	public double calculatePackPercentage(TransportCard tcCard, PlaceToSleepCard ptsCard, Group group) throws Exception;
 
 }
