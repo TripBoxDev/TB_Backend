@@ -548,28 +548,33 @@ public class GroupServiceImpl implements GroupService {
 
 	public double calculatePackPercentage(TransportCard tcCard,
 			PlaceToSleepCard ptsCard, Group group) throws Exception {
-		int members;
-		double avg, avg2, resultTrans, resultAloj, otherResult;
-		
+		int members, numOtherCards = 0;
+		double avg, avg2, resultTrans, resultAloj, resultFinal, otherResult = 0;
 		
 		members = group.getUsers().size();
 		
 		//Votacion transporte
 		avg = tcCard.getAverage() * 0.7;
-		avg2 = (tcCard.getVotes().size()/tcCard.getVotes().size()) * 0.3;
-		resultTrans = (avg+avg2)*0.4;
+		avg2 = (tcCard.getVotes().size()/members) * 0.3;
+		resultTrans = (avg+avg2) * 0.4;
 		
 		//Votacion alojamiento
 		avg = ptsCard.getAverage() * 0.7;
-		avg2 = (ptsCard.getVotes().size()/ptsCard.getVotes().size()) * 0.3;
-		resultAloj = (avg+avg2)*0.4;
+		avg2 = (ptsCard.getVotes().size()/members) * 0.3;
+		resultAloj = (avg+avg2) * 0.4;
 		
 		//Votacion other cards
 		for (OtherCard otherCard : group.getOtherCards()) {
-			if (ptsCard.getDestination().equals(destination)) {
+			if (otherCard.getDestination().equals(tcCard.getDestination())) {
+				numOtherCards++;
+				avg = otherCard.getAverage() * 0.7;
+				avg2 = (otherCard.getVotes().size()/members) * 0.3;
+				otherResult = ((avg+avg2) * 0.2) + otherResult;
+			}
+		}
 		
-		result2 = resultTrans + resultAloj + otherResult;
-		return result2;
+		//calculo final
+		resultFinal = resultTrans + resultAloj + (otherResult/numOtherCards);
+		return resultFinal;
 	}
-
 }
