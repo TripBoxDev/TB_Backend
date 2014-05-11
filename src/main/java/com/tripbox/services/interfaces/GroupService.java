@@ -1,5 +1,7 @@
 package com.tripbox.services.interfaces;
 
+import java.io.File;
+
 import com.tripbox.elements.Card;
 import com.tripbox.elements.Group;
 import com.tripbox.elements.Vote;
@@ -88,4 +90,12 @@ public interface GroupService {
 	public Card putVote(String groupId, String cardId, Vote vote)
 			throws Exception;
 
+	/**
+	* Función que permite subir una imagen al servidor.
+	* @param groupId String Id del Group.
+	* @param fileImage File Archivo en si.
+	* @param uploadedFileLocation String Localització on guardar l'arxiu.
+	*/
+	public void saveGroupImage(String groupId, File fileImage,
+	String uploadedFileLocation) throws Exception;
 }

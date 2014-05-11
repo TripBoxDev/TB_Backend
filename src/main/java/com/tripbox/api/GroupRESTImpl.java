@@ -1,5 +1,7 @@
 package com.tripbox.api;
 
+import java.io.File;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -211,4 +213,23 @@ public class GroupRESTImpl implements GroupREST {
 		}
 	}
 
+	@PUT
+	@Path("/{groupId}/image")
+	@Consumes("image/jpeg")
+	public Response saveGroupImage(@PathParam("groupId") String groupId,
+			File fileImage) {
+
+		String uploadedFileLocation = "/var/www/groupImgs/" + groupId + ".jpg";
+
+		try {
+			groupService.saveGroupImage(groupId, fileImage,
+					uploadedFileLocation);
+		} catch (InvalidIdsException exc) {
+			throw new ElementNotFoundException(exc.getMessage());
+		} catch (Exception e) {
+			throw new ElementNotFoundException("Item not found");
+		}
+
+		return Response.status(200).build();
+	}
 }

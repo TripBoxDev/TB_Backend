@@ -1,5 +1,11 @@
 package com.tripbox.services;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -505,6 +511,34 @@ public class GroupServiceImpl implements GroupService {
 		} else {
 			throw new ElementNotFoundServiceException("Card " + cardId
 					+ " not found");
+		}
+
+	}
+	
+	public void saveGroupImage(String groupId, File fileImage,
+			String uploadedFileLocation) throws Exception {
+		InputStream is = new FileInputStream (fileImage);
+		Group group;
+		try {
+			OutputStream out = null;
+			int read = 0;
+			byte[] bytes = new byte[1024];
+
+			out = new FileOutputStream(new File(uploadedFileLocation));
+			while ((read = is.read(bytes)) != -1) {
+				out.write(bytes, 0, read);
+			}
+			out.flush();
+			out.close();
+			group = getGroup(groupId);
+
+			if (group.getImage() == false) {
+				group.setImage();
+				putGroup(group);
+			}
+		} catch (IOException e) {
+
+			e.printStackTrace();
 		}
 
 	}
