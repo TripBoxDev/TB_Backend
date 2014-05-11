@@ -470,6 +470,7 @@ public class GroupServiceImpl implements GroupService {
 			out.flush();
 			out.close();
 			group = getGroup(groupId);
+
 			if (group.getImage() == false) {
 				group.setImage();
 				putGroup(group);
