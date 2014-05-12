@@ -331,12 +331,12 @@ public class GroupRESTImplTest {
 	@Test
 	public void testSaveImage() {
 		try {
-			testGroupIMGID = "HjeXtWFf6F59";
+			testGroupIMGID = "jGNaQATUt527";
 			WebResource webResource = client
 					.resource("http://localhost:8080/TB_Backend/api/group/"
 							+ testGroupIMGID + "/image");
 
-			File f = new File("C:/Users/Cristian/Pictures/akatsuki.jpg");
+			File f = new File("C:/Users/Cristian/Pictures/014.jpg");
 
 			ClientResponse reString = webResource.type("image/jpeg").put(
 					ClientResponse.class, f);
