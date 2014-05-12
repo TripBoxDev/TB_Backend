@@ -331,6 +331,7 @@ public class GroupRESTImplTest {
 	@Test
 	public void testSaveImage() {
 		try {
+			testGroupIMGID = "HjeXtWFf6F59";
 			WebResource webResource = client
 					.resource("http://localhost:8080/TB_Backend/api/group/"
 							+ testGroupIMGID + "/image");
@@ -362,9 +363,9 @@ public class GroupRESTImplTest {
 		 webResource = client.resource("http://localhost:8080/TB_Backend/api/group/"+testGroupID);
 		 response = webResource.type("application/json").delete(ClientResponse.class);
 		 
-		 webResource = client.resource("http://localhost:8080/TB_Backend/api/group/"+testGroupIMGID);
-		 response = webResource.type("application/json").delete(ClientResponse.class);
-		 
+//		 webResource = client.resource("http://localhost:8080/TB_Backend/api/group/"+testGroupIMGID);
+//		 response = webResource.type("application/json").delete(ClientResponse.class);
+//		 
 	}
 
 }

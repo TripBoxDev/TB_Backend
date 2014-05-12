@@ -57,7 +57,6 @@ public class GroupServiceImpl implements GroupService {
 		if (group.getId() == null) {
 			group = putNewGroup(group);
 		} else {
-
 			try {
 				// comprobamos que el id existe
 				this.getGroup(group.getId());
