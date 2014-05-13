@@ -564,21 +564,21 @@ public class GroupServiceImpl implements GroupService {
 		
 		//miramos las cartas segun los destinos que hay
 		for (String destination : group.getDestinations()) {
+			bestTempValoration = 0;
 			//miramos si la card de alojamiento es del destino que estamos buscando
 			for (PlaceToSleepCard ptsCard : group.getPlaceToSleepCards()) {
 				if (ptsCard.getDestination().equals(destination)) {
 					ptsCard.setDeleteOfBestPack();		//aprovechamos el for para reiniciar los packs
 					avgPts = ptsCard.getAverage();
 					//en transporte ya no miramos que sea del mismo destino porque esta carta esta linkada al alojamiento
-					for (String ptsId : ptsCard.getParentCardIds()) {
-						
-						TransportCard tcCard = (TransportCard) getCard(ptsId, "transport", group);
+					for (String tCardId : ptsCard.getParentCardIds()) {
+						TransportCard tcCard = (TransportCard) getCard(tCardId, "transport", group);
 						tcCard.setDeleteOfBestPack();		//aprovechamos el for para reiniciar los packs
 						avgTc = tcCard.getAverage();
 						ponderation = calculatePackPercentage(tcCard, ptsCard, group);
 						
-
 						if (ponderation > bestTempValoration) {
+							bestTempValoration = ponderation;
 							bestTempTransportCard = tcCard;
 							bestPlaceToSleepCard = ptsCard;
 						}

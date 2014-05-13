@@ -39,6 +39,7 @@ public class GroupServiceImplTest {
 	static Group putDeleteTestGroup;
 	
 	static User usuario;
+	static User usuario2;
 	static Group cardTestGroup;
 	static Group cardTestGroupWrInputs;
 	
@@ -62,10 +63,19 @@ public class GroupServiceImplTest {
 		usuario.setGoogleId("gID");
 		usuario.setEmail("myMail@mail.com");
 		usuario.setGroups(groups);
+		
+		usuario2 = new User();
+		usuario2.setName("userName2");
+		usuario2.setLastName("userLastName2");
+		usuario2.setFacebookId("fbID2");
+		usuario2.setGoogleId("gID2");
+		usuario2.setEmail("myMail@mail2.com");
+		usuario2.setGroups(groups);
 
 		//Anadimos usuario para el deleteUserToGroup
 		try {
 			usuario = userService.putUser(usuario);
+			usuario2 = userService.putUser(usuario2);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
@@ -560,6 +570,10 @@ public class GroupServiceImplTest {
 		Vote voto3 = new Vote();
 		voto3.setUserId(usuario.getId());
 		voto3.setValue(2);
+		
+		Vote voto4 = new Vote();
+		voto4.setUserId(usuario2.getId());
+		voto4.setValue(2);
 
 		Group packTestGroup = new Group();
 		packTestGroup.setName("packTestGroupName");
@@ -610,6 +624,12 @@ public class GroupServiceImplTest {
 		ptsCard3.setName("Pack placeToSleep Card In Roma 2");
 		ptsCard3.setCardType("placeToSleep");
 		ptsCard3.setDestination("Roma");
+		
+		PlaceToSleepCard ptsCard4 = new PlaceToSleepCard();
+		ptsCard4.setUserIdCreator(usuario.getId());
+		ptsCard4.setName("Pack placeToSleep Card In Roma 3");
+		ptsCard4.setCardType("placeToSleep");
+		ptsCard4.setDestination("Roma");
 				
 		parentCards.add(tCard.getCardId());
 		ptsCard.setParentCardIds(parentCards);
@@ -628,31 +648,41 @@ public class GroupServiceImplTest {
 		ptsCard3 = (PlaceToSleepCard) grupoServ.putCard(packTestGroup.getId(), ptsCard3);
 		ptsCard3 = (PlaceToSleepCard) grupoServ.putVote(packTestGroup.getId(), ptsCard3.getCardId(), voto3);
 		
+		//Linkamos 1 transporte con 2 placeToSleep y aprovechamos para testear una card sin votos
+		ptsCard4.setParentCardIds(parentCards);
+		ptsCard4 = (PlaceToSleepCard) grupoServ.putCard(packTestGroup.getId(), ptsCard4);
+		
 		packTestGroup = grupoServ.getGroup(packTestGroup.getId());
 		
 		//Cards linkadas
 		try{
-			TransportCard tTemp=null;
-			PlaceToSleepCard ptsTemp=null;
 			grupoServ.definePack(packTestGroup);
 			
-			System.out.println("\nHa acabat la funcio i comencen les comprobacions");
 			for (TransportCard tIterCard: packTestGroup.getTransportCards()) {
+				//Comprobamos que las cards marcadas como mejor pack son de Tranpsorte, Paris: tCard y de Roma: tCard3
 				if (tIterCard.getBestPack()==true){
-					tTemp = tIterCard;
-					System.out.println("Is best: " + tTemp.getDestination() + "  " + tTemp.getAverage());
+					if (tIterCard.getDestination().equalsIgnoreCase("Paris")){
+						assertEquals(tCard.getCardId(), tIterCard.getCardId());
+					}
+					
+					if  (tIterCard.getDestination().equalsIgnoreCase("Roma")) {
+						assertEquals(tCard3.getCardId(), tIterCard.getCardId());
+					}
 				}
 			}
 			
-			for (PlaceToSleepCard tIterCard: packTestGroup.getPlaceToSleepCards()) {
-				if (tIterCard.getBestPack()==true){
-					ptsTemp = tIterCard;
-					System.out.println("Is best: " + ptsTemp.getDestination() + "  " + ptsTemp.getAverage());
+			for (PlaceToSleepCard ptsIterCard: packTestGroup.getPlaceToSleepCards()) {
+				//Comprobamos que las cards marcadas como mejor pack son de Hospedaje, Paris: ptsCard y de Roma: tCard3
+				if (ptsIterCard.getBestPack()==true){
+					if (ptsIterCard.getDestination().equalsIgnoreCase("Paris")){
+						assertEquals(ptsCard.getCardId(), ptsIterCard.getCardId());
+					}
+					
+					if  (ptsIterCard.getDestination().equalsIgnoreCase("Roma")) {
+						assertEquals(ptsCard2.getCardId(), ptsIterCard.getCardId());
+					}
 				}
 			}
-			
-			System.out.println("Is best Pack?\n" + tTemp.getName() + "  " + tTemp.getAverage());
-			System.out.println(ptsTemp.getName() + "  " + ptsTemp.getAverage());
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -660,11 +690,40 @@ public class GroupServiceImplTest {
 		}
 		
 		
-		//Que fa amb cartes sense linkar
-		//Si el pack canvia
+		//Si el pack cambia: Ahora una card que no habia sido votada recibe votos y queda con la 
+		//misma puntuacion pero hay mas gente que la ha votado. Por lo tanto ahora esta 
+		//deberia ser parte del mejor pack de Roma
+		ptsCard4 = (PlaceToSleepCard) grupoServ.putVote(packTestGroup.getId(), ptsCard3.getCardId(), voto3);
+		ptsCard4 = (PlaceToSleepCard) grupoServ.putVote(packTestGroup.getId(), ptsCard3.getCardId(), voto4);
+		
+		packTestGroup = grupoServ.getGroup(packTestGroup.getId());
+		
+		try{
+			grupoServ.definePack(packTestGroup);
+		} catch (Exception e) {
+			fail();
+			e.printStackTrace();
+		}
+		
+		for (TransportCard tIterCard: packTestGroup.getTransportCards()) {
+			//Comprobamos que las cards marcadas como mejor pack son de Tranpsorte, Paris: tCard y de Roma: tCard3
+			if (tIterCard.getBestPack()==true){	
+				if  (tIterCard.getDestination().equalsIgnoreCase("Roma")) {
+					assertEquals(tCard3.getCardId(), tIterCard.getCardId());
+				}
+			}
+		}
+		
+		for (PlaceToSleepCard ptsIterCard: packTestGroup.getPlaceToSleepCards()) {
+			//Comprobamos que las cards marcadas como mejor pack son de Hospedaje, Paris: ptsCard y de Roma: tCard3
+			if (ptsIterCard.getBestPack()==true){
+				if  (ptsIterCard.getDestination().equalsIgnoreCase("Roma")) {
+					assertEquals(ptsCard4.getCardId(), ptsIterCard.getCardId());
+				}
+			}
+		}
 		
 		//Sense cartes
-		//TODO sumar cartes
 		grupoServ.deleteGroup(packTestGroup.getId());
 	}
 	
@@ -716,7 +775,8 @@ public class GroupServiceImplTest {
 		//Que pasa si hi ha cards no estan votades?
 		//Que pasa si no hi ha other cards? I si n'hi ha?
 		//Es pot aconseguir la maxima puntuacio? I la minima?
-		//TODO Fer el delete del grup*/
+
+		grupoServ.deleteGroup(percentTestGroupName.getId());*/
 	}
 	
 	@After
