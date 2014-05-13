@@ -15,6 +15,7 @@ import com.tripbox.elements.OtherCard;
 import com.tripbox.elements.PlaceToSleepCard;
 import com.tripbox.elements.TransportCard;
 import com.tripbox.elements.User;
+import com.tripbox.elements.Vote;
 import com.tripbox.services.exceptions.CardTypeException;
 import com.tripbox.services.exceptions.DestinationAlreadyExistException;
 import com.tripbox.services.exceptions.DestinationDoesntExistException;
@@ -542,6 +543,180 @@ public class GroupServiceImplTest {
 		} catch (Exception e) {
 			fail();
 		}
+	}
+	
+	@Test
+	public void testDefinePack() throws Exception {
+		ArrayList<String> parentCards = new ArrayList<String>();
+		
+		Vote voto = new Vote();
+		voto.setUserId(usuario.getId());
+		voto.setValue(5);
+		
+		Vote voto2 = new Vote();
+		voto2.setUserId(usuario.getId());
+		voto2.setValue(1);
+		
+		Vote voto3 = new Vote();
+		voto3.setUserId(usuario.getId());
+		voto3.setValue(2);
+
+		Group packTestGroup = new Group();
+		packTestGroup.setName("packTestGroupName");
+		packTestGroup.setDescription("grupo para testeo de funciones de los packs");
+		packTestGroup.setUsers(users);
+		packTestGroup.setDestinations(destinations);
+		packTestGroup = grupoServ.putGroup(packTestGroup);
+		
+		
+		TransportCard tCard = new TransportCard();
+		tCard.setUserIdCreator(usuario.getId());
+		tCard.setName("Pack transport Card To Paris");
+		tCard.setCardType("transport");
+		tCard.setDestination("Paris");
+		tCard = (TransportCard) grupoServ.putCard(packTestGroup.getId(), tCard);
+		tCard = (TransportCard) grupoServ.putVote(packTestGroup.getId(), tCard.getCardId(), voto);
+		
+		TransportCard tCard2 = new TransportCard();
+		tCard2.setUserIdCreator(usuario.getId());
+		tCard2.setName("Pack transport Card To Roma");
+		tCard2.setCardType("transport");
+		tCard2.setDestination("Roma");
+		tCard2 = (TransportCard) grupoServ.putCard(packTestGroup.getId(), tCard2);
+		tCard2 = (TransportCard) grupoServ.putVote(packTestGroup.getId(), tCard2.getCardId(), voto2);
+		
+		TransportCard tCard3 = new TransportCard();
+		tCard3.setUserIdCreator(usuario.getId());
+		tCard3.setName("Pack transport Card To Roma 2");
+		tCard3.setCardType("transport");
+		tCard3.setDestination("Roma");
+		tCard3 = (TransportCard) grupoServ.putCard(packTestGroup.getId(), tCard3);
+		tCard3 = (TransportCard) grupoServ.putVote(packTestGroup.getId(), tCard2.getCardId(), voto);
+		
+		PlaceToSleepCard ptsCard = new PlaceToSleepCard();
+		ptsCard.setUserIdCreator(usuario.getId());
+		ptsCard.setName("Pack placeToSleep Card In Paris");
+		ptsCard.setCardType("placeToSleep");
+		ptsCard.setDestination("Paris");
+		
+		PlaceToSleepCard ptsCard2 = new PlaceToSleepCard();
+		ptsCard2.setUserIdCreator(usuario.getId());
+		ptsCard2.setName("Pack placeToSleep Card In Roma");
+		ptsCard2.setCardType("placeToSleep");
+		ptsCard2.setDestination("Roma");
+		
+		PlaceToSleepCard ptsCard3 = new PlaceToSleepCard();
+		ptsCard3.setUserIdCreator(usuario.getId());
+		ptsCard3.setName("Pack placeToSleep Card In Roma 2");
+		ptsCard3.setCardType("placeToSleep");
+		ptsCard3.setDestination("Roma");
+				
+		parentCards.add(tCard.getCardId());
+		ptsCard.setParentCardIds(parentCards);
+		ptsCard = (PlaceToSleepCard) grupoServ.putCard(packTestGroup.getId(), ptsCard);
+		ptsCard = (PlaceToSleepCard) grupoServ.putVote(packTestGroup.getId(), ptsCard.getCardId(), voto);
+		
+		parentCards = new ArrayList<String>();
+		parentCards.add(tCard2.getCardId());
+		ptsCard2.setParentCardIds(parentCards);
+		ptsCard2 = (PlaceToSleepCard) grupoServ.putCard(packTestGroup.getId(), ptsCard2);
+		ptsCard2 = (PlaceToSleepCard) grupoServ.putVote(packTestGroup.getId(), ptsCard2.getCardId(), voto3);
+
+		parentCards = new ArrayList<String>();
+		parentCards.add(tCard3.getCardId());
+		ptsCard3.setParentCardIds(parentCards);
+		ptsCard3 = (PlaceToSleepCard) grupoServ.putCard(packTestGroup.getId(), ptsCard3);
+		ptsCard3 = (PlaceToSleepCard) grupoServ.putVote(packTestGroup.getId(), ptsCard3.getCardId(), voto3);
+		
+		packTestGroup = grupoServ.getGroup(packTestGroup.getId());
+		
+		//Cards linkadas
+		try{
+			TransportCard tTemp=null;
+			PlaceToSleepCard ptsTemp=null;
+			grupoServ.definePack(packTestGroup);
+			
+			System.out.println("\nHa acabat la funcio i comencen les comprobacions");
+			for (TransportCard tIterCard: packTestGroup.getTransportCards()) {
+				if (tIterCard.getBestPack()==true){
+					tTemp = tIterCard;
+					System.out.println("Is best: " + tTemp.getDestination() + "  " + tTemp.getAverage());
+				}
+			}
+			
+			for (PlaceToSleepCard tIterCard: packTestGroup.getPlaceToSleepCards()) {
+				if (tIterCard.getBestPack()==true){
+					ptsTemp = tIterCard;
+					System.out.println("Is best: " + ptsTemp.getDestination() + "  " + ptsTemp.getAverage());
+				}
+			}
+			
+			System.out.println("Is best Pack?\n" + tTemp.getName() + "  " + tTemp.getAverage());
+			System.out.println(ptsTemp.getName() + "  " + ptsTemp.getAverage());
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+		
+		
+		//Que fa amb cartes sense linkar
+		//Si el pack canvia
+		
+		//Sense cartes
+		//TODO sumar cartes
+		grupoServ.deleteGroup(packTestGroup.getId());
+	}
+	
+	@Test
+	public void testCalculatePackPercentage() throws Exception {	
+		/*Group percentTestGroup = new Group();
+		percentTestGroup.setName("percentTestGroupName");
+		percentTestGroup.setDescription("grupo para testeo del calculo del porcentaje de los packs");
+		percentTestGroup.setUsers(users);
+		percentTestGroup.setDestinations(destinations);
+		percentTestGroup = grupoServ.putGroup(percentTestGroup);
+		
+		TransportCard tCard = new TransportCard();
+		tCard.setUserIdCreator(usuario.getId());
+		tCard.setName("Percent transport Card To Paris");
+		tCard.setCardType("transport");
+		tCard.setDestination("Paris");
+		tCard = (TransportCard) grupoServ.putCard(percentTestGroup.getId(), tCard);
+		
+		PlaceToSleepCard ptsCard = new PlaceToSleepCard();
+		ptsCard.setUserIdCreator(usuario.getId());
+		ptsCard.setName("Percent placeToSleep Card In Paris");
+		ptsCard.setCardType("placeToSleep");
+		ptsCard.setDestination("Paris");
+				
+		ArrayList<String> parentCards = new ArrayList<String>();
+		parentCards.add(tCard.getCardId());
+		ptsCard.setParentCardIds(parentCards);
+		ptsCard = (PlaceToSleepCard) grupoServ.putCard(percentTestGroup.getId(), ptsCard);
+		
+		Vote voto = new Vote();
+		voto.setUserId(usuario.getId());
+		voto.setValue(5);
+		
+		tCard = (TransportCard) grupoServ.putVote(percentTestGroup.getId(), tCard.getCardId(), voto);
+		ptsCard = (PlaceToSleepCard) grupoServ.putVote(percentTestGroup.getId(), ptsCard.getCardId(), voto);
+		
+		percentTestGroup = grupoServ.getGroup(percentTestGroup.getId());
+
+		try {
+			double res = grupoServ.calculatePackPercentage(tCard, ptsCard, percentTestGroup);
+			System.out.println("Resultat: " + res);
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+		
+		
+		//Que pasa si hi ha cards no estan votades?
+		//Que pasa si no hi ha other cards? I si n'hi ha?
+		//Es pot aconseguir la maxima puntuacio? I la minima?
+		//TODO Fer el delete del grup*/
 	}
 	
 	@After

@@ -14,7 +14,7 @@ public interface GroupService {
 	public void deleteGroup(String id) throws Exception;
 	
 	/**
-	 * Función que permite eliminar un User de un Group
+	 * Funci��n que permite eliminar un User de un Group
 	 * @param groupId
 	 * @param userId
 	 * @throws Exception
@@ -22,9 +22,9 @@ public interface GroupService {
 	public void deleteUserToGroup(String groupId, String userId) throws Exception;
 	
 	/**
-	 * Añadimos un destino al array destinations de un Group.
-	 * @param groupId Id del Group donde queremos añadir el destino.
-	 * @param newDestination Nueva destinación que queremos añadir al Group. 
+	 * A��adimos un destino al array destinations de un Group.
+	 * @param groupId Id del Group donde queremos a��adir el destino.
+	 * @param newDestination Nueva destinaci��n que queremos a��adir al Group. 
 	 * @throws Exception
 	 */
 	public void putDestination(String groupId, String newDestination) throws Exception;
@@ -38,12 +38,12 @@ public interface GroupService {
 	public void deleteDestination( String groupId, String destinationToDelete)throws Exception;
 	
 	/**
-	 * Añadimos una Card a un Group. A partir del atributo cardType de la Card la añadimos al array correspondiente del Group.
-	 * Si cardType=="transport" añadimos la Card al array transportCards del Group.
-	 * Si cardType=="placeToSleep" añadimos la Card al array placeToSleepCards del Group.
-	 * Si cardType=="other" añadimos la Card al array otherCards del Group.
-	 * @param groupId Id del Group donde queremos añadir la Card
-	 * @param card Card que queremos añadir. El campo cardType es obligatorio.
+	 * A��adimos una Card a un Group. A partir del atributo cardType de la Card la a��adimos al array correspondiente del Group.
+	 * Si cardType=="transport" a��adimos la Card al array transportCards del Group.
+	 * Si cardType=="placeToSleep" a��adimos la Card al array placeToSleepCards del Group.
+	 * Si cardType=="other" a��adimos la Card al array otherCards del Group.
+	 * @param groupId Id del Group donde queremos a��adir la Card
+	 * @param card Card que queremos a��adir. El campo cardType es obligatorio.
 	 * @return
 	 * @throws Exception
 	 */
@@ -59,7 +59,7 @@ public interface GroupService {
 	public void deleteCard(String groupId,  String cardId)throws Exception;
 	
 	/**
-	 * Añadimos un voto a una card. Si el usuario ya tiene un voto registrado lo sobreescribimos.
+	 * A��adimos un voto a una card. Si el usuario ya tiene un voto registrado lo sobreescribimos.
 	 * @param groupId
 	 * @param cardId
 	 * @param vote
@@ -68,6 +68,15 @@ public interface GroupService {
 	 */
 	public Card putVote(String groupId, String cardId, Vote vote) throws Exception;
 
+	/**
+	 * Funcion que retorna una card a partir de su Id.
+	 * @param cardId: ID de la card que queremos cojer
+	 * @param type: tipo de card (transport, placeToSleep, other)
+	 * @param grupo: Grupo en el que se encuentra la card
+	 * @return: Card con ID del input
+	 */
+	public Card getCard(String cardId, String type, Group grupo);
+	
 	/**
 	 * Funcion que permite definir el pack mejor valorado de un destino.
 	 */
