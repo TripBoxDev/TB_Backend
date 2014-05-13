@@ -47,6 +47,7 @@ public class Group {
 		this.transportCards = transportCards;
 		this.placeToSleepCards = placeToSleepCards;
 		this.otherCards = otherCards;
+		this.flagImage = flagImage;
 	}
 
 	public String getId() {

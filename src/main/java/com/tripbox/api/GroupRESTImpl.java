@@ -58,7 +58,6 @@ public class GroupRESTImpl implements GroupREST {
 		try {
 			return Response.ok(groupService.putGroup(group)).build();
 		} catch (InvalidIdsException e) {
-			System.out.println("a");
 			throw new ElementNotFoundException(e.getMessage());
 		} catch (Exception e) {
 			throw new WebApplicationException();
