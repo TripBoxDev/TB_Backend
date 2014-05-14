@@ -542,7 +542,7 @@ public class GroupServiceImpl implements GroupService {
 			foundCard.calculateAverage();
 
 			this.putCard(groupId, foundCard);
-
+			
 			return foundCard;
 
 		} else {
@@ -589,52 +589,44 @@ public class GroupServiceImpl implements GroupService {
 			//activamos el flag de best pack para las cards de transporte y de alojamiento de cada destino
 			bestTempTransportCard.setBestPack();
 			bestPlaceToSleepCard.setBestPack();
+			
+			this.putGroup(group);
 		}
 	}
 
 	public double calculatePackPercentage(TransportCard tcCard,
 			PlaceToSleepCard ptsCard, Group group) throws Exception {
-		System.out.println("\nComenca el calculate:");
 		int members, numOtherCards = 0;
 		double avg, avg2, resultTrans, resultAloj, otherResult = 0;
 		double resultFinal = 0;
-		System.out.println("tCard: " + tcCard.getCardId() + "\tptsCard: " + ptsCard.getCardId());
 		members = group.getUsers().size();
 		
-		System.out.println("Nombre de membres: " + members);
-		System.out.println("Puntuacio transport: " + tcCard.getAverage() + "\tPuntuacio pts: " + ptsCard.getAverage());
-		
 		//Votacion transporte
-		avg = tcCard.getAverage() * 0.7;
-		avg2 = (tcCard.getVotes().size()/members) * 0.3;
+		avg = tcCard.getAverage() * 0.7 * 2;
+		avg2 = (tcCard.getVotes().size()/members) * 0.3 * 10;
 		resultTrans = (avg+avg2) * 0.4;
-		
-		System.out.println("Average Transport: " + avg + "\t\tAverage dels vots: " + avg2 + "\t40% de lo anterior: " + resultTrans);
-		
+				
 		//Votacion alojamiento
-		avg = ptsCard.getAverage() * 0.7;
-		avg2 = (ptsCard.getVotes().size()/members) * 0.3;
+		avg = ptsCard.getAverage() * 0.7 * 2;
+		avg2 = (ptsCard.getVotes().size()/members) * 0.3 * 10;
 		resultAloj = (avg+avg2) * 0.4;
-		
-		System.out.println("Average Allotjament: " + avg + "\tAverage dels vots: " + avg2 + "\t40% de lo anterior: " + resultAloj);
-		
+				
 		//Votacion other cards
 		if (!group.getOtherCards().isEmpty()){
 			for (OtherCard otherCard : group.getOtherCards()) {
 				if (otherCard.getDestination().equals(tcCard.getDestination())) {
 					numOtherCards++;
-					avg = otherCard.getAverage() * 0.7;
-					avg2 = (otherCard.getVotes().size()/members) * 0.3;
-					otherResult = ((avg+avg2) * 0.2) + otherResult;
+					avg = otherCard.getAverage() * 0.7 * 2;
+					avg2 = (otherCard.getVotes().size()/members) * 0.3 * 10;
+					otherResult = ((avg + avg2) * 0.2) + otherResult;
 				}
 			}
 			resultFinal = (otherResult/numOtherCards);
 		}
 		
-		System.out.println("Other Result: " + otherResult);
 		//calculo final
 		resultFinal = resultTrans + resultAloj + resultFinal;
-		System.out.println("Resultado Func: " + resultFinal);
+		resultFinal = 10 * resultFinal;
 		return resultFinal;
 	}
 }

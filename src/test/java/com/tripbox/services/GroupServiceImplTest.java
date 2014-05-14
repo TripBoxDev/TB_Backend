@@ -728,8 +728,9 @@ public class GroupServiceImplTest {
 	}
 	
 	@Test
-	public void testCalculatePackPercentage() throws Exception {	
-		/*Group percentTestGroup = new Group();
+	public void testCalculatePackPercentage() throws Exception {
+		double res1, res2, res3 = 0;
+		Group percentTestGroup = new Group();
 		percentTestGroup.setName("percentTestGroupName");
 		percentTestGroup.setDescription("grupo para testeo del calculo del porcentaje de los packs");
 		percentTestGroup.setUsers(users);
@@ -743,12 +744,32 @@ public class GroupServiceImplTest {
 		tCard.setDestination("Paris");
 		tCard = (TransportCard) grupoServ.putCard(percentTestGroup.getId(), tCard);
 		
+		TransportCard tCard2 = new TransportCard();
+		tCard2.setUserIdCreator(usuario.getId());
+		tCard2.setName("Percent transport Card To Paris");
+		tCard2.setCardType("transport");
+		tCard2.setDestination("Paris");
+		tCard2 = (TransportCard) grupoServ.putCard(percentTestGroup.getId(), tCard2);
+		
 		PlaceToSleepCard ptsCard = new PlaceToSleepCard();
 		ptsCard.setUserIdCreator(usuario.getId());
 		ptsCard.setName("Percent placeToSleep Card In Paris");
 		ptsCard.setCardType("placeToSleep");
 		ptsCard.setDestination("Paris");
-				
+		
+		OtherCard oCard = new OtherCard();
+		oCard.setUserIdCreator(usuario.getId());
+		oCard.setName("Percent other Card To Paris");
+		oCard.setCardType("other");
+		oCard.setDestination("Paris");
+		oCard = (OtherCard) grupoServ.putCard(percentTestGroup.getId(), oCard);
+		
+		OtherCard oCard2 = new OtherCard();
+		oCard2.setUserIdCreator(usuario.getId());
+		oCard2.setName("Percent other Card To Paris");
+		oCard2.setCardType("other");
+		oCard2.setDestination("Paris");
+		
 		ArrayList<String> parentCards = new ArrayList<String>();
 		parentCards.add(tCard.getCardId());
 		ptsCard.setParentCardIds(parentCards);
@@ -758,25 +779,71 @@ public class GroupServiceImplTest {
 		voto.setUserId(usuario.getId());
 		voto.setValue(5);
 		
+		Vote voto0 = new Vote();
+		voto0.setUserId(usuario.getId());
+		voto0.setValue(0);
+		
 		tCard = (TransportCard) grupoServ.putVote(percentTestGroup.getId(), tCard.getCardId(), voto);
 		ptsCard = (PlaceToSleepCard) grupoServ.putVote(percentTestGroup.getId(), ptsCard.getCardId(), voto);
 		
 		percentTestGroup = grupoServ.getGroup(percentTestGroup.getId());
 
 		try {
-			double res = grupoServ.calculatePackPercentage(tCard, ptsCard, percentTestGroup);
-			System.out.println("Resultat: " + res);
+			res1 = grupoServ.calculatePackPercentage(tCard, ptsCard, percentTestGroup);
+			assertTrue(res1 == 80.0);
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail();
 		}
 		
+		//Si se calcula con una card no votada, se comporta como si fuera votada con 0.
+		try {
+			double res = grupoServ.calculatePackPercentage(tCard2, ptsCard, percentTestGroup);
+			assertTrue(res == 40.0);
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
 		
-		//Que pasa si hi ha cards no estan votades?
-		//Que pasa si no hi ha other cards? I si n'hi ha?
-		//Es pot aconseguir la maxima puntuacio? I la minima?
-
-		grupoServ.deleteGroup(percentTestGroupName.getId());*/
+		//Anadimos other cards
+		oCard = (OtherCard) grupoServ.putVote(percentTestGroup.getId(), oCard.getCardId(), voto);
+		
+		percentTestGroup = grupoServ.getGroup(percentTestGroup.getId());
+		
+		try {
+			res2 = grupoServ.calculatePackPercentage(tCard, ptsCard, percentTestGroup);
+			assertTrue(res2 == 100.0);
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+		
+		oCard2 = (OtherCard) grupoServ.putCard(percentTestGroup.getId(), oCard2);
+		oCard2 = (OtherCard) grupoServ.putVote(percentTestGroup.getId(), oCard2.getCardId(), voto0);
+		
+		percentTestGroup = grupoServ.getGroup(percentTestGroup.getId());
+		
+		try {
+			res3 = grupoServ.calculatePackPercentage(tCard, ptsCard, percentTestGroup);
+			assertTrue(res3 == 93.0);
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+		
+		//Se anade un nuevo usuario. Las valoraciones de las cards bajan.
+		userService.addGroupToUser(usuario2.getId(), percentTestGroup.getId());
+		percentTestGroup = grupoServ.getGroup(percentTestGroup.getId());
+		
+		try {
+			double res = grupoServ.calculatePackPercentage(tCard, ptsCard, percentTestGroup);
+			assertTrue(res < res3);
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+		
+		grupoServ.deleteGroup(percentTestGroup.getId());
 	}
 	
 	@After

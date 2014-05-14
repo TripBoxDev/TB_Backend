@@ -18,7 +18,7 @@ public abstract class Card {
 	private boolean bestPack = false;
 	
 	/**
-	 * Valor máximo de un voto.
+	 * Valor m��ximo de un voto.
 	 */
 	final private int MAX_VOTE = 5;
 	
