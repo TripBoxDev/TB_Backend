@@ -74,12 +74,12 @@ public class Group {
 		this.description = description;
 	}
 
-	public boolean getImage() {
+	public boolean getFlagImage() {
 		return flagImage;
 	}
 
-	public void setImage() {
-		this.flagImage = true;
+	public void setFlagImage(boolean flagImage) {
+		this.flagImage = flagImage;
 	}
 	
 	public ArrayList<String> getUsers() {

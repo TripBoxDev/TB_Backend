@@ -64,7 +64,7 @@ public class GroupServiceImpl implements GroupService {
 				// modificamos el group a la bbdd
 				// bbdd.putGroup(group);
 				mongo = MongoDB.getInstance();
-				System.out.println("ji"+group.getImage());
+				System.out.println("ji"+group.getFlagImage());
 				mongo.putGroup(group);
 
 			} catch (Exception e) {
@@ -471,13 +471,13 @@ public class GroupServiceImpl implements GroupService {
 			out.close();
 			group = getGroup(groupId);
 
-			if (group.getImage() == false) {
-				group.setImage();
-				System.out.println("hola"+group.getImage());
+			if (!group.getFlagImage()) {
+				group.setFlagImage(true);
+				System.out.println("hola"+group.getFlagImage());
 			}
 			this.putGroup(group);
-			System.out.println("adios"+group.getImage());
-			System.out.println(mongo.getGroup(groupId).getImage());
+			System.out.println("adios"+group.getFlagImage());
+			System.out.println(mongo.getGroup(groupId).getFlagImage());
 		} catch (IOException e) {
 
 			e.printStackTrace();
