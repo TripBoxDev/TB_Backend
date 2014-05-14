@@ -8,31 +8,32 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Group {
 
-	//@ObjectId
-	//private String _id = null;
-	
+	// @ObjectId
+	// private String _id = null;
+
 	@JsonProperty("_id")
-	private String id=null;
+	private String id = null;
 	public static final String USERS = "users";
 	private String name = null;
-	private String description=null;
-	private ArrayList<String> users= new ArrayList<String>();
-	
+	private String description = null;
+	private ArrayList<String> users = new ArrayList<String>();
+
 	/**
 	 * Array con los destinos creados en un Group.
 	 */
 	private ArrayList<String> destinations = new ArrayList<String>();
-	private ArrayList<TransportCard> transportCards  =  new ArrayList<TransportCard>();	
-	private ArrayList<PlaceToSleepCard> placeToSleepCards  =  new ArrayList<PlaceToSleepCard>();
-	private ArrayList<OtherCard> otherCards  =  new ArrayList<OtherCard>();
-	
+	private ArrayList<TransportCard> transportCards = new ArrayList<TransportCard>();
+	private ArrayList<PlaceToSleepCard> placeToSleepCards = new ArrayList<PlaceToSleepCard>();
+	private ArrayList<OtherCard> otherCards = new ArrayList<OtherCard>();
+
 	/**
 	 * Flag de la imagen
 	 */
 	private boolean flagImage = false;
-	
-	public Group(){}
-	
+
+	public Group() {
+	}
+
 	public Group(String id, String name, String description,
 			ArrayList<String> users, ArrayList<String> destinations,
 			ArrayList<TransportCard> transportCards,
@@ -47,6 +48,7 @@ public class Group {
 		this.transportCards = transportCards;
 		this.placeToSleepCards = placeToSleepCards;
 		this.otherCards = otherCards;
+		this.flagImage = flagImage;
 	}
 
 	public String getId() {
@@ -73,14 +75,14 @@ public class Group {
 		this.description = description;
 	}
 
-	public boolean getImage() {
+	public boolean getFlagImage() {
 		return flagImage;
 	}
 
-	public void setImage() {
-		this.flagImage = true;
+	public void setFlagImage(boolean flagImage) {
+		this.flagImage = flagImage;
 	}
-	
+
 	public ArrayList<String> getUsers() {
 		return users;
 	}
@@ -109,7 +111,8 @@ public class Group {
 		return placeToSleepCards;
 	}
 
-	public void setPlaceToSleepCards(ArrayList<PlaceToSleepCard> placeToSleepCards) {
+	public void setPlaceToSleepCards(
+			ArrayList<PlaceToSleepCard> placeToSleepCards) {
 		this.placeToSleepCards = placeToSleepCards;
 	}
 
@@ -120,8 +123,5 @@ public class Group {
 	public void setOtherCards(ArrayList<OtherCard> otherCards) {
 		this.otherCards = otherCards;
 	}
-	
-	
-
 
 }

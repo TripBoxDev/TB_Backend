@@ -517,7 +517,7 @@ public class GroupServiceImpl implements GroupService {
 	
 	public void saveGroupImage(String groupId, File fileImage,
 			String uploadedFileLocation) throws Exception {
-		InputStream is = new FileInputStream (fileImage);
+		InputStream is = new FileInputStream(fileImage);
 		Group group;
 		try {
 			OutputStream out = null;
@@ -532,15 +532,14 @@ public class GroupServiceImpl implements GroupService {
 			out.close();
 			group = getGroup(groupId);
 
-			if (group.getImage() == false) {
-				group.setImage();
-				putGroup(group);
+			if (!group.getFlagImage()) {
+				group.setFlagImage(true);
 			}
+			this.putGroup(group);
 		} catch (IOException e) {
 
 			e.printStackTrace();
 		}
 
 	}
-
 }
