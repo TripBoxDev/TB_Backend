@@ -64,8 +64,8 @@ public class GroupServiceImpl implements GroupService {
 				// modificamos el group a la bbdd
 				// bbdd.putGroup(group);
 				mongo = MongoDB.getInstance();
-				System.out.println("ji"+group.getFlagImage());
 				mongo.putGroup(group);
+				System.out.println(group.getFlagImage());
 
 			} catch (Exception e) {
 				throw new InvalidIdsException("El Group con el ID, "
@@ -312,7 +312,7 @@ public class GroupServiceImpl implements GroupService {
 				throw new CardTypeException();
 			}
 		} else { // si te ID el primer que fem es comprobar que aquesta card
-					// existeixi de veritat
+		// existeixi de veritat
 			Card foundCard = null;
 			switch (card.getCardType()) {
 			case "transport":
@@ -456,7 +456,7 @@ public class GroupServiceImpl implements GroupService {
 
 	public void saveGroupImage(String groupId, File fileImage,
 			String uploadedFileLocation) throws Exception {
-		InputStream is = new FileInputStream (fileImage);
+		InputStream is = new FileInputStream(fileImage);
 		Group group;
 		try {
 			OutputStream out = null;
@@ -473,11 +473,8 @@ public class GroupServiceImpl implements GroupService {
 
 			if (!group.getFlagImage()) {
 				group.setFlagImage(true);
-				System.out.println("hola"+group.getFlagImage());
 			}
 			this.putGroup(group);
-			System.out.println("adios"+group.getFlagImage());
-			System.out.println(mongo.getGroup(groupId).getFlagImage());
 		} catch (IOException e) {
 
 			e.printStackTrace();
