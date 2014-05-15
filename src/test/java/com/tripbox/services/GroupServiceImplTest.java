@@ -723,7 +723,7 @@ public class GroupServiceImplTest {
 			}
 		}
 		
-		//Sense cartes
+		//TODO Sense cartes
 		grupoServ.deleteGroup(packTestGroup.getId());
 	}
 	
@@ -870,4 +870,5 @@ public class GroupServiceImplTest {
 			e.printStackTrace();
 		}
 	}
+
 }

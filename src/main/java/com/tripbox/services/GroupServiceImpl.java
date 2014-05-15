@@ -542,7 +542,7 @@ public class GroupServiceImpl implements GroupService {
 			foundCard.calculateAverage();
 
 			this.putCard(groupId, foundCard);
-			
+			this.definePack(group);
 			return foundCard;
 
 		} else {
@@ -556,41 +556,43 @@ public class GroupServiceImpl implements GroupService {
 		TransportCard bestTempTransportCard = null;
 		PlaceToSleepCard bestPlaceToSleepCard = null;
 		double bestTempValoration = 0;
-		double avgPts;
-		double avgTc;
 		double ponderation;
-		int bestPackEncontrados = 0;
-		int i = 0;
-		
+
 		//miramos las cartas segun los destinos que hay
 		for (String destination : group.getDestinations()) {
 			bestTempValoration = 0;
 			//miramos si la card de alojamiento es del destino que estamos buscando
-			for (PlaceToSleepCard ptsCard : group.getPlaceToSleepCards()) {
-				if (ptsCard.getDestination().equals(destination)) {
-					ptsCard.setDeleteOfBestPack();		//aprovechamos el for para reiniciar los packs
-					avgPts = ptsCard.getAverage();
-					//en transporte ya no miramos que sea del mismo destino porque esta carta esta linkada al alojamiento
-					for (String tCardId : ptsCard.getParentCardIds()) {
-						TransportCard tcCard = (TransportCard) getCard(tCardId, "transport", group);
-						tcCard.setDeleteOfBestPack();		//aprovechamos el for para reiniciar los packs
-						avgTc = tcCard.getAverage();
-						ponderation = calculatePackPercentage(tcCard, ptsCard, group);
-						
-						if (ponderation > bestTempValoration) {
-							bestTempValoration = ponderation;
-							bestTempTransportCard = tcCard;
-							bestPlaceToSleepCard = ptsCard;
+
+			if (!group.getPlaceToSleepCards().isEmpty()) {
+				for (PlaceToSleepCard ptsCard : group.getPlaceToSleepCards()) {
+					if (ptsCard.getDestination().equals(destination)) {
+						ptsCard.setDeleteOfBestPack();		//aprovechamos el for para reiniciar los packs
+
+						//en transporte ya no miramos que sea del mismo destino porque esta carta esta linkada al alojamiento
+						if (!ptsCard.getParentCardIds().isEmpty()) {
+							for (String tCardId : ptsCard.getParentCardIds()) {
+								TransportCard tcCard = (TransportCard) getCard(tCardId, "transport", group);
+								tcCard.setDeleteOfBestPack();		//aprovechamos el for para reiniciar los packs
+
+								ponderation = calculatePackPercentage(tcCard, ptsCard, group);
+															
+								if (ponderation > bestTempValoration) {
+									bestTempValoration = ponderation;
+									bestTempTransportCard = tcCard;
+									bestPlaceToSleepCard = ptsCard;
+								}
+							}
 						}
-						
 					}
 				}
+				//activamos el flag de best pack para las cards de transporte y de alojamiento de cada destino
+				if ((bestTempTransportCard!=null)&&(bestPlaceToSleepCard!=null)) {
+					bestTempTransportCard.setBestPack();
+					bestPlaceToSleepCard.setBestPack();
+				}
+				
+				this.putGroup(group);
 			}
-			//activamos el flag de best pack para las cards de transporte y de alojamiento de cada destino
-			bestTempTransportCard.setBestPack();
-			bestPlaceToSleepCard.setBestPack();
-			
-			this.putGroup(group);
 		}
 	}
 
