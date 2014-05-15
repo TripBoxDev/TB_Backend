@@ -204,6 +204,9 @@ public class GroupServiceImpl implements GroupService {
 		for (String deleteVoteOnUser : cardsVoteDelete) {
 			user.getCardsVoted().remove(deleteVoteOnUser);
 		}
+		
+		//Como las votaciones han cambiado redefinimos el mejor pack de cada destino.
+		this.definePack(group);
 		userService.putUser(user);
 	}
 

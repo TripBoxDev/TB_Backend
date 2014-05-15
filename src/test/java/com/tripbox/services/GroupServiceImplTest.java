@@ -723,7 +723,6 @@ public class GroupServiceImplTest {
 			}
 		}
 		
-		//TODO Sense cartes
 		grupoServ.deleteGroup(packTestGroup.getId());
 	}
 	
