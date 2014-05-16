@@ -38,7 +38,7 @@ public class Group {
 			ArrayList<String> users, ArrayList<String> destinations,
 			ArrayList<TransportCard> transportCards,
 			ArrayList<PlaceToSleepCard> placeToSleepCards,
-			ArrayList<OtherCard> otherCards, boolean flagImage) {
+			ArrayList<OtherCard> otherCards) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -48,7 +48,7 @@ public class Group {
 		this.transportCards = transportCards;
 		this.placeToSleepCards = placeToSleepCards;
 		this.otherCards = otherCards;
-		this.flagImage = flagImage;
+
 	}
 
 	public String getId() {

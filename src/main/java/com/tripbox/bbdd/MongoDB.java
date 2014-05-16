@@ -141,7 +141,9 @@ public class MongoDB implements Querys{
 		try{
 			try{
 				this.getGroup(group.getId()) ;
+				System.out.println("BD: "+group.getId() + group.getFlagImage());
 				groups.update("{_id : '"+group.getId()+"'}").with(group);
+				System.out.println("BD2: "+group.getFlagImage());
 				
 			}
 			catch ( Exception e){

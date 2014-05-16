@@ -25,8 +25,8 @@ import com.tripbox.services.GroupServiceImpl;
 import com.tripbox.services.UserServiceImpl;
 
 public class GroupRESTImplTest {
-	final static int POS_INICIO_ID = 12;
-	final static int POS_FINAL_ID = 24;
+	final static int POS_INICIO_ID = 13;
+	final static int POS_FINAL_ID = 25;
 
 	static GroupServiceImpl gService;
 	static UserServiceImpl uService;
@@ -40,7 +40,7 @@ public class GroupRESTImplTest {
 	static Group testGroup;
 	static User testUser;
 
-	final static String gURL = "http://tripbox.uab.cat/TB_Backend2/api/group/";
+	final static String gURL = "http://localhost:8080/TB_Backend/api/group/";
 	static String testGroupID;
 	static String testGroupIMGID;
 	static String cardId = "encara no la tinc";
@@ -51,7 +51,7 @@ public class GroupRESTImplTest {
 
 		// Introduir grup per testejar
 		webResource = client
-				.resource("http://tripbox.uab.cat/TB_Backend2/api/group/");
+				.resource("http://localhost:8080/TB_Backend/api/group/");
 
 		String input = "{\"name\" : \"Test Group\",\"description\" : \"Grupo para testear la API\",\"users\" : [ \"123456\", \"165432\" ],\"destinations\" : [ \"Taiwan\" ] }";
 		response = webResource.type("application/json").put(
@@ -63,7 +63,7 @@ public class GroupRESTImplTest {
 
 		// Introducimos grupo par testear imagen
 		webResource = client
-				.resource("http://tripbox.uab.cat/TB_Backend2/api/group/");
+				.resource("http://localhost:8080/TB_Backend/api/group/");
 
 		input = "{\"name\" : \"Test Group\",\"description\" : \"Grupo para testear la API\",\"users\" : [ \"123456\", \"165432\" ],\"destinations\" : [ \"Taiwan\" ] }";
 		response = webResource.type("application/json").put(
@@ -247,17 +247,19 @@ public class GroupRESTImplTest {
 	@Test
 	public void testPutGroup() {
 		try {
-			//dcZmh5ahHMKd
+			//rIaRm8osFBgU
+			System.out.println("--------------------------------------");
 			Client client = Client.create();
 			// Crear un nou grup
 			WebResource webResource = client
-					.resource("http://tripbox.uab.cat/TB_Backend2/api/group/");
+					.resource("http://localhost:8080/TB_Backend/api/group/");
 
-			String input = "{\"name\" : \"Uni\",\"description\" : \"Grupo para testear la API\",\"users\" : [ \"123456\", \"165432\" ],\"destinations\" : [ \"Taiwan\" ] }";
+			String input = "{\"id\" : \"rIaRm8osFBgU\",\"name\" : \"Uni\",\"description\" : \"Grupo para testear la API\",\"users\" : [ \"123456\", \"165432\" ],\"destinations\" : [ \"Taiwan\" ], \"flagImage\" : \"true\" }";
 			response = webResource.type("application/json").put(
 					ClientResponse.class, input);
 
 			String output = response.getEntity(String.class);
+			//System.out.println(output);
 			String id = output.substring(POS_INICIO_ID, POS_FINAL_ID);
 			assertTrue(output.contains("Uni"));
 
@@ -328,41 +330,41 @@ public class GroupRESTImplTest {
 	// assertTrue(response.getStatus() != 200);
 	// }
 
-	@Test
-	public void testSaveImage() {
-		try {
-			testGroupIMGID = "dcZmh5ahHMKd";
-			WebResource webResource = client
-					.resource("http://tripbox.uab.cat/TB_Backend2/api/group/"
-							+ testGroupIMGID + "/image");
-
-			File f = new File("C:/Users/Cristian/Pictures/014.jpg");
-
-			ClientResponse reString = webResource.type("image/jpeg").put(
-					ClientResponse.class, f);
-			
-			WebResource webResource2 = client
-					.resource("http://tripbox.uab.cat/TB_Backend2/api/group/"
-							+ testGroupIMGID);
-
-			response = webResource2.type("application/json").get(
-					ClientResponse.class);
-			String output = response.getEntity(String.class);
-
-
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-
-		}
-
-	}
+//	@Test
+//	public void testSaveImage() {
+//		try {
+//			testGroupIMGID = "rIaRm8osFBgU";
+//			WebResource webResource = client
+//					.resource("http://localhost:8080/TB_Backend/api/group/"
+//							+ testGroupIMGID + "/image");
+//
+//			File f = new File("C:/Users/Cristian/Pictures/014.jpg");
+//
+//			ClientResponse reString = webResource.type("image/jpeg").put(
+//					ClientResponse.class, f);
+//			
+//			WebResource webResource2 = client
+//					.resource("http://localhost:8080/TB_Backend/api/group/"
+//							+ testGroupIMGID);
+//
+//			response = webResource2.type("application/json").get(
+//					ClientResponse.class);
+//			String output = response.getEntity(String.class);
+//
+//
+//
+//		} catch (Exception e) {
+//
+//			e.printStackTrace();
+//
+//		}
+//
+//	}
 
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
-		 webResource = client.resource("http://tripbox.uab.cat/TB_Backend2/api/group/"+testGroupID);
-		 response = webResource.type("application/json").delete(ClientResponse.class);
+//		 webResource = client.resource("http://tripbox.uab.cat/TB_Backend2/api/group/"+testGroupID);
+//		 response = webResource.type("application/json").delete(ClientResponse.class);
 		 
 //		 webResource = client.resource("http://localhost:8080/TB_Backend/api/group/"+testGroupIMGID);
 //		 response = webResource.type("application/json").delete(ClientResponse.class);

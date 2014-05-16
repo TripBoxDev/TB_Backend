@@ -53,6 +53,7 @@ public class GroupServiceImpl implements GroupService {
 	}
 
 	public Group putGroup(Group group) throws Exception {
+		System.out.println("put: "+group.getFlagImage());
 		// si el Group es nuevo le asignamos una id
 		if (group.getId() == null) {
 			group = putNewGroup(group);
@@ -64,8 +65,9 @@ public class GroupServiceImpl implements GroupService {
 				// modificamos el group a la bbdd
 				// bbdd.putGroup(group);
 				mongo = MongoDB.getInstance();
+				System.out.println("antes" + group.getFlagImage());
 				mongo.putGroup(group);
-				System.out.println(group.getFlagImage());
+				System.out.println("despues" + mongo.getGroup(group.getId()).getFlagImage());
 
 			} catch (Exception e) {
 				throw new InvalidIdsException("El Group con el ID, "
@@ -474,6 +476,7 @@ public class GroupServiceImpl implements GroupService {
 			if (!group.getFlagImage()) {
 				group.setFlagImage(true);
 			}
+			System.out.println("falg" + group.getFlagImage());
 			this.putGroup(group);
 		} catch (IOException e) {
 
