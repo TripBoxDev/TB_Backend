@@ -15,6 +15,7 @@ import com.tripbox.bbdd.Mock;
 import com.tripbox.bbdd.MongoDB;
 import com.tripbox.bbdd.interfaces.Querys;
 import com.tripbox.elements.Card;
+import com.tripbox.elements.Destination;
 import com.tripbox.elements.Group;
 import com.tripbox.elements.OtherCard;
 import com.tripbox.elements.PlaceToSleepCard;
@@ -215,7 +216,7 @@ public class GroupServiceImpl implements GroupService {
 
 	public void putDestination(String groupId, String newDestination)
 			throws Exception {
-
+		Destination destiny = new Destination();
 		Group group;
 		try {
 			group = this.getGroup(groupId);
@@ -227,7 +228,18 @@ public class GroupServiceImpl implements GroupService {
 			// destination already exist. do nothing
 			// throw new DestinationAlreadyExistException();
 		} else {
-			group.getDestinations().add(newDestination);
+			String newId = idGen.generateId();
+			try {
+				this.getGroup(newId);
+			} catch (IdAlreadyExistException ex) {
+				throw new IdAlreadyExistException();
+			} catch (Exception e) {
+				throw new ElementNotFoundServiceException("Group " + groupId
+						+ " not found");
+			}
+			destiny.setName(newDestination);
+			destiny.setId(newId);
+			group.getDestinations().add(destiny);
 			this.putGroup(group);
 		}
 	}
@@ -514,7 +526,7 @@ public class GroupServiceImpl implements GroupService {
 		}
 
 	}
-	
+
 	public void saveGroupImage(String groupId, File fileImage,
 			String uploadedFileLocation) throws Exception {
 		InputStream is = new FileInputStream(fileImage);

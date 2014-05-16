@@ -21,7 +21,7 @@ public class Group {
 	/**
 	 * Array con los destinos creados en un Group.
 	 */
-	private ArrayList<String> destinations = new ArrayList<String>();
+	private ArrayList<Destination> destinations = new ArrayList<Destination>();
 	private ArrayList<TransportCard> transportCards = new ArrayList<TransportCard>();
 	private ArrayList<PlaceToSleepCard> placeToSleepCards = new ArrayList<PlaceToSleepCard>();
 	private ArrayList<OtherCard> otherCards = new ArrayList<OtherCard>();
@@ -35,7 +35,7 @@ public class Group {
 	}
 
 	public Group(String id, String name, String description,
-			ArrayList<String> users, ArrayList<String> destinations,
+			ArrayList<String> users, ArrayList<Destination> destinations,
 			ArrayList<TransportCard> transportCards,
 			ArrayList<PlaceToSleepCard> placeToSleepCards,
 			ArrayList<OtherCard> otherCards, boolean flagImage) {
@@ -91,11 +91,11 @@ public class Group {
 		this.users = users;
 	}
 
-	public ArrayList<String> getDestinations() {
+	public ArrayList<Destination> getDestinations() {
 		return destinations;
 	}
 
-	public void setDestinations(ArrayList<String> destinations) {
+	public void setDestinations(ArrayList<Destination> destinations) {
 		this.destinations = destinations;
 	}
 

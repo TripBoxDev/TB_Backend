@@ -43,6 +43,7 @@ import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import com.tripbox.elements.Card;
+import com.tripbox.elements.Destination;
 import com.tripbox.elements.Email;
 import com.tripbox.elements.Group;
 import com.tripbox.elements.OtherCard;
@@ -71,6 +72,7 @@ public class AppConfig extends ResourceConfig {
          Group.class,
          Email.class,
          Card.class,
+         Destination.class,
          TransportCard.class,
          PlaceToSleepCard.class,
          OtherCard.class,
