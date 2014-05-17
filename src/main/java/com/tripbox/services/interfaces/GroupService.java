@@ -98,4 +98,14 @@ public interface GroupService {
 	*/
 	public void saveGroupImage(String groupId, File fileImage,
 	String uploadedFileLocation) throws Exception;
+
+	/**
+	* Funcion para marcar cual es la propuesta definitiva
+	* @param groupId String indica que grupo es.
+	* @param idTransporte String indica que transporte es.
+	* @param idAlojamiento String indica que alojamiento es.
+	 * @return 
+	*/
+	public Group finalProposition(String groupId, String idTransporte,
+			String idAlojamiento) throws Exception;
 }

@@ -542,4 +542,53 @@ public class GroupServiceImpl implements GroupService {
 		}
 
 	}
+
+	public Group finalProposition(String groupId, String idTransporte,
+			String idAlojamiento) throws Exception{
+		Group group;
+		boolean found = false;
+		
+		try {
+			group = this.getGroup(groupId);
+		} catch (Exception e) {
+			throw new ElementNotFoundServiceException("Group " + groupId
+					+ " not found");
+		}
+		
+		for (TransportCard tranCard : group.getTransportCards()) {
+			//esto reinicia a false la propuesta, por si se cambia de propuesta
+			group.getTransportCards().remove(tranCard);
+			tranCard.setfinalProposition(false);
+			if (tranCard.getCardId().equals(idTransporte)){
+				found = true;
+				tranCard.setfinalProposition(found);
+			}
+			group.getTransportCards().add(tranCard);
+		}
+		
+		if (found == false){
+			throw new ElementNotFoundServiceException("Transport card " + idTransporte
+					+ " not found");
+		}
+		
+		found = false;
+		for (PlaceToSleepCard alojCard : group.getPlaceToSleepCards()) {
+			//esto reinicia a false la propuesta, por si se cambia de propuesta
+			group.getPlaceToSleepCards().remove(alojCard);
+			alojCard.setfinalProposition(found);
+			if (alojCard.getCardId().equals(idAlojamiento)){
+				found = true;
+				alojCard.setfinalProposition(found);
+			}
+			group.getPlaceToSleepCards().add(alojCard);
+		}
+		
+		if (found == false){
+			throw new ElementNotFoundServiceException("Place to sleep " + idAlojamiento
+					+ " not found");
+		}
+		
+		this.putGroup(group);
+		return group;	
+	}
 }

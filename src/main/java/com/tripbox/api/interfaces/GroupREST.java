@@ -115,4 +115,12 @@ public interface GroupREST {
 	* @param fileImage Archivo en si.
 	*/
 	public Response saveGroupImage(String groupId, File fileImage);
+	
+	/**
+	* Funcion para marcar cual es la propuesta definitiva
+	* @param groupId String indica que grupo es.
+	* @param idTransporte String indica que transporte es.
+	* @param idAlojamiento String indica que alojamiento es.
+	*/
+	public Response finalProposition(String groupId, String idTransporte, String idAlojamiento);
 }

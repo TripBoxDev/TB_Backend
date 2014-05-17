@@ -232,4 +232,19 @@ public class GroupRESTImpl implements GroupREST {
 
 		return Response.status(200).build();
 	}
+
+	@PUT
+	@Path("/{groupId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response finalProposition(@PathParam("groupId") String groupId, String idTransporte,
+			String idAlojamiento) {
+		try {
+			return Response.ok(groupService.finalProposition(groupId, idTransporte, idAlojamiento)).build();
+		} catch (InvalidIdsException exc) {
+			throw new ElementNotFoundException(exc.getMessage());
+		} catch (Exception e) {
+			throw new ElementNotFoundException("Item not found");
+		}
+	}
 }
