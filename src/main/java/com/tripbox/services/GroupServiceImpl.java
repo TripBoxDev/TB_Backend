@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 
+import javax.print.attribute.standard.Destination;
+
 import com.tripbox.bbdd.Mock;
 import com.tripbox.bbdd.MongoDB;
 import com.tripbox.bbdd.interfaces.Querys;
@@ -559,6 +561,7 @@ public class GroupServiceImpl implements GroupService {
 		TransportCard bestTempTransportCard = null;
 		PlaceToSleepCard bestPlaceToSleepCard = null;
 		double bestTempValoration = 0;
+		String destino;
 		double ponderation;
 
 		//miramos las cartas segun los destinos que hay
@@ -583,6 +586,7 @@ public class GroupServiceImpl implements GroupService {
 									bestTempValoration = ponderation;
 									bestTempTransportCard = tcCard;
 									bestPlaceToSleepCard = ptsCard;
+									destino = destination;
 								}
 							}
 						}
@@ -592,6 +596,12 @@ public class GroupServiceImpl implements GroupService {
 				if ((bestTempTransportCard!=null)&&(bestPlaceToSleepCard!=null)) {
 					bestTempTransportCard.setBestPack();
 					bestPlaceToSleepCard.setBestPack();
+					for (Destination destiny : group.getDestinations()){
+						group.getDestinations().remove(destiny);
+						if (destiny.getName().equals(destino))
+							destiny.setPercentage(bestTempValoration);
+						group.getDestinations().add(destiny);
+					}
 				}
 				
 				this.putGroup(group);
