@@ -228,15 +228,10 @@ public class GroupServiceImpl implements GroupService {
 			// destination already exist. do nothing
 			// throw new DestinationAlreadyExistException();
 		} else {
-			String newId = idGen.generateId();
-			try {
-				this.getGroup(newId);
-			} catch (IdAlreadyExistException ex) {
-				throw new IdAlreadyExistException();
-			} catch (Exception e) {
-				throw new ElementNotFoundServiceException("Group " + groupId
-						+ " not found");
-			}
+			String newId;
+			do{
+				newId = idGen.generateId();
+			}while(group.getDestinations().contains(newId));
 			destiny.setName(newDestination);
 			destiny.setId(newId);
 			group.getDestinations().add(destiny);
@@ -244,7 +239,7 @@ public class GroupServiceImpl implements GroupService {
 		}
 	}
 
-	public void deleteDestination(String groupId, String destinationToDelete)
+	public void deleteDestination(String groupId, String id)
 			throws Exception {
 		Group group;
 		try {
@@ -253,13 +248,13 @@ public class GroupServiceImpl implements GroupService {
 			throw new ElementNotFoundServiceException("Group " + groupId
 					+ " not found");
 		}
-		if (group.getDestinations().contains(destinationToDelete)) {
-			group.getDestinations().remove(destinationToDelete);
+		if (group.getDestinations().contains(id)) {
+			group.getDestinations().remove(id);
 
 			ArrayList<TransportCard> transCards = group.getTransportCards();
 			ArrayList<TransportCard> transCardsToDelete = new ArrayList<TransportCard>();
 			for (TransportCard card : transCards) {
-				if (card.getDestination().equalsIgnoreCase(destinationToDelete)) {
+				if (card.getDestination().equalsIgnoreCase(id)) {
 
 					transCardsToDelete.add(card);
 				}
@@ -272,7 +267,7 @@ public class GroupServiceImpl implements GroupService {
 					.getPlaceToSleepCards();
 			ArrayList<PlaceToSleepCard> placetoCardsToDelete = new ArrayList<PlaceToSleepCard>();
 			for (PlaceToSleepCard card : placetoCards) {
-				if (card.getDestination().equalsIgnoreCase(destinationToDelete)) {
+				if (card.getDestination().equalsIgnoreCase(id)) {
 					placetoCardsToDelete.add(card);
 				}
 			}
@@ -283,7 +278,7 @@ public class GroupServiceImpl implements GroupService {
 			ArrayList<OtherCard> otherCards = group.getOtherCards();
 			ArrayList<OtherCard> otherCardsToDelete = new ArrayList<OtherCard>();
 			for (OtherCard card : otherCards) {
-				if (card.getDestination().equalsIgnoreCase(destinationToDelete)) {
+				if (card.getDestination().equalsIgnoreCase(id)) {
 					otherCardsToDelete.add(card);
 				}
 			}
@@ -293,8 +288,8 @@ public class GroupServiceImpl implements GroupService {
 
 			this.putGroup(group);
 		} else {
-			throw new ElementNotFoundServiceException("Destination "
-					+ destinationToDelete + " doesn't exist");
+			throw new ElementNotFoundServiceException("Destination with ID "
+					+ id + " doesn't exist");
 
 		}
 
