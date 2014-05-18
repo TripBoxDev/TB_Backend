@@ -556,16 +556,16 @@ public class GroupServiceImpl implements GroupService {
 		}
 		
 		for (TransportCard tranCard : group.getTransportCards()) {
+
 			//esto reinicia a false la propuesta, por si se cambia de propuesta
-			group.getTransportCards().remove(tranCard);
 			tranCard.setfinalProposition(false);
 			if (tranCard.getCardId().equals(idTransporte)){
 				found = true;
 				tranCard.setfinalProposition(found);
 			}
-			group.getTransportCards().add(tranCard);
+
 		}
-		
+
 		if (found == false){
 			throw new ElementNotFoundServiceException("Transport card " + idTransporte
 					+ " not found");
@@ -574,13 +574,11 @@ public class GroupServiceImpl implements GroupService {
 		found = false;
 		for (PlaceToSleepCard alojCard : group.getPlaceToSleepCards()) {
 			//esto reinicia a false la propuesta, por si se cambia de propuesta
-			group.getPlaceToSleepCards().remove(alojCard);
-			alojCard.setfinalProposition(found);
+			alojCard.setfinalProposition(false);
 			if (alojCard.getCardId().equals(idAlojamiento)){
 				found = true;
 				alojCard.setfinalProposition(found);
 			}
-			group.getPlaceToSleepCards().add(alojCard);
 		}
 		
 		if (found == false){

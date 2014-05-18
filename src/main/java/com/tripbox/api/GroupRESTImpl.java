@@ -234,11 +234,11 @@ public class GroupRESTImpl implements GroupREST {
 	}
 
 	@PUT
-	@Path("/{groupId}")
+	@Path("/{groupId}/transport/{idTransporte}/sleep/{idAlojamiento}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response finalProposition(@PathParam("groupId") String groupId, String idTransporte,
-			String idAlojamiento) {
+	public Response finalProposition(@PathParam("groupId") String groupId, @PathParam("idTransporte") String idTransporte,
+			@PathParam("idAlojamiento") String idAlojamiento) {
 		try {
 			return Response.ok(groupService.finalProposition(groupId, idTransporte, idAlojamiento)).build();
 		} catch (InvalidIdsException exc) {

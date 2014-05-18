@@ -15,7 +15,7 @@ public class TransportCard extends Card {
 	public TransportCard(String cardId, String name,
 			String description, long creationDate, String link, double price,
 			String destination, String userId, String nameCreator,
-			String lastNameCreator,long initDate, long finalDate, String transportType, boolean finalPreposition) {
+			String lastNameCreator,long initDate, long finalDate, String transportType, boolean finalProposition) {
 		super(cardId, "transport", name, description, creationDate, link, price,
 				destination, userId, nameCreator, lastNameCreator);
 		

@@ -17,7 +17,7 @@ public class PlaceToSleepCard extends Card {
 			String description, long creationDate, String link, double price,
 			String destination, String userId, String nameCreator,
 			String lastNameCreator,ArrayList<String> parentCardIds, long initDate,
-			long finalDate, String placeType, boolean finalPreposition) {
+			long finalDate, String placeType, boolean finalProposition) {
 		super(cardId, "placeToSleep", name, description, creationDate, link, price,
 				destination, userId, nameCreator, lastNameCreator);
 		this.parentCardIds = parentCardIds;
