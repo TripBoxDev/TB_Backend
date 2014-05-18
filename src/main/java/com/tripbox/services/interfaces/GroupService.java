@@ -4,6 +4,8 @@ import java.io.File;
 
 import com.tripbox.elements.Card;
 import com.tripbox.elements.Group;
+import com.tripbox.elements.PlaceToSleepCard;
+import com.tripbox.elements.TransportCard;
 import com.tripbox.elements.Vote;
 
 public interface GroupService {
@@ -98,4 +100,15 @@ public interface GroupService {
 	*/
 	public void saveGroupImage(String groupId, File fileImage,
 	String uploadedFileLocation) throws Exception;
+	
+	/**
+	 * Funcion que permite definir el pack mejor valorado de un destino.
+	 */
+	public void definePack(Group group) throws Exception;
+	
+	/**
+	 * Funcion que permite calcular el porcentaje de destino.
+	 */
+	public double calculatePackPercentage(TransportCard tcCard, PlaceToSleepCard ptsCard, Group group) throws Exception;
+
 }

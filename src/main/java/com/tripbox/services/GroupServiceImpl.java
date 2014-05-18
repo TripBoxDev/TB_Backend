@@ -211,6 +211,8 @@ public class GroupServiceImpl implements GroupService {
 		for (String deleteVoteOnUser : cardsVoteDelete) {
 			user.getCardsVoted().remove(deleteVoteOnUser);
 		}
+		//Como las votaciones han cambiado redefinimos el mejor pack de cada destino.
+		this.definePack(group);
 		userService.putUser(user);
 	}
 
@@ -238,7 +240,6 @@ public class GroupServiceImpl implements GroupService {
 			this.putGroup(group);
 		}
 	}
-
 	public void deleteDestination(String groupId, String id)
 			throws Exception {
 		Group group;
@@ -454,7 +455,49 @@ public class GroupServiceImpl implements GroupService {
 		return foundCard;
 
 	}
+	
+	public Card getCard(String cardId, String type, Group grupo) {
 
+		Card foundCard = null;
+		boolean cardExist = false;
+		
+		switch(type) {
+			case "transport":
+				Iterator<TransportCard> it = grupo.getTransportCards().iterator();
+					
+				while (it.hasNext()  && !cardExist) {
+					TransportCard tc = it.next();
+					if (tc.getCardId().equalsIgnoreCase(cardId)) {
+						cardExist = true;
+						foundCard = tc;
+					}
+				}
+				break;
+			case "placeToSleep":
+				Iterator<PlaceToSleepCard> ptsIt = grupo.getPlaceToSleepCards().iterator();
+				while (ptsIt.hasNext()  && !cardExist) {
+					PlaceToSleepCard pts = ptsIt.next();
+					if (pts.getCardId().equalsIgnoreCase(cardId)) {
+						cardExist = true;
+						foundCard = pts;
+					}
+				}
+				break;
+			case "other":
+				Iterator<OtherCard> itO = grupo.getOtherCards().iterator();
+				
+				while (itO.hasNext()  && !cardExist) {
+					OtherCard oCard = itO.next();
+					if (oCard.getCardId().equalsIgnoreCase(cardId)) {
+						cardExist = true;
+						foundCard = oCard;
+					}
+				}
+				break;
+			}
+		return foundCard;
+		}
+		
 	public void deleteCard(String groupId, String cardId) throws Exception {
 		Group group;
 		try {
@@ -567,5 +610,93 @@ public class GroupServiceImpl implements GroupService {
 			e.printStackTrace();
 		}
 
+	}
+	
+	public void definePack(Group group) throws Exception {
+		TransportCard bestTempTransportCard = null;
+		PlaceToSleepCard bestPlaceToSleepCard = null;
+		double bestTempValoration = 0;
+		String destino = null;
+		double ponderation;
+
+		//miramos las cartas segun los destinos que hay
+		for (Destination destination : group.getDestinations()) {
+			bestTempValoration = 0;
+			//miramos si la card de alojamiento es del destino que estamos buscando
+
+			if (!group.getPlaceToSleepCards().isEmpty()) {
+				for (PlaceToSleepCard ptsCard : group.getPlaceToSleepCards()) {
+					if (ptsCard.getDestination().equals(destination)) {
+						ptsCard.setDeleteOfBestPack();		//aprovechamos el for para reiniciar los packs
+
+						//en transporte ya no miramos que sea del mismo destino porque esta carta esta linkada al alojamiento
+						if (!ptsCard.getParentCardIds().isEmpty()) {
+							for (String tCardId : ptsCard.getParentCardIds()) {
+								TransportCard tcCard = (TransportCard) getCard(tCardId, "transport", group);
+								tcCard.setDeleteOfBestPack();		//aprovechamos el for para reiniciar los packs
+
+								ponderation = calculatePackPercentage(tcCard, ptsCard, group);
+															
+								if (ponderation > bestTempValoration) {
+									bestTempValoration = ponderation;
+									bestTempTransportCard = tcCard;
+									bestPlaceToSleepCard = ptsCard;
+									destino = destination.getName();
+								}
+							}
+						}
+					}
+				}
+				//activamos el flag de best pack para las cards de transporte y de alojamiento de cada destino
+				if ((bestTempTransportCard!=null)&&(bestPlaceToSleepCard!=null)) {
+					bestTempTransportCard.setBestPack();
+					bestPlaceToSleepCard.setBestPack();
+					for (Destination destiny : group.getDestinations()){
+						group.getDestinations().remove(destiny);
+						if (destiny.getName().equals(destino))
+							destiny.setPercentage(bestTempValoration);
+						group.getDestinations().add(destiny);
+					}
+				}
+				
+				this.putGroup(group);
+			}
+		}
+	}
+
+	public double calculatePackPercentage(TransportCard tcCard,
+			PlaceToSleepCard ptsCard, Group group) throws Exception {
+		int members, numOtherCards = 0;
+		double avg, avg2, resultTrans, resultAloj, otherResult = 0;
+		double resultFinal = 0;
+		members = group.getUsers().size();
+		
+		//Votacion transporte
+		avg = tcCard.getAverage() * 0.7 * 2;
+		avg2 = (tcCard.getVotes().size()/members) * 0.3 * 10;
+		resultTrans = (avg+avg2) * 0.4;
+				
+		//Votacion alojamiento
+		avg = ptsCard.getAverage() * 0.7 * 2;
+		avg2 = (ptsCard.getVotes().size()/members) * 0.3 * 10;
+		resultAloj = (avg+avg2) * 0.4;
+				
+		//Votacion other cards
+		if (!group.getOtherCards().isEmpty()){
+			for (OtherCard otherCard : group.getOtherCards()) {
+				if (otherCard.getDestination().equals(tcCard.getDestination())) {
+					numOtherCards++;
+					avg = otherCard.getAverage() * 0.7 * 2;
+					avg2 = (otherCard.getVotes().size()/members) * 0.3 * 10;
+					otherResult = ((avg + avg2) * 0.2) + otherResult;
+				}
+			}
+			resultFinal = (otherResult/numOtherCards);
+		}
+		
+		//calculo final
+		resultFinal = resultTrans + resultAloj + resultFinal;
+		resultFinal = 10 * resultFinal;
+		return resultFinal;
 	}
 }

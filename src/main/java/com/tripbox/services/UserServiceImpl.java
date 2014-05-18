@@ -171,5 +171,4 @@ public class UserServiceImpl implements UserService {
 					"La ID del grupo o del usuario son nulas");
 		}
 	}
-
 }

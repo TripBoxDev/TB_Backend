@@ -15,19 +15,19 @@ public abstract class Card {
 	private String nameCreator = null;
 	private String lastNameCreator = null;
 	private ArrayList<Vote> votes = new ArrayList<Vote>();
-
+	private boolean bestPack = false;
+	
 	/**
-	 * Valor máximo de un voto.
+	 * Valor mï¿½ï¿½ximo de un voto.
 	 */
 	final private int MAX_VOTE = 5;
-
+	
 	/**
 	 * Media de votos de la card.
 	 */
 	private double average;
-
-	public Card() {
-	}
+	
+	public Card(){}
 
 	public Card(String cardId, String cardType, String name,
 			String description, long creationDate, String link, double price,
@@ -135,6 +135,15 @@ public abstract class Card {
 		this.lastNameCreator = lastNameCreator;
 	}
 
+	public boolean getBestPack() {
+		return bestPack;
+	}
+	public void setBestPack() {
+		this.bestPack = true;
+	}
+	public void setDeleteOfBestPack(){
+		this.bestPack = false;
+	}
 	public ArrayList<Vote> getVotes() {
 		return votes;
 	}

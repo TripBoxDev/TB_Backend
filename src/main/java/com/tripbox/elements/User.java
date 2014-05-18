@@ -18,8 +18,7 @@ public class User {
 	private String googleId = null;
 	private ArrayList<String> cardsVoted = new ArrayList<String>();
 
-	public User() {
-	}
+	public User() {}
 
 	public User(String id, String facebookid, String googleId, String name,
 			String lastName, String email, ArrayList<String> groups) {

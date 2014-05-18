@@ -5,6 +5,8 @@ public class Vote {
 	private String userId = null;
 	private double value = 0.0;
 
+	public Vote() {}
+	
 	public String getUserId() {
 		return userId;
 	}
@@ -20,7 +22,5 @@ public class Vote {
 	public void setValue(double value) {
 		this.value = value;
 	}
-
-	public Vote() {}
 
 }
