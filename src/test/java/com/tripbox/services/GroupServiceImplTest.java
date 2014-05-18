@@ -47,6 +47,7 @@ public class GroupServiceImplTest {
 	static Group resultGroup;
 	static Group resultGroupNoDelete;
 	static Group putDeleteTestGroup;
+	static Group finalgroup;
 
 	static User usuario;
 	static User usuario2;
@@ -57,6 +58,7 @@ public class GroupServiceImplTest {
 	static TransportCard tTestCard2;
 	static TransportCard tTestCard3;
 	static PlaceToSleepCard ptsTestCard;
+	static PlaceToSleepCard ptsTestCard2;
 	static OtherCard oTestCard;
 
 	static TransportCard tWrongTestCard;
@@ -144,6 +146,13 @@ public class GroupServiceImplTest {
 		ptsTestCard.setCardType("placeToSleep");
 		ptsTestCard.setDestination("Argentina");
 
+		ptsTestCard2 = new PlaceToSleepCard();
+		ptsTestCard2.setCardId("jnfjdngjf");
+		ptsTestCard2.setUserIdCreator(usuario.getId());
+		ptsTestCard2.setName("Place To Sleep Test Card");
+		ptsTestCard2.setCardType("placeToSleep");
+		ptsTestCard2.setDestination("Tokio");
+		
 		ptsWrongTestCard = new PlaceToSleepCard();
 		ptsWrongTestCard.setUserIdCreator(usuario.getId());
 		ptsWrongTestCard.setName("Place To Sleep Test Card");
@@ -1133,6 +1142,58 @@ public class GroupServiceImplTest {
 		}
 		
 		grupoServ.deleteGroup(percentTestGroup.getId());
+	}
+	
+	@Test
+	public void testFinalProposition() throws Exception {
+		Group grupo = new Group();
+		PlaceToSleepCard a = new PlaceToSleepCard();
+		TransportCard b = new TransportCard();
+		PlaceToSleepCard c = new PlaceToSleepCard();
+		TransportCard d = new TransportCard();
+		grupo.setName("putFinalProposition");
+		grupo.setUsers(users);
+		grupo.setDestinations(destinations);
+		grupo.getPlaceToSleepCards().add(ptsTestCard);
+		grupo.getPlaceToSleepCards().add(ptsTestCard2);
+		grupo.setPlaceToSleepCards(grupo.getPlaceToSleepCards());
+		grupo.getTransportCards().add(tTestCard);
+		grupo.getTransportCards().add(tTestCard2);
+		grupo.setTransportCards(grupo.getTransportCards());
+		
+		finalgroup = grupoServ.putGroup(grupo);
+		assertTrue(tTestCard.getfinalProposition() == false);
+		assertTrue(ptsTestCard.getfinalProposition() == false);
+		try {
+			grupo = grupoServ.finalProposition(finalgroup.getId(), tTestCard.getCardId(), ptsTestCard.getCardId());
+			a = (PlaceToSleepCard) grupoServ.cardExistOnArray(ptsTestCard.getCardId(), grupo.getPlaceToSleepCards());
+			b = (TransportCard) grupoServ.cardExistOnArray(tTestCard.getCardId(), grupo.getTransportCards());
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+		assertTrue(b.getfinalProposition() == true);
+		assertTrue(a.getfinalProposition() == true);
+		
+		assertTrue(tTestCard2.getfinalProposition() == false);
+		assertTrue(ptsTestCard2.getfinalProposition() == false);
+		try {
+			grupo = grupoServ.finalProposition(finalgroup.getId(), tTestCard2.getCardId(), ptsTestCard2.getCardId());
+			c = (PlaceToSleepCard) grupoServ.cardExistOnArray(ptsTestCard2.getCardId(), grupo.getPlaceToSleepCards());
+			d = (TransportCard) grupoServ.cardExistOnArray(tTestCard2.getCardId(), grupo.getTransportCards());
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+		
+		a = (PlaceToSleepCard) grupoServ.cardExistOnArray(ptsTestCard.getCardId(), grupo.getPlaceToSleepCards());
+		b = (TransportCard) grupoServ.cardExistOnArray(tTestCard.getCardId(), grupo.getTransportCards());
+		
+		//para comprobar que han cambiado la propuesta
+		assertTrue(b.getfinalProposition() == false);
+		assertTrue(a.getfinalProposition() == false);
+		assertTrue(d.getfinalProposition() == true);
+		assertTrue(c.getfinalProposition() == true);
 	}
 	
 	@After
