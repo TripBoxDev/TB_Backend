@@ -149,8 +149,8 @@ public class GroupServiceImpl implements GroupService {
 			throw new UserNotExistOnGroup("El usuario con ID: " + userId
 					+ "no existe en el grupo");
 		}
-
 		group.setUsers(groupUsers);
+		
 		// eliminamos el grup de la lista de grupos del usuario
 		user = userService.getUser(userId);
 		ArrayList<String> userGroups = user.getGroups();
@@ -248,7 +248,15 @@ public class GroupServiceImpl implements GroupService {
 			throw new ElementNotFoundServiceException("Group " + groupId
 					+ " not found");
 		}
-		if (group.getDestinations().contains(id)) {
+		
+		Boolean foundId = false;
+		for (Destination dest: group.getDestinations()) {
+			if (dest.getId().equals(id)) {
+				foundId = true;
+			}
+		}
+		
+		if (foundId == true) {
 			group.getDestinations().remove(id);
 
 			ArrayList<TransportCard> transCards = group.getTransportCards();
@@ -305,12 +313,21 @@ public class GroupServiceImpl implements GroupService {
 			throw new ElementNotFoundServiceException("Group " + groupId
 					+ " not found");
 		}
-
 		// comprobem que el desti existeixi
-		if (card.getDestination() == null
-				|| !group.getDestinations().contains(card.getDestination()))
+		if (card.getDestination() == null) {
 			throw new DestinationDoesntExistException();
-
+		} else {
+			boolean foundDest = false;
+			for (Destination dest: group.getDestinations()) {
+				if (dest.getName().equalsIgnoreCase(card.getDestination())) {
+					foundDest = true;
+				}
+			}
+			if (foundDest == false) {
+				throw new DestinationDoesntExistException();
+			}
+		}
+		
 		// comprobem que l'usuari que ha creat la card existeix
 		try {
 			userService.getUser(card.getUserIdCreator());
@@ -479,6 +496,7 @@ public class GroupServiceImpl implements GroupService {
 			throw new ElementNotFoundServiceException("Group " + groupId
 					+ " not found");
 		}
+		
 		Card foundCard = null;
 		foundCard = cardExistOnArray(cardId, group.getTransportCards());
 		if (foundCard == null) {
@@ -487,6 +505,7 @@ public class GroupServiceImpl implements GroupService {
 				foundCard = cardExistOnArray(cardId, group.getOtherCards());
 			}
 		}
+		
 		if (foundCard != null) {
 			boolean found = false;
 			Iterator<Vote> it = foundCard.getVotes().iterator();

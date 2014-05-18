@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.tripbox.elements.Destination;
 import com.tripbox.elements.Group;
 import com.tripbox.elements.OtherCard;
 import com.tripbox.elements.PlaceToSleepCard;
@@ -33,10 +34,14 @@ public class GroupServiceImplTest {
 	static ArrayList<String> groups = new ArrayList<String>();
 	static ArrayList<String> users = new ArrayList<String>();
 	static ArrayList<String> usuarios = new ArrayList<String>();
-	static ArrayList<String> destinations = new ArrayList<String>();
-	static ArrayList<String> destinationsTestCards = new ArrayList<String>();
-	static ArrayList<String> moreDestinations = new ArrayList<String>();
 
+	static Destination RomaDestination;
+	static Destination ParisDestination;
+	static Destination ArgentinaDestination;
+	static Destination LondresDestination;
+	static Destination MoscowDestination;
+	static Destination CerdanyolaDestination;
+	
 	static Group testGetGroup;
 	static Group resultGroup;
 	static Group resultGroupNoDelete;
@@ -58,13 +63,28 @@ public class GroupServiceImplTest {
 
 	@BeforeClass
 	public static void SetUpBeforeClass() throws Exception {
+/*TODO esborrar
 		destinations.add("Roma");
 		destinations.add("Paris");
 		destinationsTestCards.add("Argentina");
 		moreDestinations.add("Londres");
 		moreDestinations.add("Moscow");
 		moreDestinations.add("Cerdanyola");
-
+*/
+		RomaDestination = new Destination();
+		ParisDestination = new Destination();
+		ArgentinaDestination = new Destination();
+		LondresDestination = new Destination();
+		MoscowDestination = new Destination();
+		CerdanyolaDestination = new Destination();
+		
+		RomaDestination.setName("Roma");
+		ParisDestination.setName("Paris");
+		ArgentinaDestination.setName("Argentina");
+		LondresDestination.setName("Londres");
+		MoscowDestination.setName("Moscow");
+		CerdanyolaDestination.setName("Cerdanyola");
+		
 		usuario = new User();
 		usuario.setName("userName");
 		usuario.setLastName("userLastName");
@@ -147,12 +167,13 @@ public class GroupServiceImplTest {
 				.setDescription("grupo para testeo de funciones de las cards");
 		cardTestGroupWrInputs.setUsers(users);
 
-		cardTestGroup.setDestinations(destinationsTestCards);
-		cardTestGroupWrInputs.setDestinations(destinations);
-
-		grupoServ.putGroup(cardTestGroup);
-		grupoServ.putGroup(cardTestGroupWrInputs);
-
+		cardTestGroup = grupoServ.putGroup(cardTestGroup);
+		cardTestGroupWrInputs = grupoServ.putGroup(cardTestGroupWrInputs);
+		
+		grupoServ.putDestination(cardTestGroup.getId(), "Argentina");
+		grupoServ.putDestination(cardTestGroupWrInputs.getId(), "Roma");
+		grupoServ.putDestination(cardTestGroupWrInputs.getId(), "Paris");
+		
 	}
 
 	@Before
@@ -301,7 +322,14 @@ public class GroupServiceImplTest {
 
 			resultGroupNoDelete = grupoServ.getGroup(cardTestGroup.getId());
 
-			assertTrue(resultGroupNoDelete.getDestinations().contains("Tokyo"));
+			boolean foundDest = false;
+			for (Destination dest : resultGroupNoDelete.getDestinations()) {
+				if (dest.getName().equalsIgnoreCase("Tokyo")) {
+					foundDest = true;
+				}
+			}
+			
+			assertTrue(foundDest);
 
 		} catch (ElementNotFoundServiceException e) {
 			fail();
@@ -353,8 +381,12 @@ public class GroupServiceImplTest {
 		destTestGroup
 				.setDescription("grupo para testeo de funciones de las cards");
 		destTestGroup.setUsers(users);
-		destTestGroup.setDestinations(destinations);
-		grupoServ.putGroup(destTestGroup);
+		
+		destTestGroup = grupoServ.putGroup(destTestGroup);
+
+		grupoServ.putDestination(destTestGroup.getId(), "Roma");
+		grupoServ.putDestination(destTestGroup.getId(), "Paris");
+		
 		grupoServ.putCard(destTestGroup.getId(), destTestCard);
 
 		destTestGroup = grupoServ.getGroup(destTestGroup.getId());
@@ -362,11 +394,22 @@ public class GroupServiceImplTest {
 		try {
 			ArrayList<TransportCard> tCards = destTestGroup.getTransportCards();
 			// Nos aseguramos que haya una card con destino a Paris
+			
 			assertEquals(tCards.get(0).getDestination(), "Paris");
-
+			String idDeleteDest = null;
 			// Se elimina Paris como destino
-			grupoServ.deleteDestination(destTestGroup.getId(), "Paris");
-
+			for (Destination dest: destTestGroup.getDestinations()) {
+				if (dest.getName().equalsIgnoreCase("Paris")) {
+					idDeleteDest = dest.getId();
+				}
+			}
+			
+			if (idDeleteDest != null) {
+				grupoServ.deleteDestination(destTestGroup.getId(), idDeleteDest);
+			} else {
+				fail();
+			}
+			
 			resultGroup = grupoServ.getGroup(destTestGroup.getId());
 
 			// Comprobamos que Paris ya no esta entre las destinaciones del
@@ -396,7 +439,7 @@ public class GroupServiceImplTest {
 	public void testDeleteDestinationWrongInputs() throws Exception {
 
 		try {
-			grupoServ.deleteDestination("555", "Paris");
+			grupoServ.deleteDestination("555", "333");
 			fail();
 		} catch (ElementNotFoundServiceException e) {
 
@@ -406,7 +449,7 @@ public class GroupServiceImplTest {
 
 		try {
 			grupoServ.deleteDestination(cardTestGroupWrInputs.getId(),
-					"Tailandia");
+					"333");
 			fail();
 		} catch (ElementNotFoundServiceException e) {
 
@@ -417,6 +460,7 @@ public class GroupServiceImplTest {
 
 	@Test
 	public void testPutCard() throws Exception {
+
 		try {
 			grupoServ.putCard(cardTestGroup.getId(), tTestCard);
 		} catch (Exception e) {
@@ -608,11 +652,20 @@ public class GroupServiceImplTest {
 		// Card que si existe
 		Group cardExistGroup = new Group();
 		cardExistGroup.setName("cardExistGroup");
-		cardExistGroup.setDestinations(moreDestinations);
-
+		
 		cardExistGroup = grupoServ.putGroup(cardExistGroup);
+		
+		grupoServ.putDestination(cardExistGroup.getId(), "Londres");
+		grupoServ.putDestination(cardExistGroup.getId(), "Moscow");
+		grupoServ.putDestination(cardExistGroup.getId(), "Cerdanyola");
 
-		grupoServ.putCard(cardExistGroup.getId(), tTestCard2);
+		try {
+			grupoServ.putCard(cardExistGroup.getId(), tTestCard2);
+		} catch (Exception e){
+			e.getMessage();
+			e.printStackTrace();
+		}
+		
 		cardExistGroup = grupoServ.getGroup(cardExistGroup.getId());
 
 		try {
@@ -643,28 +696,37 @@ public class GroupServiceImplTest {
 
 	}
 
-	// TODO putVote
+
 	@Test
 	public void testPutVote() throws Exception {
 		TransportCard resultCard;
 		Group putVoteGroup = new Group();
 		putVoteGroup.setName("cardExistGroup");
-		putVoteGroup.setDestinations(moreDestinations);
 		putVoteGroup.setUsers(usuarios);
-
 		putVoteGroup = grupoServ.putGroup(putVoteGroup);
-
-		grupoServ.putCard(putVoteGroup.getId(), tTestCard3);
+		
+		grupoServ.putDestination(putVoteGroup.getId(), "Londres");
+		grupoServ.putDestination(putVoteGroup.getId(), "Moscow");
+		grupoServ.putDestination(putVoteGroup.getId(), "Cerdanyola");
+		
 		putVoteGroup = grupoServ.getGroup(putVoteGroup.getId());
 
+		try {
+			grupoServ.putCard(putVoteGroup.getId(), tTestCard3);
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+		
+		putVoteGroup = grupoServ.getGroup(putVoteGroup.getId());
+		
 		Vote voto = new Vote();
 		voto.setUserId(usuario.getId());
 		voto.setValue(4);
-
 		Vote voto2 = new Vote();
 		voto2.setUserId(usuario2.getId());
 		voto2.setValue(2);
-
+		
 		try {
 			// Nuevo voto
 			resultCard = (TransportCard) grupoServ.putVote(
@@ -683,10 +745,9 @@ public class GroupServiceImplTest {
 			resultCard = (TransportCard) grupoServ.putVote(
 					putVoteGroup.getId(), tTestCard3.getCardId(), voto2);
 			assertTrue(resultCard.getAverage() == 2);
-
-			// Si sale un usuario del grupo se recalcula la media correctamente
+			// Si sale un usuario del grupo se recalcula la media correctamente TODO
 			grupoServ.deleteUserToGroup(putVoteGroup.getId(), usuario2.getId());
-
+			
 			putVoteGroup = grupoServ.getGroup(putVoteGroup.getId());
 			resultCard = (TransportCard) grupoServ.cardExistOnArray(
 					resultCard.getCardId(), putVoteGroup.getTransportCards());
@@ -696,7 +757,7 @@ public class GroupServiceImplTest {
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail();
-		}
+		} //TODO
 
 		grupoServ.deleteGroup(putVoteGroup.getId());
 	}
@@ -715,10 +776,13 @@ public class GroupServiceImplTest {
 
 		Group putVoteGroup = new Group();
 		putVoteGroup.setName("cardExistGroup");
-		putVoteGroup.setDestinations(moreDestinations);
-		putVoteGroup.setUsers(usuarios);
-
+		
 		putVoteGroup = grupoServ.putGroup(putVoteGroup);
+		
+		grupoServ.putDestination(putVoteGroup.getId(), "Londres");
+		grupoServ.putDestination(putVoteGroup.getId(), "Moscow");
+		grupoServ.putDestination(putVoteGroup.getId(), "Cerdanyola");
+		putVoteGroup.setUsers(usuarios);
 
 		try {
 			grupoServ.putCard(putVoteGroup.getId(), tTestCard4);
@@ -751,9 +815,12 @@ public class GroupServiceImplTest {
 		// Card existente en un grupo en el cual el usuario no esta
 		Group putVoteGroup2 = new Group();
 		putVoteGroup2.setName("cardExistGroup");
-		putVoteGroup2.setDestinations(moreDestinations);
 
 		putVoteGroup2 = grupoServ.putGroup(putVoteGroup2);
+		
+		grupoServ.putDestination(putVoteGroup2.getId(), "Londres");
+		grupoServ.putDestination(putVoteGroup2.getId(), "Moscow");
+		grupoServ.putDestination(putVoteGroup2.getId(), "Cerdanyola");
 
 		try {
 			grupoServ.putVote(putVoteGroup2.getId(), tTestCard4.getCardId(),
