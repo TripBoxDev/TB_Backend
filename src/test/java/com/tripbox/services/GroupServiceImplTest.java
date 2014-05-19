@@ -66,14 +66,7 @@ public class GroupServiceImplTest {
 
 	@BeforeClass
 	public static void SetUpBeforeClass() throws Exception {
-/*TODO esborrar
-		destinations.add("Roma");
-		destinations.add("Paris");
-		destinationsTestCards.add("Argentina");
-		moreDestinations.add("Londres");
-		moreDestinations.add("Moscow");
-		moreDestinations.add("Cerdanyola");
-*/
+
 		RomaDestination = new Destination();
 		ParisDestination = new Destination();
 		ArgentinaDestination = new Destination();
@@ -201,7 +194,6 @@ public class GroupServiceImplTest {
 			resultGroupNoDelete = grupoServ.putGroup(putDeleteTestGroup);
 			assertNotNull(putDeleteTestGroup.getId());
 			assertNotNull(grupoServ.getGroup(putDeleteTestGroup.getId()));
-
 			assertTrue(resultGroupNoDelete.getId() == putDeleteTestGroup
 					.getId());
 			assertNotNull(resultGroupNoDelete.getUsers());
@@ -244,7 +236,7 @@ public class GroupServiceImplTest {
 		try {
 			grupoServ.deleteGroup(putDeleteTestGroup.getId());
 		} catch (ElementNotFoundServiceException e) {
-			fail(); // El grupo existe, asiq ue no tiene que fallar
+			fail(); // El grupo existe, asi que no tiene que fallar
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail();
