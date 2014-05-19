@@ -3,6 +3,7 @@ package com.tripbox.services.interfaces;
 import java.io.File;
 
 import com.tripbox.elements.Card;
+import com.tripbox.elements.Destination;
 import com.tripbox.elements.Group;
 import com.tripbox.elements.PlaceToSleepCard;
 import com.tripbox.elements.TransportCard;
@@ -35,7 +36,7 @@ public interface GroupService {
 	 *            Nueva destinación que queremos añadir al Group.
 	 * @throws Exception
 	 */
-	public void putDestination(String groupId, String newDestination)
+	public Destination putDestination(String groupId, String newDestination)
 			throws Exception;
 
 	/**

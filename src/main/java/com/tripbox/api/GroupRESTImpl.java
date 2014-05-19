@@ -96,8 +96,7 @@ public class GroupRESTImpl implements GroupREST {
 			String newDestination) {
 
 		try {
-			groupService.putDestination(id, newDestination);
-			return Response.ok().build();
+			return Response.ok(groupService.putDestination(id, newDestination)).build();
 		} catch (ElementNotFoundServiceException e) {
 			throw new ElementNotFoundException(e.getMessage());
 		} catch (Exception e) {

@@ -217,7 +217,7 @@ public class GroupServiceImpl implements GroupService {
 		userService.putUser(user);
 	}
 
-	public void putDestination(String groupId, String newDestination)
+	public Destination putDestination(String groupId, String newDestination)
 			throws Exception {
 		Destination destiny = new Destination();
 		Group group;
@@ -240,6 +240,7 @@ public class GroupServiceImpl implements GroupService {
 			group.getDestinations().add(destiny);
 			this.putGroup(group);
 		}
+		return destiny;
 	}
 	public void deleteDestination(String groupId, String id)
 			throws Exception {
