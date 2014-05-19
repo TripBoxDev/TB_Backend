@@ -407,7 +407,9 @@ public class GroupServiceImplTest {
 			}
 			
 			if (idDeleteDest != null) {
+				
 				grupoServ.deleteDestination(destTestGroup.getId(), idDeleteDest);
+				
 			} else {
 				fail();
 			}

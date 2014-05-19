@@ -68,7 +68,6 @@ public class GroupServiceImpl implements GroupService {
 
 				// modificamos el group a la bbdd
 				// bbdd.putGroup(group);
-				System.out.println(group.getName());
 				mongo = MongoDB.getInstance();
 				mongo.putGroup(group);
 
@@ -242,9 +241,11 @@ public class GroupServiceImpl implements GroupService {
 		}
 		return destiny;
 	}
-	public void deleteDestination(String groupId, String id)
+	public void deleteDestination(String groupId, String idDestination)
 			throws Exception {
 		Group group;
+		Destination destiny = new Destination();
+		
 		try {
 			group = this.getGroup(groupId);
 		} catch (Exception e) {
@@ -254,18 +255,22 @@ public class GroupServiceImpl implements GroupService {
 		
 		Boolean foundId = false;
 		for (Destination dest: group.getDestinations()) {
-			if (dest.getId().equals(id)) {
+			if (dest.getId().equals(idDestination)) {
 				foundId = true;
+				destiny = dest;
 			}
 		}
 		
 		if (foundId == true) {
-			group.getDestinations().remove(id);
+
+			System.out.println(group.getDestinations());
+			System.out.println(group.getDestinations().remove(destiny));
+			System.out.println(group.getDestinations());
 
 			ArrayList<TransportCard> transCards = group.getTransportCards();
 			ArrayList<TransportCard> transCardsToDelete = new ArrayList<TransportCard>();
 			for (TransportCard card : transCards) {
-				if (card.getDestination().equalsIgnoreCase(id)) {
+				if (card.getDestination().equalsIgnoreCase(idDestination)) {
 
 					transCardsToDelete.add(card);
 				}
@@ -278,7 +283,7 @@ public class GroupServiceImpl implements GroupService {
 					.getPlaceToSleepCards();
 			ArrayList<PlaceToSleepCard> placetoCardsToDelete = new ArrayList<PlaceToSleepCard>();
 			for (PlaceToSleepCard card : placetoCards) {
-				if (card.getDestination().equalsIgnoreCase(id)) {
+				if (card.getDestination().equalsIgnoreCase(idDestination)) {
 					placetoCardsToDelete.add(card);
 				}
 			}
@@ -289,7 +294,7 @@ public class GroupServiceImpl implements GroupService {
 			ArrayList<OtherCard> otherCards = group.getOtherCards();
 			ArrayList<OtherCard> otherCardsToDelete = new ArrayList<OtherCard>();
 			for (OtherCard card : otherCards) {
-				if (card.getDestination().equalsIgnoreCase(id)) {
+				if (card.getDestination().equalsIgnoreCase(idDestination)) {
 					otherCardsToDelete.add(card);
 				}
 			}
@@ -300,7 +305,7 @@ public class GroupServiceImpl implements GroupService {
 			this.putGroup(group);
 		} else {
 			throw new ElementNotFoundServiceException("Destination with ID "
-					+ id + " doesn't exist");
+					+ idDestination + " doesn't exist");
 
 		}
 
