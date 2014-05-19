@@ -262,15 +262,12 @@ public class GroupServiceImpl implements GroupService {
 		}
 		
 		if (foundId == true) {
-
-			System.out.println(group.getDestinations());
-			System.out.println(group.getDestinations().remove(destiny));
-			System.out.println(group.getDestinations());
+			group.getDestinations().remove(destiny);
 
 			ArrayList<TransportCard> transCards = group.getTransportCards();
 			ArrayList<TransportCard> transCardsToDelete = new ArrayList<TransportCard>();
 			for (TransportCard card : transCards) {
-				if (card.getDestination().equalsIgnoreCase(idDestination)) {
+				if (card.getDestination().equalsIgnoreCase(destiny.getName())) {
 
 					transCardsToDelete.add(card);
 				}
@@ -283,7 +280,7 @@ public class GroupServiceImpl implements GroupService {
 					.getPlaceToSleepCards();
 			ArrayList<PlaceToSleepCard> placetoCardsToDelete = new ArrayList<PlaceToSleepCard>();
 			for (PlaceToSleepCard card : placetoCards) {
-				if (card.getDestination().equalsIgnoreCase(idDestination)) {
+				if (card.getDestination().equalsIgnoreCase(destiny.getName())) {
 					placetoCardsToDelete.add(card);
 				}
 			}
@@ -294,7 +291,7 @@ public class GroupServiceImpl implements GroupService {
 			ArrayList<OtherCard> otherCards = group.getOtherCards();
 			ArrayList<OtherCard> otherCardsToDelete = new ArrayList<OtherCard>();
 			for (OtherCard card : otherCards) {
-				if (card.getDestination().equalsIgnoreCase(idDestination)) {
+				if (card.getDestination().equalsIgnoreCase(destiny.getName())) {
 					otherCardsToDelete.add(card);
 				}
 			}
