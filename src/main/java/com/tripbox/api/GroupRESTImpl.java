@@ -90,13 +90,13 @@ public class GroupRESTImpl implements GroupREST {
 	}
 
 	@PUT
-	@Path("/{id}/destination")
+	@Path("/{groupId}/destination")
 	@Consumes(MediaType.TEXT_PLAIN)
-	public Response putDestination(@PathParam("id") String id,
+	public Response putDestination(@PathParam("groupId") String groupId,
 			String newDestination) {
 
 		try {
-			return Response.ok(groupService.putDestination(id, newDestination)).build();
+			return Response.ok(groupService.putDestination(groupId, newDestination)).build();
 		} catch (ElementNotFoundServiceException e) {
 			throw new ElementNotFoundException(e.getMessage());
 		} catch (Exception e) {
