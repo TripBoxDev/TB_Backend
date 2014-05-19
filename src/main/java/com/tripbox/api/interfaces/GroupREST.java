@@ -66,11 +66,11 @@ public interface GroupREST {
 	 * 
 	 * @param id
 	 *            Id del Group al que queremos eliminar el destino.
-	 * @param destinationToDelete
+	 * @param idDestination
 	 *            Destino que queremos eliminar.
 	 * @return
 	 */
-	public Response deleteDestination(String id, String destinationToDelete);
+	public Response deleteDestination(String id, String idDestination);
 
 	/**
 	 * Funcion de la API que nos permite agregar una Card a un Group segun el

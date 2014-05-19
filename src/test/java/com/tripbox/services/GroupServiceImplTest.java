@@ -515,6 +515,8 @@ public class GroupServiceImplTest {
 		// card de transporte)
 		assertEquals(cardTestGroup.getPlaceToSleepCards().get(0)
 				.getParentCardIds().get(0), tTestCard.getCardId());
+		
+		//TODO asserts de linkajes bidireccionales
 
 	}
 
@@ -755,7 +757,7 @@ public class GroupServiceImplTest {
 			resultCard = (TransportCard) grupoServ.putVote(
 					putVoteGroup.getId(), tTestCard3.getCardId(), voto2);
 			assertTrue(resultCard.getAverage() == 2);
-			// Si sale un usuario del grupo se recalcula la media correctamente TODO
+			// Si sale un usuario del grupo se recalcula la media correctamente
 			grupoServ.deleteUserToGroup(putVoteGroup.getId(), usuario2.getId());
 			
 			putVoteGroup = grupoServ.getGroup(putVoteGroup.getId());
@@ -767,7 +769,7 @@ public class GroupServiceImplTest {
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail();
-		} //TODO
+		}
 
 		grupoServ.deleteGroup(putVoteGroup.getId());
 	}

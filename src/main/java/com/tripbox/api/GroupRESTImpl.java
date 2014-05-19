@@ -106,12 +106,12 @@ public class GroupRESTImpl implements GroupREST {
 	}
 
 	@DELETE
-	@Path("/{id}/destination")
+	@Path("/{groupId}/destination/{idDestination}")
 	@Consumes(MediaType.TEXT_PLAIN)
 	public Response deleteDestination(@PathParam("id") String id,
-			String destinationToDelete) {
+			@PathParam("idDestination") String idDestination) {
 		try {
-			groupService.deleteDestination(id, destinationToDelete);
+			groupService.deleteDestination(id, idDestination);
 			return Response.ok().build();
 		} catch (ElementNotFoundServiceException e) {
 			throw new ElementNotFoundException(e.getMessage());
