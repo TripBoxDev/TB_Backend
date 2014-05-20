@@ -354,7 +354,6 @@ public class GroupServiceImpl implements GroupService {
 
 			case "placeToSleep":
 				PlaceToSleepCard auxPlaceCard = (PlaceToSleepCard) card;
-
 				// comprobem que els parentCards existeixin
 				for (String parentId : auxPlaceCard.getParentCardIds()) {
 					TransportCard parentCard = (TransportCard) cardExistOnArray(
@@ -405,7 +404,10 @@ public class GroupServiceImpl implements GroupService {
 				foundCard = cardExistOnArray(card.getCardId(),
 						group.getPlaceToSleepCards());
 				if (foundCard != null) {
-					PlaceToSleepCard auxPlaceCard = (PlaceToSleepCard) foundCard;
+					
+					PlaceToSleepCard auxPlaceCard = (PlaceToSleepCard) card;
+					PlaceToSleepCard oldPlaceCard = (PlaceToSleepCard) foundCard;
+					
 					// comprobem que els parentCards existeixin
 					for (String parentId : auxPlaceCard.getParentCardIds()) {
 						TransportCard parentCard = (TransportCard) cardExistOnArray(
@@ -420,10 +422,12 @@ public class GroupServiceImpl implements GroupService {
 							}
 						}
 					}
-					group.getPlaceToSleepCards().remove(auxPlaceCard);
 
+					group.getPlaceToSleepCards().remove(oldPlaceCard);
+		
 					auxPlaceCard = (PlaceToSleepCard) card;
 					group.getPlaceToSleepCards().add(auxPlaceCard);
+
 				}
 				break;
 
@@ -443,14 +447,16 @@ public class GroupServiceImpl implements GroupService {
 				throw new CardTypeException();
 
 			}
-			if (foundCard == null)
+			if (foundCard == null) {
 				throw new InvalidIdsException("La Card con el ID, "
 						+ card.getCardId() + " de tipo " + card.getCardType()
 						+ ", no exsiste en ");
+			}
+				
 		}
+
 		this.putGroup(group);
 		return card;
-
 	}
 
 	public Card cardExistOnArray(String cardId, ArrayList cardsArray) {

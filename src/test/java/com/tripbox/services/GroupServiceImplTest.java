@@ -517,7 +517,7 @@ public class GroupServiceImplTest {
 		PlaceToSleepCard ptsChild = (PlaceToSleepCard) grupoServ.cardExistOnArray(resultPtsCard.getCardId(), cardTestGroup.getPlaceToSleepCards());
 		ArrayList<String> aParents = ptsChild.getParentCardIds();
 		
-		//System.out.println("PTS ID: " + ptsChild.getCardId() + "\tTrans ID: " + aParents);
+		//System.out.println("\n\nPTS ID: " + ptsChild.getCardId() + "\tTrans ID: " + aParents);
 		
 		//Miramos en la otra direccion (linkaje bidireccional)
 		TransportCard tParent = (TransportCard) grupoServ.cardExistOnArray(resultTCard.getCardId(), cardTestGroup.getTransportCards());
@@ -549,6 +549,75 @@ public class GroupServiceImplTest {
 		
 		assertTrue(found);
 		
+		//Miraremos si, haciendo el linkaje posteriormente, despues de hacer el put tambien se actualiza
+		PlaceToSleepCard ptsCardToLink = new PlaceToSleepCard();
+		ptsCardToLink.setName("ptsCardToLink_Name");
+		ptsCardToLink.setUserIdCreator(usuario.getId());
+		ptsCardToLink.setDestination("Argentina");
+		ptsCardToLink.setCardType("placeToSleep");
+		
+		TransportCard tCardToLink = new TransportCard();
+		tCardToLink.setName("tCardToLink_Name");
+		tCardToLink.setUserIdCreator(usuario.getId());
+		tCardToLink.setDestination("Argentina");
+		tCardToLink.setCardType("transport");
+		
+		
+		try {
+			tCardToLink = (TransportCard) grupoServ.putCard(cardTestGroup.getId(), tCardToLink);
+			ptsCardToLink = (PlaceToSleepCard) grupoServ.putCard(cardTestGroup.getId(), ptsCardToLink);
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+		
+		ArrayList<String> parentCardIds2 = new ArrayList<>();
+		parentCardIds2.add(tCardToLink.getCardId());
+		ptsCardToLink.setParentCardIds(parentCardIds2);
+				
+		try {
+			resultPtsCard = (PlaceToSleepCard) grupoServ.putCard(cardTestGroup.getId(), ptsCardToLink);
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+
+		cardTestGroup = grupoServ.getGroup(cardTestGroup.getId());
+		
+		//Miramos en una direccion
+		ptsChild = (PlaceToSleepCard) grupoServ.cardExistOnArray(resultPtsCard.getCardId(), cardTestGroup.getPlaceToSleepCards());
+		aParents = ptsChild.getParentCardIds();
+		
+		//System.out.println("\nPTS ID: " + ptsChild.getCardId() + "\tTrans ID: " + aParents);
+		
+		//Miramos en la otra direccion (linkaje bidireccional)
+		tParent = (TransportCard) grupoServ.cardExistOnArray(tCardToLink.getCardId(), cardTestGroup.getTransportCards());
+		aChilds = tParent.getChildCardsId();
+		
+		//System.out.println("Trans ID: " + tParent.getCardId() + "\tPTSs ID: " + aChilds);
+		
+		//Comprobaciones, 1 direccion
+
+		found = false;
+		for (String child: aChilds) {
+			foundCard = (PlaceToSleepCard) grupoServ.getCard(child, "placeToSleep", cardTestGroup);
+			if (foundCard != null) {
+				found = true;
+			}
+		}
+		
+		assertTrue(found);
+
+		//La otra direccion (linkaje bidireccional)
+		found = false;
+		for (String parent: aParents) {
+			tFoundCard = (TransportCard) grupoServ.getCard(parent, "transport", cardTestGroup);
+			if (tFoundCard != null) {
+				found = true;
+			}
+		}
+		
+		assertTrue(found);
 	}
 
 	@Test
