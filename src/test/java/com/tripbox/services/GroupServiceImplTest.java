@@ -35,7 +35,7 @@ public class GroupServiceImplTest {
 	static ArrayList<String> groups = new ArrayList<String>();
 	static ArrayList<String> users = new ArrayList<String>();
 	static ArrayList<String> usuarios = new ArrayList<String>();
-	static ArrayList<Destination> destinations = new ArrayList<Destination>();
+	//static ArrayList<Destination> destinations = new ArrayList<Destination>();
 	
 	static Destination RomaDestination;
 	static Destination ParisDestination;
@@ -730,9 +730,9 @@ public class GroupServiceImplTest {
 
 		// Como solo habia una card, ahora las arrays de cards estan vacios, por
 		// eso las comprobaciones las realizamos con .isEmpty()
-		assertTrue(cardTestGroup.getTransportCards().isEmpty());
-		assertTrue(cardTestGroup.getPlaceToSleepCards().isEmpty());
-		assertTrue(cardTestGroup.getOtherCards().isEmpty());
+		assertTrue(!cardTestGroup.getTransportCards().contains(tTestCard));
+		assertTrue(!cardTestGroup.getPlaceToSleepCards().contains(ptsTestCard));
+		assertTrue(!cardTestGroup.getOtherCards().contains(oTestCard));
 
 	}
 
@@ -980,8 +980,13 @@ public class GroupServiceImplTest {
 		packTestGroup.setName("packTestGroupName");
 		packTestGroup.setDescription("grupo para testeo de funciones de los packs");
 		packTestGroup.setUsers(users);
-		packTestGroup.setDestinations(destinations);
+
 		packTestGroup = grupoServ.putGroup(packTestGroup);
+
+		grupoServ.putDestination(packTestGroup.getId(), "Paris");
+		grupoServ.putDestination(packTestGroup.getId(), "Roma");
+		
+		packTestGroup = grupoServ.getGroup(packTestGroup.getId());
 		
 		
 		TransportCard tCard = new TransportCard();
@@ -1134,8 +1139,13 @@ public class GroupServiceImplTest {
 		percentTestGroup.setName("percentTestGroupName");
 		percentTestGroup.setDescription("grupo para testeo del calculo del porcentaje de los packs");
 		percentTestGroup.setUsers(users);
-		percentTestGroup.setDestinations(destinations);
+		
 		percentTestGroup = grupoServ.putGroup(percentTestGroup);
+		
+		grupoServ.putDestination(percentTestGroup.getId(), "Paris");
+		grupoServ.putDestination(percentTestGroup.getId(), "Roma");
+		
+		percentTestGroup = grupoServ.getGroup(percentTestGroup.getId());
 		
 		TransportCard tCard = new TransportCard();
 		tCard.setUserIdCreator(usuario.getId());
@@ -1255,7 +1265,14 @@ public class GroupServiceImplTest {
 		TransportCard d = new TransportCard();
 		grupo.setName("putFinalProposition");
 		grupo.setUsers(users);
-		grupo.setDestinations(destinations);
+		
+		finalgroup = grupoServ.putGroup(grupo);
+		
+		grupoServ.putDestination(grupo.getId(), "Paris");
+		grupoServ.putDestination(grupo.getId(), "Roma");
+		
+		grupo = grupoServ.getGroup(grupo.getId());
+		
 		grupo.getPlaceToSleepCards().add(ptsTestCard);
 		grupo.getPlaceToSleepCards().add(ptsTestCard2);
 		grupo.setPlaceToSleepCards(grupo.getPlaceToSleepCards());
