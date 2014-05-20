@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.tripbox.elements.Card;
 import com.tripbox.elements.Destination;
 import com.tripbox.elements.Group;
 import com.tripbox.elements.OtherCard;
@@ -464,9 +465,11 @@ public class GroupServiceImplTest {
 
 	@Test
 	public void testPutCard() throws Exception {
-
+		TransportCard resultTCard = null;
+		PlaceToSleepCard resultPtsCard = null;
+		OtherCard resultOCard;
 		try {
-			grupoServ.putCard(cardTestGroup.getId(), tTestCard);
+			resultTCard = (TransportCard) grupoServ.putCard(cardTestGroup.getId(), tTestCard);
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail();
@@ -477,14 +480,14 @@ public class GroupServiceImplTest {
 
 		try {
 			ptsTestCard.setParentCardIds(parentCardIds);
-			grupoServ.putCard(cardTestGroup.getId(), ptsTestCard);
+			resultPtsCard = (PlaceToSleepCard) grupoServ.putCard(cardTestGroup.getId(), ptsTestCard);
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail();
 		}
 
 		try {
-			grupoServ.putCard(cardTestGroup.getId(), oTestCard);
+			resultOCard = (OtherCard) grupoServ.putCard(cardTestGroup.getId(), oTestCard);
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail();
@@ -507,11 +510,45 @@ public class GroupServiceImplTest {
 		// Transport
 		// assertEquals(Id de la card que hay en el array de parents, Id de la
 		// card de transporte)
-		assertEquals(cardTestGroup.getPlaceToSleepCards().get(0)
-				.getParentCardIds().get(0), tTestCard.getCardId());
+		cardTestGroup = grupoServ.getGroup(cardTestGroup.getId());
 		
-		//TODO asserts de linkajes bidireccionales
+		
+		//Miramos en una direccion
+		PlaceToSleepCard ptsChild = (PlaceToSleepCard) grupoServ.cardExistOnArray(resultPtsCard.getCardId(), cardTestGroup.getPlaceToSleepCards());
+		ArrayList<String> aParents = ptsChild.getParentCardIds();
+		
+		//System.out.println("PTS ID: " + ptsChild.getCardId() + "\tTrans ID: " + aParents);
+		
+		//Miramos en la otra direccion (linkaje bidireccional)
+		TransportCard tParent = (TransportCard) grupoServ.cardExistOnArray(resultTCard.getCardId(), cardTestGroup.getTransportCards());
+		ArrayList<String> aChilds = tParent.getChildCardsId();
+		
+		//System.out.println("Trans ID: " + tParent.getCardId() + "\tPTSs ID: " + aChilds);
+		
+		//Comprobaciones, 1 direccion
+		PlaceToSleepCard foundCard;
+		boolean found = false;
+		for (String child: aChilds) {
+			foundCard = (PlaceToSleepCard) grupoServ.getCard(child, "placeToSleep", cardTestGroup);
+			if (foundCard != null) {
+				found = true;
+			}
+		}
+		
+		assertTrue(found);
 
+		//La otra direccion (linkaje bidireccional)
+		TransportCard tFoundCard;
+		found = false;
+		for (String parent: aParents) {
+			tFoundCard = (TransportCard) grupoServ.getCard(parent, "transport", cardTestGroup);
+			if (tFoundCard != null) {
+				found = true;
+			}
+		}
+		
+		assertTrue(found);
+		
 	}
 
 	@Test
