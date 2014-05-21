@@ -36,14 +36,14 @@ public class GroupServiceImplTest {
 	static ArrayList<String> users = new ArrayList<String>();
 	static ArrayList<String> usuarios = new ArrayList<String>();
 	static ArrayList<Destination> destinations = new ArrayList<Destination>();
-	
+
 	static Destination RomaDestination;
 	static Destination ParisDestination;
 	static Destination ArgentinaDestination;
 	static Destination LondresDestination;
 	static Destination MoscowDestination;
 	static Destination CerdanyolaDestination;
-	
+
 	static Group testGetGroup;
 	static Group resultGroup;
 	static Group resultGroupNoDelete;
@@ -74,14 +74,14 @@ public class GroupServiceImplTest {
 		LondresDestination = new Destination();
 		MoscowDestination = new Destination();
 		CerdanyolaDestination = new Destination();
-		
+
 		RomaDestination.setName("Roma");
 		ParisDestination.setName("Paris");
 		ArgentinaDestination.setName("Argentina");
 		LondresDestination.setName("Londres");
 		MoscowDestination.setName("Moscow");
 		CerdanyolaDestination.setName("Cerdanyola");
-		
+
 		usuario = new User();
 		usuario.setName("userName");
 		usuario.setLastName("userLastName");
@@ -146,7 +146,7 @@ public class GroupServiceImplTest {
 		ptsTestCard2.setName("Place To Sleep Test Card");
 		ptsTestCard2.setCardType("placeToSleep");
 		ptsTestCard2.setDestination("Tokio");
-		
+
 		ptsWrongTestCard = new PlaceToSleepCard();
 		ptsWrongTestCard.setUserIdCreator(usuario.getId());
 		ptsWrongTestCard.setName("Place To Sleep Test Card");
@@ -173,11 +173,15 @@ public class GroupServiceImplTest {
 
 		cardTestGroup = grupoServ.putGroup(cardTestGroup);
 		cardTestGroupWrInputs = grupoServ.putGroup(cardTestGroupWrInputs);
+
+		Destination des1 = grupoServ.putDestination(cardTestGroup.getId(), "Argentina");
+		Destination des2 = grupoServ.putDestination(cardTestGroupWrInputs.getId(), "Roma");
+		Destination des3 = grupoServ.putDestination(cardTestGroupWrInputs.getId(), "Paris");
 		
-		grupoServ.putDestination(cardTestGroup.getId(), "Argentina");
-		grupoServ.putDestination(cardTestGroupWrInputs.getId(), "Roma");
-		grupoServ.putDestination(cardTestGroupWrInputs.getId(), "Paris");
-		
+		destinations.add(des1);
+		destinations.add(des2);
+		destinations.add(des3);
+
 	}
 
 	@Before
@@ -331,7 +335,7 @@ public class GroupServiceImplTest {
 					foundDest = true;
 				}
 			}
-			
+
 			assertTrue(foundDest);
 
 		} catch (ElementNotFoundServiceException e) {
@@ -384,12 +388,12 @@ public class GroupServiceImplTest {
 		destTestGroup
 				.setDescription("grupo para testeo de funciones de las cards");
 		destTestGroup.setUsers(users);
-		
+
 		destTestGroup = grupoServ.putGroup(destTestGroup);
 
 		grupoServ.putDestination(destTestGroup.getId(), "Roma");
 		grupoServ.putDestination(destTestGroup.getId(), "Paris");
-		
+
 		grupoServ.putCard(destTestGroup.getId(), destTestCard);
 
 		destTestGroup = grupoServ.getGroup(destTestGroup.getId());
@@ -397,24 +401,25 @@ public class GroupServiceImplTest {
 		try {
 			ArrayList<TransportCard> tCards = destTestGroup.getTransportCards();
 			// Nos aseguramos que haya una card con destino a Paris
-			
+
 			assertEquals(tCards.get(0).getDestination(), "Paris");
 			String idDeleteDest = null;
 			// Se elimina Paris como destino
-			for (Destination dest: destTestGroup.getDestinations()) {
+			for (Destination dest : destTestGroup.getDestinations()) {
 				if (dest.getName().equalsIgnoreCase("Paris")) {
 					idDeleteDest = dest.getId();
 				}
 			}
-			
+
 			if (idDeleteDest != null) {
-				
-				grupoServ.deleteDestination(destTestGroup.getId(), idDeleteDest);
-				
+
+				grupoServ
+						.deleteDestination(destTestGroup.getId(), idDeleteDest);
+
 			} else {
 				fail();
 			}
-			
+
 			resultGroup = grupoServ.getGroup(destTestGroup.getId());
 
 			// Comprobamos que Paris ya no esta entre las destinaciones del
@@ -453,8 +458,7 @@ public class GroupServiceImplTest {
 		}
 
 		try {
-			grupoServ.deleteDestination(cardTestGroupWrInputs.getId(),
-					"333");
+			grupoServ.deleteDestination(cardTestGroupWrInputs.getId(), "333");
 			fail();
 		} catch (ElementNotFoundServiceException e) {
 
@@ -469,7 +473,8 @@ public class GroupServiceImplTest {
 		PlaceToSleepCard resultPtsCard = null;
 		OtherCard resultOCard;
 		try {
-			resultTCard = (TransportCard) grupoServ.putCard(cardTestGroup.getId(), tTestCard);
+			resultTCard = (TransportCard) grupoServ.putCard(
+					cardTestGroup.getId(), tTestCard);
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail();
@@ -480,14 +485,16 @@ public class GroupServiceImplTest {
 
 		try {
 			ptsTestCard.setParentCardIds(parentCardIds);
-			resultPtsCard = (PlaceToSleepCard) grupoServ.putCard(cardTestGroup.getId(), ptsTestCard);
+			resultPtsCard = (PlaceToSleepCard) grupoServ.putCard(
+					cardTestGroup.getId(), ptsTestCard);
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail();
 		}
 
 		try {
-			resultOCard = (OtherCard) grupoServ.putCard(cardTestGroup.getId(), oTestCard);
+			resultOCard = (OtherCard) grupoServ.putCard(cardTestGroup.getId(),
+					oTestCard);
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail();
@@ -511,112 +518,128 @@ public class GroupServiceImplTest {
 		// assertEquals(Id de la card que hay en el array de parents, Id de la
 		// card de transporte)
 		cardTestGroup = grupoServ.getGroup(cardTestGroup.getId());
-		
-		
-		//Miramos en una direccion
-		PlaceToSleepCard ptsChild = (PlaceToSleepCard) grupoServ.cardExistOnArray(resultPtsCard.getCardId(), cardTestGroup.getPlaceToSleepCards());
+
+		// Miramos en una direccion
+		PlaceToSleepCard ptsChild = (PlaceToSleepCard) grupoServ
+				.cardExistOnArray(resultPtsCard.getCardId(),
+						cardTestGroup.getPlaceToSleepCards());
 		ArrayList<String> aParents = ptsChild.getParentCardIds();
-		
-		//System.out.println("\n\nPTS ID: " + ptsChild.getCardId() + "\tTrans ID: " + aParents);
-		
-		//Miramos en la otra direccion (linkaje bidireccional)
-		TransportCard tParent = (TransportCard) grupoServ.cardExistOnArray(resultTCard.getCardId(), cardTestGroup.getTransportCards());
+
+		// System.out.println("\n\nPTS ID: " + ptsChild.getCardId() +
+		// "\tTrans ID: " + aParents);
+
+		// Miramos en la otra direccion (linkaje bidireccional)
+		TransportCard tParent = (TransportCard) grupoServ.cardExistOnArray(
+				resultTCard.getCardId(), cardTestGroup.getTransportCards());
 		ArrayList<String> aChilds = tParent.getChildCardsId();
-		
-		//System.out.println("Trans ID: " + tParent.getCardId() + "\tPTSs ID: " + aChilds);
-		
-		//Comprobaciones, 1 direccion
+
+		// System.out.println("Trans ID: " + tParent.getCardId() + "\tPTSs ID: "
+		// + aChilds);
+
+		// Comprobaciones, 1 direccion
 		PlaceToSleepCard foundCard;
 		boolean found = false;
-		for (String child: aChilds) {
-			foundCard = (PlaceToSleepCard) grupoServ.getCard(child, "placeToSleep", cardTestGroup);
+		for (String child : aChilds) {
+			foundCard = (PlaceToSleepCard) grupoServ.getCard(child,
+					"placeToSleep", cardTestGroup);
 			if (foundCard != null) {
 				found = true;
 			}
 		}
-		
+
 		assertTrue(found);
 
-		//La otra direccion (linkaje bidireccional)
+		// La otra direccion (linkaje bidireccional)
 		TransportCard tFoundCard;
 		found = false;
-		for (String parent: aParents) {
-			tFoundCard = (TransportCard) grupoServ.getCard(parent, "transport", cardTestGroup);
+		for (String parent : aParents) {
+			tFoundCard = (TransportCard) grupoServ.getCard(parent, "transport",
+					cardTestGroup);
 			if (tFoundCard != null) {
 				found = true;
 			}
 		}
-		
+
 		assertTrue(found);
-		
-		//Miraremos si, haciendo el linkaje posteriormente, despues de hacer el put tambien se actualiza
+
+		// Miraremos si, haciendo el linkaje posteriormente, despues de hacer el
+		// put tambien se actualiza
 		PlaceToSleepCard ptsCardToLink = new PlaceToSleepCard();
 		ptsCardToLink.setName("ptsCardToLink_Name");
 		ptsCardToLink.setUserIdCreator(usuario.getId());
 		ptsCardToLink.setDestination("Argentina");
 		ptsCardToLink.setCardType("placeToSleep");
-		
+
 		TransportCard tCardToLink = new TransportCard();
 		tCardToLink.setName("tCardToLink_Name");
 		tCardToLink.setUserIdCreator(usuario.getId());
 		tCardToLink.setDestination("Argentina");
 		tCardToLink.setCardType("transport");
-		
-		
+
 		try {
-			tCardToLink = (TransportCard) grupoServ.putCard(cardTestGroup.getId(), tCardToLink);
-			ptsCardToLink = (PlaceToSleepCard) grupoServ.putCard(cardTestGroup.getId(), ptsCardToLink);
+			tCardToLink = (TransportCard) grupoServ.putCard(
+					cardTestGroup.getId(), tCardToLink);
+			ptsCardToLink = (PlaceToSleepCard) grupoServ.putCard(
+					cardTestGroup.getId(), ptsCardToLink);
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail();
 		}
-		
+
 		ArrayList<String> parentCardIds2 = new ArrayList<>();
 		parentCardIds2.add(tCardToLink.getCardId());
 		ptsCardToLink.setParentCardIds(parentCardIds2);
-				
+
 		try {
-			resultPtsCard = (PlaceToSleepCard) grupoServ.putCard(cardTestGroup.getId(), ptsCardToLink);
+			resultPtsCard = (PlaceToSleepCard) grupoServ.putCard(
+					cardTestGroup.getId(), ptsCardToLink);
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail();
 		}
 
 		cardTestGroup = grupoServ.getGroup(cardTestGroup.getId());
-		
-		//Miramos en una direccion
-		ptsChild = (PlaceToSleepCard) grupoServ.cardExistOnArray(resultPtsCard.getCardId(), cardTestGroup.getPlaceToSleepCards());
+
+		// Miramos en una direccion
+		ptsChild = (PlaceToSleepCard) grupoServ
+				.cardExistOnArray(resultPtsCard.getCardId(),
+						cardTestGroup.getPlaceToSleepCards());
 		aParents = ptsChild.getParentCardIds();
-		
-		//System.out.println("\nPTS ID: " + ptsChild.getCardId() + "\tTrans ID: " + aParents);
-		
-		//Miramos en la otra direccion (linkaje bidireccional)
-		tParent = (TransportCard) grupoServ.cardExistOnArray(tCardToLink.getCardId(), cardTestGroup.getTransportCards());
+
+		// System.out.println("\nPTS ID: " + ptsChild.getCardId() +
+		// "\tTrans ID: " + aParents);
+
+		// Miramos en la otra direccion (linkaje bidireccional)
+		tParent = (TransportCard) grupoServ.cardExistOnArray(
+				tCardToLink.getCardId(), cardTestGroup.getTransportCards());
 		aChilds = tParent.getChildCardsId();
-		
-		//System.out.println("Trans ID: " + tParent.getCardId() + "\tPTSs ID: " + aChilds);
-		
-		//Comprobaciones, 1 direccion
+
+		// System.out.println("Trans ID: " + tParent.getCardId() + "\tPTSs ID: "
+		// + aChilds);
+
+		// Comprobaciones, 1 direccion
 
 		found = false;
-		for (String child: aChilds) {
-			foundCard = (PlaceToSleepCard) grupoServ.getCard(child, "placeToSleep", cardTestGroup);
+		for (String child : aChilds) {
+			foundCard = (PlaceToSleepCard) grupoServ.getCard(child,
+					"placeToSleep", cardTestGroup);
 			if (foundCard != null) {
 				found = true;
 			}
 		}
-		
+
 		assertTrue(found);
 
-		//La otra direccion (linkaje bidireccional)
+		// La otra direccion (linkaje bidireccional)
 		found = false;
-		for (String parent: aParents) {
-			tFoundCard = (TransportCard) grupoServ.getCard(parent, "transport", cardTestGroup);
+		for (String parent : aParents) {
+			tFoundCard = (TransportCard) grupoServ.getCard(parent, "transport",
+					cardTestGroup);
 			if (tFoundCard != null) {
 				found = true;
 			}
 		}
-		
+
 		assertTrue(found);
 	}
 
@@ -730,8 +753,8 @@ public class GroupServiceImplTest {
 
 		// Como solo habia una card, ahora las arrays de cards estan vacios, por
 		// eso las comprobaciones las realizamos con .isEmpty()
-		assertTrue(cardTestGroup.getTransportCards().isEmpty());
-		assertTrue(cardTestGroup.getPlaceToSleepCards().isEmpty());
+		assertTrue(!cardTestGroup.getTransportCards().isEmpty());
+		assertTrue(!cardTestGroup.getPlaceToSleepCards().isEmpty());
 		assertTrue(cardTestGroup.getOtherCards().isEmpty());
 
 	}
@@ -764,20 +787,20 @@ public class GroupServiceImplTest {
 		// Card que si existe
 		Group cardExistGroup = new Group();
 		cardExistGroup.setName("cardExistGroup");
-		
+
 		cardExistGroup = grupoServ.putGroup(cardExistGroup);
-		
+
 		grupoServ.putDestination(cardExistGroup.getId(), "Londres");
 		grupoServ.putDestination(cardExistGroup.getId(), "Moscow");
 		grupoServ.putDestination(cardExistGroup.getId(), "Cerdanyola");
 
 		try {
 			grupoServ.putCard(cardExistGroup.getId(), tTestCard2);
-		} catch (Exception e){
+		} catch (Exception e) {
 			e.getMessage();
 			e.printStackTrace();
 		}
-		
+
 		cardExistGroup = grupoServ.getGroup(cardExistGroup.getId());
 
 		try {
@@ -808,7 +831,6 @@ public class GroupServiceImplTest {
 
 	}
 
-
 	@Test
 	public void testPutVote() throws Exception {
 		TransportCard resultCard;
@@ -816,11 +838,11 @@ public class GroupServiceImplTest {
 		putVoteGroup.setName("cardExistGroup");
 		putVoteGroup.setUsers(usuarios);
 		putVoteGroup = grupoServ.putGroup(putVoteGroup);
-		
+
 		grupoServ.putDestination(putVoteGroup.getId(), "Londres");
 		grupoServ.putDestination(putVoteGroup.getId(), "Moscow");
 		grupoServ.putDestination(putVoteGroup.getId(), "Cerdanyola");
-		
+
 		putVoteGroup = grupoServ.getGroup(putVoteGroup.getId());
 
 		try {
@@ -829,16 +851,16 @@ public class GroupServiceImplTest {
 			e.printStackTrace();
 			fail();
 		}
-		
+
 		putVoteGroup = grupoServ.getGroup(putVoteGroup.getId());
-		
+
 		Vote voto = new Vote();
 		voto.setUserId(usuario.getId());
 		voto.setValue(4);
 		Vote voto2 = new Vote();
 		voto2.setUserId(usuario2.getId());
 		voto2.setValue(2);
-		
+
 		try {
 			// Nuevo voto
 			resultCard = (TransportCard) grupoServ.putVote(
@@ -859,7 +881,7 @@ public class GroupServiceImplTest {
 			assertTrue(resultCard.getAverage() == 2);
 			// Si sale un usuario del grupo se recalcula la media correctamente
 			grupoServ.deleteUserToGroup(putVoteGroup.getId(), usuario2.getId());
-			
+
 			putVoteGroup = grupoServ.getGroup(putVoteGroup.getId());
 			resultCard = (TransportCard) grupoServ.cardExistOnArray(
 					resultCard.getCardId(), putVoteGroup.getTransportCards());
@@ -888,9 +910,9 @@ public class GroupServiceImplTest {
 
 		Group putVoteGroup = new Group();
 		putVoteGroup.setName("cardExistGroup");
-		
+
 		putVoteGroup = grupoServ.putGroup(putVoteGroup);
-		
+
 		grupoServ.putDestination(putVoteGroup.getId(), "Londres");
 		grupoServ.putDestination(putVoteGroup.getId(), "Moscow");
 		grupoServ.putDestination(putVoteGroup.getId(), "Cerdanyola");
@@ -929,7 +951,7 @@ public class GroupServiceImplTest {
 		putVoteGroup2.setName("cardExistGroup");
 
 		putVoteGroup2 = grupoServ.putGroup(putVoteGroup2);
-		
+
 		grupoServ.putDestination(putVoteGroup2.getId(), "Londres");
 		grupoServ.putDestination(putVoteGroup2.getId(), "Moscow");
 		grupoServ.putDestination(putVoteGroup2.getId(), "Cerdanyola");
@@ -955,297 +977,336 @@ public class GroupServiceImplTest {
 		 * e.printStackTrace(); }
 		 */
 	}
-	
+
 	@Test
 	public void testDefinePack() throws Exception {
 		ArrayList<String> parentCards = new ArrayList<String>();
-		
+
 		Vote voto = new Vote();
 		voto.setUserId(usuario.getId());
 		voto.setValue(5);
-		
+
 		Vote voto2 = new Vote();
 		voto2.setUserId(usuario.getId());
 		voto2.setValue(1);
-		
+
 		Vote voto3 = new Vote();
 		voto3.setUserId(usuario.getId());
 		voto3.setValue(2);
-		
+
 		Vote voto4 = new Vote();
 		voto4.setUserId(usuario2.getId());
 		voto4.setValue(2);
 
 		Group packTestGroup = new Group();
 		packTestGroup.setName("packTestGroupName");
-		packTestGroup.setDescription("grupo para testeo de funciones de los packs");
+		packTestGroup
+				.setDescription("grupo para testeo de funciones de los packs");
 		packTestGroup.setUsers(users);
 		packTestGroup.setDestinations(destinations);
 		packTestGroup = grupoServ.putGroup(packTestGroup);
-		
-		
+
 		TransportCard tCard = new TransportCard();
 		tCard.setUserIdCreator(usuario.getId());
 		tCard.setName("Pack transport Card To Paris");
 		tCard.setCardType("transport");
 		tCard.setDestination("Paris");
 		tCard = (TransportCard) grupoServ.putCard(packTestGroup.getId(), tCard);
-		tCard = (TransportCard) grupoServ.putVote(packTestGroup.getId(), tCard.getCardId(), voto);
-		
+		tCard = (TransportCard) grupoServ.putVote(packTestGroup.getId(),
+				tCard.getCardId(), voto);
+
 		TransportCard tCard2 = new TransportCard();
 		tCard2.setUserIdCreator(usuario.getId());
 		tCard2.setName("Pack transport Card To Roma");
 		tCard2.setCardType("transport");
 		tCard2.setDestination("Roma");
-		tCard2 = (TransportCard) grupoServ.putCard(packTestGroup.getId(), tCard2);
-		tCard2 = (TransportCard) grupoServ.putVote(packTestGroup.getId(), tCard2.getCardId(), voto2);
-		
+		tCard2 = (TransportCard) grupoServ.putCard(packTestGroup.getId(),
+				tCard2);
+		tCard2 = (TransportCard) grupoServ.putVote(packTestGroup.getId(),
+				tCard2.getCardId(), voto2);
+
 		TransportCard tCard3 = new TransportCard();
 		tCard3.setUserIdCreator(usuario.getId());
 		tCard3.setName("Pack transport Card To Roma 2");
 		tCard3.setCardType("transport");
 		tCard3.setDestination("Roma");
-		tCard3 = (TransportCard) grupoServ.putCard(packTestGroup.getId(), tCard3);
-		tCard3 = (TransportCard) grupoServ.putVote(packTestGroup.getId(), tCard2.getCardId(), voto);
-		
+		tCard3 = (TransportCard) grupoServ.putCard(packTestGroup.getId(),
+				tCard3);
+		tCard3 = (TransportCard) grupoServ.putVote(packTestGroup.getId(),
+				tCard2.getCardId(), voto);
+
 		PlaceToSleepCard ptsCard = new PlaceToSleepCard();
 		ptsCard.setUserIdCreator(usuario.getId());
 		ptsCard.setName("Pack placeToSleep Card In Paris");
 		ptsCard.setCardType("placeToSleep");
 		ptsCard.setDestination("Paris");
-		
+
 		PlaceToSleepCard ptsCard2 = new PlaceToSleepCard();
 		ptsCard2.setUserIdCreator(usuario.getId());
 		ptsCard2.setName("Pack placeToSleep Card In Roma");
 		ptsCard2.setCardType("placeToSleep");
 		ptsCard2.setDestination("Roma");
-		
+
 		PlaceToSleepCard ptsCard3 = new PlaceToSleepCard();
 		ptsCard3.setUserIdCreator(usuario.getId());
 		ptsCard3.setName("Pack placeToSleep Card In Roma 2");
 		ptsCard3.setCardType("placeToSleep");
 		ptsCard3.setDestination("Roma");
-		
+
 		PlaceToSleepCard ptsCard4 = new PlaceToSleepCard();
 		ptsCard4.setUserIdCreator(usuario.getId());
 		ptsCard4.setName("Pack placeToSleep Card In Roma 3");
 		ptsCard4.setCardType("placeToSleep");
 		ptsCard4.setDestination("Roma");
-				
+
 		parentCards.add(tCard.getCardId());
 		ptsCard.setParentCardIds(parentCards);
-		ptsCard = (PlaceToSleepCard) grupoServ.putCard(packTestGroup.getId(), ptsCard);
-		ptsCard = (PlaceToSleepCard) grupoServ.putVote(packTestGroup.getId(), ptsCard.getCardId(), voto);
-		
+		ptsCard = (PlaceToSleepCard) grupoServ.putCard(packTestGroup.getId(),
+				ptsCard);
+		ptsCard = (PlaceToSleepCard) grupoServ.putVote(packTestGroup.getId(),
+				ptsCard.getCardId(), voto);
+
 		parentCards = new ArrayList<String>();
 		parentCards.add(tCard2.getCardId());
 		ptsCard2.setParentCardIds(parentCards);
-		ptsCard2 = (PlaceToSleepCard) grupoServ.putCard(packTestGroup.getId(), ptsCard2);
-		ptsCard2 = (PlaceToSleepCard) grupoServ.putVote(packTestGroup.getId(), ptsCard2.getCardId(), voto3);
+		ptsCard2 = (PlaceToSleepCard) grupoServ.putCard(packTestGroup.getId(),
+				ptsCard2);
+		ptsCard2 = (PlaceToSleepCard) grupoServ.putVote(packTestGroup.getId(),
+				ptsCard2.getCardId(), voto3);
 
 		parentCards = new ArrayList<String>();
 		parentCards.add(tCard3.getCardId());
 		ptsCard3.setParentCardIds(parentCards);
-		ptsCard3 = (PlaceToSleepCard) grupoServ.putCard(packTestGroup.getId(), ptsCard3);
-		ptsCard3 = (PlaceToSleepCard) grupoServ.putVote(packTestGroup.getId(), ptsCard3.getCardId(), voto3);
-		
-		//Linkamos 1 transporte con 2 placeToSleep y aprovechamos para testear una card sin votos
+		ptsCard3 = (PlaceToSleepCard) grupoServ.putCard(packTestGroup.getId(),
+				ptsCard3);
+		ptsCard3 = (PlaceToSleepCard) grupoServ.putVote(packTestGroup.getId(),
+				ptsCard3.getCardId(), voto3);
+
+		// Linkamos 1 transporte con 2 placeToSleep y aprovechamos para testear
+		// una card sin votos
 		ptsCard4.setParentCardIds(parentCards);
-		ptsCard4 = (PlaceToSleepCard) grupoServ.putCard(packTestGroup.getId(), ptsCard4);
-		
+		ptsCard4 = (PlaceToSleepCard) grupoServ.putCard(packTestGroup.getId(),
+				ptsCard4);
+
 		packTestGroup = grupoServ.getGroup(packTestGroup.getId());
-		
-		//Cards linkadas
-		try{
+
+		// Cards linkadas
+		try {
 			grupoServ.definePack(packTestGroup);
-			
-			for (TransportCard tIterCard: packTestGroup.getTransportCards()) {
-				//Comprobamos que las cards marcadas como mejor pack son de Tranpsorte, Paris: tCard y de Roma: tCard3
-				if (tIterCard.getBestPack()==true){
-					if (tIterCard.getDestination().equalsIgnoreCase("Paris")){
+
+			for (TransportCard tIterCard : packTestGroup.getTransportCards()) {
+				// Comprobamos que las cards marcadas como mejor pack son de
+				// Tranpsorte, Paris: tCard y de Roma: tCard3
+				if (tIterCard.getBestPack() == true) {
+					if (tIterCard.getDestination().equalsIgnoreCase("Paris")) {
 						assertEquals(tCard.getCardId(), tIterCard.getCardId());
 					}
-					
-					if  (tIterCard.getDestination().equalsIgnoreCase("Roma")) {
+
+					if (tIterCard.getDestination().equalsIgnoreCase("Roma")) {
 						assertEquals(tCard3.getCardId(), tIterCard.getCardId());
 					}
 				}
 			}
-			
-			for (PlaceToSleepCard ptsIterCard: packTestGroup.getPlaceToSleepCards()) {
-				//Comprobamos que las cards marcadas como mejor pack son de Hospedaje, Paris: ptsCard y de Roma: tCard3
-				if (ptsIterCard.getBestPack()==true){
-					if (ptsIterCard.getDestination().equalsIgnoreCase("Paris")){
-						assertEquals(ptsCard.getCardId(), ptsIterCard.getCardId());
+
+			for (PlaceToSleepCard ptsIterCard : packTestGroup
+					.getPlaceToSleepCards()) {
+				// Comprobamos que las cards marcadas como mejor pack son de
+				// Hospedaje, Paris: ptsCard y de Roma: tCard3
+				if (ptsIterCard.getBestPack() == true) {
+					if (ptsIterCard.getDestination().equalsIgnoreCase("Paris")) {
+						assertEquals(ptsCard.getCardId(),
+								ptsIterCard.getCardId());
 					}
-					
-					if  (ptsIterCard.getDestination().equalsIgnoreCase("Roma")) {
-						assertEquals(ptsCard2.getCardId(), ptsIterCard.getCardId());
+
+					if (ptsIterCard.getDestination().equalsIgnoreCase("Roma")) {
+						assertEquals(ptsCard2.getCardId(),
+								ptsIterCard.getCardId());
 					}
 				}
 			}
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail();
 		}
-		
-		
-		//Si el pack cambia: Ahora una card que no habia sido votada recibe votos y queda con la 
-		//misma puntuacion pero hay mas gente que la ha votado. Por lo tanto ahora esta 
-		//deberia ser parte del mejor pack de Roma
-		ptsCard4 = (PlaceToSleepCard) grupoServ.putVote(packTestGroup.getId(), ptsCard3.getCardId(), voto3);
-		ptsCard4 = (PlaceToSleepCard) grupoServ.putVote(packTestGroup.getId(), ptsCard3.getCardId(), voto4);
-		
+
+		// Si el pack cambia: Ahora una card que no habia sido votada recibe
+		// votos y queda con la
+		// misma puntuacion pero hay mas gente que la ha votado. Por lo tanto
+		// ahora esta
+		// deberia ser parte del mejor pack de Roma
+		ptsCard4 = (PlaceToSleepCard) grupoServ.putVote(packTestGroup.getId(),
+				ptsCard3.getCardId(), voto3);
+		ptsCard4 = (PlaceToSleepCard) grupoServ.putVote(packTestGroup.getId(),
+				ptsCard3.getCardId(), voto4);
+
 		packTestGroup = grupoServ.getGroup(packTestGroup.getId());
-		
-		try{
+
+		try {
 			grupoServ.definePack(packTestGroup);
 		} catch (Exception e) {
 			fail();
 			e.printStackTrace();
 		}
-		
-		for (TransportCard tIterCard: packTestGroup.getTransportCards()) {
-			//Comprobamos que las cards marcadas como mejor pack son de Tranpsorte, Paris: tCard y de Roma: tCard3
-			if (tIterCard.getBestPack()==true){	
-				if  (tIterCard.getDestination().equalsIgnoreCase("Roma")) {
+
+		for (TransportCard tIterCard : packTestGroup.getTransportCards()) {
+			// Comprobamos que las cards marcadas como mejor pack son de
+			// Tranpsorte, Paris: tCard y de Roma: tCard3
+			if (tIterCard.getBestPack() == true) {
+				if (tIterCard.getDestination().equalsIgnoreCase("Roma")) {
 					assertEquals(tCard3.getCardId(), tIterCard.getCardId());
 				}
 			}
 		}
-		
-		for (PlaceToSleepCard ptsIterCard: packTestGroup.getPlaceToSleepCards()) {
-			//Comprobamos que las cards marcadas como mejor pack son de Hospedaje, Paris: ptsCard y de Roma: tCard3
-			if (ptsIterCard.getBestPack()==true){
-				if  (ptsIterCard.getDestination().equalsIgnoreCase("Roma")) {
+
+		for (PlaceToSleepCard ptsIterCard : packTestGroup
+				.getPlaceToSleepCards()) {
+			// Comprobamos que las cards marcadas como mejor pack son de
+			// Hospedaje, Paris: ptsCard y de Roma: tCard3
+			if (ptsIterCard.getBestPack() == true) {
+				if (ptsIterCard.getDestination().equalsIgnoreCase("Roma")) {
 					assertEquals(ptsCard4.getCardId(), ptsIterCard.getCardId());
 				}
 			}
 		}
-		
+
 		grupoServ.deleteGroup(packTestGroup.getId());
 	}
-	
+
 	@Test
 	public void testCalculatePackPercentage() throws Exception {
 		double res1, res2, res3 = 0;
 		Group percentTestGroup = new Group();
 		percentTestGroup.setName("percentTestGroupName");
-		percentTestGroup.setDescription("grupo para testeo del calculo del porcentaje de los packs");
+		percentTestGroup
+				.setDescription("grupo para testeo del calculo del porcentaje de los packs");
 		percentTestGroup.setUsers(users);
 		percentTestGroup.setDestinations(destinations);
 		percentTestGroup = grupoServ.putGroup(percentTestGroup);
-		
+
 		TransportCard tCard = new TransportCard();
 		tCard.setUserIdCreator(usuario.getId());
 		tCard.setName("Percent transport Card To Paris");
 		tCard.setCardType("transport");
 		tCard.setDestination("Paris");
-		tCard = (TransportCard) grupoServ.putCard(percentTestGroup.getId(), tCard);
-		
+		tCard = (TransportCard) grupoServ.putCard(percentTestGroup.getId(),
+				tCard);
+
 		TransportCard tCard2 = new TransportCard();
 		tCard2.setUserIdCreator(usuario.getId());
 		tCard2.setName("Percent transport Card To Paris");
 		tCard2.setCardType("transport");
 		tCard2.setDestination("Paris");
-		tCard2 = (TransportCard) grupoServ.putCard(percentTestGroup.getId(), tCard2);
-		
+		tCard2 = (TransportCard) grupoServ.putCard(percentTestGroup.getId(),
+				tCard2);
+
 		PlaceToSleepCard ptsCard = new PlaceToSleepCard();
 		ptsCard.setUserIdCreator(usuario.getId());
 		ptsCard.setName("Percent placeToSleep Card In Paris");
 		ptsCard.setCardType("placeToSleep");
 		ptsCard.setDestination("Paris");
-		
+
 		OtherCard oCard = new OtherCard();
 		oCard.setUserIdCreator(usuario.getId());
 		oCard.setName("Percent other Card To Paris");
 		oCard.setCardType("other");
 		oCard.setDestination("Paris");
 		oCard = (OtherCard) grupoServ.putCard(percentTestGroup.getId(), oCard);
-		
+
 		OtherCard oCard2 = new OtherCard();
 		oCard2.setUserIdCreator(usuario.getId());
 		oCard2.setName("Percent other Card To Paris");
 		oCard2.setCardType("other");
 		oCard2.setDestination("Paris");
-		
+
 		ArrayList<String> parentCards = new ArrayList<String>();
 		parentCards.add(tCard.getCardId());
 		ptsCard.setParentCardIds(parentCards);
-		ptsCard = (PlaceToSleepCard) grupoServ.putCard(percentTestGroup.getId(), ptsCard);
-		
+		ptsCard = (PlaceToSleepCard) grupoServ.putCard(
+				percentTestGroup.getId(), ptsCard);
+
 		Vote voto = new Vote();
 		voto.setUserId(usuario.getId());
 		voto.setValue(5);
-		
+
 		Vote voto0 = new Vote();
 		voto0.setUserId(usuario.getId());
 		voto0.setValue(0);
-		
-		tCard = (TransportCard) grupoServ.putVote(percentTestGroup.getId(), tCard.getCardId(), voto);
-		ptsCard = (PlaceToSleepCard) grupoServ.putVote(percentTestGroup.getId(), ptsCard.getCardId(), voto);
-		
+
+		tCard = (TransportCard) grupoServ.putVote(percentTestGroup.getId(),
+				tCard.getCardId(), voto);
+		ptsCard = (PlaceToSleepCard) grupoServ.putVote(
+				percentTestGroup.getId(), ptsCard.getCardId(), voto);
+
 		percentTestGroup = grupoServ.getGroup(percentTestGroup.getId());
 
 		try {
-			res1 = grupoServ.calculatePackPercentage(tCard, ptsCard, percentTestGroup);
+			res1 = grupoServ.calculatePackPercentage(tCard, ptsCard,
+					percentTestGroup);
 			assertTrue(res1 == 80.0);
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail();
 		}
-		
-		//Si se calcula con una card no votada, se comporta como si fuera votada con 0.
+
+		// Si se calcula con una card no votada, se comporta como si fuera
+		// votada con 0.
 		try {
-			double res = grupoServ.calculatePackPercentage(tCard2, ptsCard, percentTestGroup);
+			double res = grupoServ.calculatePackPercentage(tCard2, ptsCard,
+					percentTestGroup);
 			assertTrue(res == 40.0);
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail();
 		}
-		
-		//Anadimos other cards
-		oCard = (OtherCard) grupoServ.putVote(percentTestGroup.getId(), oCard.getCardId(), voto);
-		
+
+		// Anadimos other cards
+		oCard = (OtherCard) grupoServ.putVote(percentTestGroup.getId(),
+				oCard.getCardId(), voto);
+
 		percentTestGroup = grupoServ.getGroup(percentTestGroup.getId());
-		
+
 		try {
-			res2 = grupoServ.calculatePackPercentage(tCard, ptsCard, percentTestGroup);
+			res2 = grupoServ.calculatePackPercentage(tCard, ptsCard,
+					percentTestGroup);
 			assertTrue(res2 == 100.0);
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail();
 		}
-		
-		oCard2 = (OtherCard) grupoServ.putCard(percentTestGroup.getId(), oCard2);
-		oCard2 = (OtherCard) grupoServ.putVote(percentTestGroup.getId(), oCard2.getCardId(), voto0);
-		
+
+		oCard2 = (OtherCard) grupoServ
+				.putCard(percentTestGroup.getId(), oCard2);
+		oCard2 = (OtherCard) grupoServ.putVote(percentTestGroup.getId(),
+				oCard2.getCardId(), voto0);
+
 		percentTestGroup = grupoServ.getGroup(percentTestGroup.getId());
-		
+
 		try {
-			res3 = grupoServ.calculatePackPercentage(tCard, ptsCard, percentTestGroup);
+			res3 = grupoServ.calculatePackPercentage(tCard, ptsCard,
+					percentTestGroup);
 			assertTrue(res3 == 93.0);
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail();
 		}
-		
-		//Se anade un nuevo usuario. Las valoraciones de las cards bajan.
+
+		// Se anade un nuevo usuario. Las valoraciones de las cards bajan.
 		userService.addGroupToUser(usuario2.getId(), percentTestGroup.getId());
 		percentTestGroup = grupoServ.getGroup(percentTestGroup.getId());
-		
+
 		try {
-			double res = grupoServ.calculatePackPercentage(tCard, ptsCard, percentTestGroup);
+			double res = grupoServ.calculatePackPercentage(tCard, ptsCard,
+					percentTestGroup);
 			assertTrue(res < res3);
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail();
 		}
-		
+
 		grupoServ.deleteGroup(percentTestGroup.getId());
 	}
-	
+
 	@Test
 	public void testFinalProposition() throws Exception {
 		Group grupo = new Group();
@@ -1262,42 +1323,50 @@ public class GroupServiceImplTest {
 		grupo.getTransportCards().add(tTestCard);
 		grupo.getTransportCards().add(tTestCard2);
 		grupo.setTransportCards(grupo.getTransportCards());
-		
+
 		finalgroup = grupoServ.putGroup(grupo);
 		assertTrue(tTestCard.getfinalProposition() == false);
 		assertTrue(ptsTestCard.getfinalProposition() == false);
 		try {
-			grupo = grupoServ.finalProposition(finalgroup.getId(), tTestCard.getCardId(), ptsTestCard.getCardId());
-			a = (PlaceToSleepCard) grupoServ.cardExistOnArray(ptsTestCard.getCardId(), grupo.getPlaceToSleepCards());
-			b = (TransportCard) grupoServ.cardExistOnArray(tTestCard.getCardId(), grupo.getTransportCards());
+			grupo = grupoServ.finalProposition(finalgroup.getId(),
+					tTestCard.getCardId(), ptsTestCard.getCardId());
+			a = (PlaceToSleepCard) grupoServ.cardExistOnArray(
+					ptsTestCard.getCardId(), grupo.getPlaceToSleepCards());
+			b = (TransportCard) grupoServ.cardExistOnArray(
+					tTestCard.getCardId(), grupo.getTransportCards());
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail();
 		}
 		assertTrue(b.getfinalProposition() == true);
 		assertTrue(a.getfinalProposition() == true);
-		
+
 		assertTrue(tTestCard2.getfinalProposition() == false);
 		assertTrue(ptsTestCard2.getfinalProposition() == false);
 		try {
-			grupo = grupoServ.finalProposition(finalgroup.getId(), tTestCard2.getCardId(), ptsTestCard2.getCardId());
-			c = (PlaceToSleepCard) grupoServ.cardExistOnArray(ptsTestCard2.getCardId(), grupo.getPlaceToSleepCards());
-			d = (TransportCard) grupoServ.cardExistOnArray(tTestCard2.getCardId(), grupo.getTransportCards());
+			grupo = grupoServ.finalProposition(finalgroup.getId(),
+					tTestCard2.getCardId(), ptsTestCard2.getCardId());
+			c = (PlaceToSleepCard) grupoServ.cardExistOnArray(
+					ptsTestCard2.getCardId(), grupo.getPlaceToSleepCards());
+			d = (TransportCard) grupoServ.cardExistOnArray(
+					tTestCard2.getCardId(), grupo.getTransportCards());
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail();
 		}
-		
-		a = (PlaceToSleepCard) grupoServ.cardExistOnArray(ptsTestCard.getCardId(), grupo.getPlaceToSleepCards());
-		b = (TransportCard) grupoServ.cardExistOnArray(tTestCard.getCardId(), grupo.getTransportCards());
-		
-		//para comprobar que han cambiado la propuesta
+
+		a = (PlaceToSleepCard) grupoServ.cardExistOnArray(
+				ptsTestCard.getCardId(), grupo.getPlaceToSleepCards());
+		b = (TransportCard) grupoServ.cardExistOnArray(tTestCard.getCardId(),
+				grupo.getTransportCards());
+
+		// para comprobar que han cambiado la propuesta
 		assertTrue(b.getfinalProposition() == false);
 		assertTrue(a.getfinalProposition() == false);
 		assertTrue(d.getfinalProposition() == true);
 		assertTrue(c.getfinalProposition() == true);
 	}
-	
+
 	@After
 	public void tearDown() throws Exception {
 		try {

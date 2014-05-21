@@ -150,7 +150,7 @@ public class GroupServiceImpl implements GroupService {
 					+ "no existe en el grupo");
 		}
 		group.setUsers(groupUsers);
-		
+
 		// eliminamos el grup de la lista de grupos del usuario
 		user = userService.getUser(userId);
 		ArrayList<String> userGroups = user.getGroups();
@@ -167,12 +167,12 @@ public class GroupServiceImpl implements GroupService {
 		// eliminamos los votos del user en las cards del grupo
 		ArrayList<String> cardsVoted = user.getCardsVoted();
 		ArrayList<String> cardsVoteDelete = new ArrayList<String>(); // guardamos
-																		// las
-																		// cards
-																		// encontradas
-																		// en
-																		// este
-																		// grupo
+		// las
+		// cards
+		// encontradas
+		// en
+		// este
+		// grupo
 		for (String cardVoted : cardsVoted) {
 			// buscamos la card dentro de los tres array: transportCards,
 			// placeToSleepCards y otherCards
@@ -188,7 +188,7 @@ public class GroupServiceImpl implements GroupService {
 			}
 
 			if (cardFound != null) {// si encontramos la card guardamos su id y
-									// buscamos y eliminamos el voto del user
+			// buscamos y eliminamos el voto del user
 				cardsVoteDelete.add(cardVoted);
 
 				boolean voteFound = false;
@@ -211,7 +211,8 @@ public class GroupServiceImpl implements GroupService {
 		for (String deleteVoteOnUser : cardsVoteDelete) {
 			user.getCardsVoted().remove(deleteVoteOnUser);
 		}
-		//Como las votaciones han cambiado redefinimos el mejor pack de cada destino.
+		// Como las votaciones han cambiado redefinimos el mejor pack de cada
+		// destino.
 		this.definePack(group);
 		userService.putUser(user);
 	}
@@ -231,9 +232,9 @@ public class GroupServiceImpl implements GroupService {
 			// throw new DestinationAlreadyExistException();
 		} else {
 			String newId;
-			do{
+			do {
 				newId = idGen.generateId();
-			}while(group.getDestinations().contains(newId));
+			} while (group.getDestinations().contains(newId));
 			destiny.setName(newDestination);
 			destiny.setId(newId);
 			group.getDestinations().add(destiny);
@@ -241,26 +242,27 @@ public class GroupServiceImpl implements GroupService {
 		}
 		return destiny;
 	}
+
 	public void deleteDestination(String groupId, String idDestination)
 			throws Exception {
 		Group group;
 		Destination destiny = new Destination();
-		
+
 		try {
 			group = this.getGroup(groupId);
 		} catch (Exception e) {
 			throw new ElementNotFoundServiceException("Group " + groupId
 					+ " not found");
 		}
-		
+
 		Boolean foundId = false;
-		for (Destination dest: group.getDestinations()) {
+		for (Destination dest : group.getDestinations()) {
 			if (dest.getId().equals(idDestination)) {
 				foundId = true;
 				destiny = dest;
 			}
 		}
-		
+
 		if (foundId == true) {
 			group.getDestinations().remove(destiny);
 
@@ -323,7 +325,7 @@ public class GroupServiceImpl implements GroupService {
 			throw new DestinationDoesntExistException();
 		} else {
 			boolean foundDest = false;
-			for (Destination dest: group.getDestinations()) {
+			for (Destination dest : group.getDestinations()) {
 				if (dest.getName().equalsIgnoreCase(card.getDestination())) {
 					foundDest = true;
 				}
@@ -332,7 +334,7 @@ public class GroupServiceImpl implements GroupService {
 				throw new DestinationDoesntExistException();
 			}
 		}
-		
+
 		// comprobem que l'usuari que ha creat la card existeix
 		try {
 			userService.getUser(card.getUserIdCreator());
@@ -365,9 +367,11 @@ public class GroupServiceImpl implements GroupService {
 						// heretem les dates de init i final del parent
 						auxPlaceCard.setInitDate(parentCard.getInitDate());
 						auxPlaceCard.setFinalDate(parentCard.getFinalDate());
-						
-						//afegim la id d'aquesta card al childCardsId de la parent card
-						parentCard.getChildCardsId().add(auxPlaceCard.getCardId());
+
+						// afegim la id d'aquesta card al childCardsId de la
+						// parent card
+						parentCard.getChildCardsId().add(
+								auxPlaceCard.getCardId());
 						this.putCard(groupId, parentCard);
 					}
 				}
@@ -384,7 +388,7 @@ public class GroupServiceImpl implements GroupService {
 				throw new CardTypeException();
 			}
 		} else { // si te ID el primer que fem es comprobar que aquesta card
-					// existeixi de veritat
+		// existeixi de veritat
 			Card foundCard = null;
 			switch (card.getCardType()) {
 			case "transport":
@@ -404,27 +408,31 @@ public class GroupServiceImpl implements GroupService {
 				foundCard = cardExistOnArray(card.getCardId(),
 						group.getPlaceToSleepCards());
 				if (foundCard != null) {
-					
+
 					PlaceToSleepCard auxPlaceCard = (PlaceToSleepCard) card;
 					PlaceToSleepCard oldPlaceCard = (PlaceToSleepCard) foundCard;
-					
+
 					// comprobem que els parentCards existeixin
 					for (String parentId : auxPlaceCard.getParentCardIds()) {
 						TransportCard parentCard = (TransportCard) cardExistOnArray(
 								parentId, group.getTransportCards());
 						if (parentCard == null) {
-							throw new ElementNotFoundServiceException("ParentCard "+parentId+" not found");
-						}else{
-							//afegim la id d'aquesta card al childCardsId de la parent card
-							if(!parentCard.getChildCardsId().contains(auxPlaceCard.getCardId())){
-								parentCard.getChildCardsId().add(auxPlaceCard.getCardId());
+							throw new ElementNotFoundServiceException(
+									"ParentCard " + parentId + " not found");
+						} else {
+							// afegim la id d'aquesta card al childCardsId de la
+							// parent card
+							if (!parentCard.getChildCardsId().contains(
+									auxPlaceCard.getCardId())) {
+								parentCard.getChildCardsId().add(
+										auxPlaceCard.getCardId());
 								this.putCard(groupId, parentCard);
 							}
 						}
 					}
 
 					group.getPlaceToSleepCards().remove(oldPlaceCard);
-		
+
 					auxPlaceCard = (PlaceToSleepCard) card;
 					group.getPlaceToSleepCards().add(auxPlaceCard);
 
@@ -452,7 +460,7 @@ public class GroupServiceImpl implements GroupService {
 						+ card.getCardId() + " de tipo " + card.getCardType()
 						+ ", no exsiste en ");
 			}
-				
+
 		}
 
 		this.putGroup(group);
@@ -474,49 +482,50 @@ public class GroupServiceImpl implements GroupService {
 		return foundCard;
 
 	}
-	
+
 	public Card getCard(String cardId, String type, Group grupo) {
 
 		Card foundCard = null;
 		boolean cardExist = false;
-		
-		switch(type) {
-			case "transport":
-				Iterator<TransportCard> it = grupo.getTransportCards().iterator();
-					
-				while (it.hasNext()  && !cardExist) {
-					TransportCard tc = it.next();
-					if (tc.getCardId().equalsIgnoreCase(cardId)) {
-						cardExist = true;
-						foundCard = tc;
-					}
+
+		switch (type) {
+		case "transport":
+			Iterator<TransportCard> it = grupo.getTransportCards().iterator();
+
+			while (it.hasNext() && !cardExist) {
+				TransportCard tc = it.next();
+				if (tc.getCardId().equalsIgnoreCase(cardId)) {
+					cardExist = true;
+					foundCard = tc;
 				}
-				break;
-			case "placeToSleep":
-				Iterator<PlaceToSleepCard> ptsIt = grupo.getPlaceToSleepCards().iterator();
-				while (ptsIt.hasNext()  && !cardExist) {
-					PlaceToSleepCard pts = ptsIt.next();
-					if (pts.getCardId().equalsIgnoreCase(cardId)) {
-						cardExist = true;
-						foundCard = pts;
-					}
-				}
-				break;
-			case "other":
-				Iterator<OtherCard> itO = grupo.getOtherCards().iterator();
-				
-				while (itO.hasNext()  && !cardExist) {
-					OtherCard oCard = itO.next();
-					if (oCard.getCardId().equalsIgnoreCase(cardId)) {
-						cardExist = true;
-						foundCard = oCard;
-					}
-				}
-				break;
 			}
-		return foundCard;
+			break;
+		case "placeToSleep":
+			Iterator<PlaceToSleepCard> ptsIt = grupo.getPlaceToSleepCards()
+					.iterator();
+			while (ptsIt.hasNext() && !cardExist) {
+				PlaceToSleepCard pts = ptsIt.next();
+				if (pts.getCardId().equalsIgnoreCase(cardId)) {
+					cardExist = true;
+					foundCard = pts;
+				}
+			}
+			break;
+		case "other":
+			Iterator<OtherCard> itO = grupo.getOtherCards().iterator();
+
+			while (itO.hasNext() && !cardExist) {
+				OtherCard oCard = itO.next();
+				if (oCard.getCardId().equalsIgnoreCase(cardId)) {
+					cardExist = true;
+					foundCard = oCard;
+				}
+			}
+			break;
 		}
-		
+		return foundCard;
+	}
+
 	public void deleteCard(String groupId, String cardId) throws Exception {
 		Group group;
 		try {
@@ -530,12 +539,13 @@ public class GroupServiceImpl implements GroupService {
 		foundCard = cardExistOnArray(cardId, group.getTransportCards());
 		if (foundCard != null) {
 			group.getTransportCards().remove(foundCard);
-			
-			TransportCard transCard=(TransportCard)foundCard;
 
-			//actualizamos la lista de parentsId de las childCards
-			for (String childCard: transCard.getChildCardsId()){
-				PlaceToSleepCard placeCard = (PlaceToSleepCard) cardExistOnArray(childCard, group.getPlaceToSleepCards());
+			TransportCard transCard = (TransportCard) foundCard;
+
+			// actualizamos la lista de parentsId de las childCards
+			for (String childCard : transCard.getChildCardsId()) {
+				PlaceToSleepCard placeCard = (PlaceToSleepCard) cardExistOnArray(
+						childCard, group.getPlaceToSleepCards());
 				group.getPlaceToSleepCards().remove(placeCard);
 				placeCard.getParentCardIds().remove(transCard.getCardId());
 				group.getPlaceToSleepCards().add(placeCard);
@@ -546,11 +556,13 @@ public class GroupServiceImpl implements GroupService {
 				group.getPlaceToSleepCards().remove(foundCard);
 				PlaceToSleepCard placeCard = (PlaceToSleepCard) foundCard;
 
-				//actualizamos la lista de childCards de las parentCards
-				for(String parentCard: placeCard.getParentCardIds()){
-					TransportCard transportCard = (TransportCard) cardExistOnArray(parentCard, group.getTransportCards());
+				// actualizamos la lista de childCards de las parentCards
+				for (String parentCard : placeCard.getParentCardIds()) {
+					TransportCard transportCard = (TransportCard) cardExistOnArray(
+							parentCard, group.getTransportCards());
 					group.getTransportCards().remove(transportCard);
-					transportCard.getChildCardsId().remove(placeCard.getCardId());
+					transportCard.getChildCardsId().remove(
+							placeCard.getCardId());
 					group.getTransportCards().add(transportCard);
 				}
 			} else {
@@ -577,7 +589,7 @@ public class GroupServiceImpl implements GroupService {
 			throw new ElementNotFoundServiceException("Group " + groupId
 					+ " not found");
 		}
-		
+
 		Card foundCard = null;
 		foundCard = cardExistOnArray(cardId, group.getTransportCards());
 		if (foundCard == null) {
@@ -586,7 +598,7 @@ public class GroupServiceImpl implements GroupService {
 				foundCard = cardExistOnArray(cardId, group.getOtherCards());
 			}
 		}
-		
+
 		if (foundCard != null) {
 			boolean found = false;
 			Iterator<Vote> it = foundCard.getVotes().iterator();
@@ -649,7 +661,7 @@ public class GroupServiceImpl implements GroupService {
 		}
 
 	}
-	
+
 	public void definePack(Group group) throws Exception {
 		TransportCard bestTempTransportCard = null;
 		PlaceToSleepCard bestPlaceToSleepCard = null;
@@ -657,24 +669,33 @@ public class GroupServiceImpl implements GroupService {
 		String destino = null;
 		double ponderation;
 
-		//miramos las cartas segun los destinos que hay
+		// miramos las cartas segun los destinos que hay
 		for (Destination destination : group.getDestinations()) {
 			bestTempValoration = 0;
-			//miramos si la card de alojamiento es del destino que estamos buscando
+			// miramos si la card de alojamiento es del destino que estamos
+			// buscando
 
 			if (!group.getPlaceToSleepCards().isEmpty()) {
 				for (PlaceToSleepCard ptsCard : group.getPlaceToSleepCards()) {
 					if (ptsCard.getDestination().equals(destination)) {
-						ptsCard.setDeleteOfBestPack();		//aprovechamos el for para reiniciar los packs
+						ptsCard.setDeleteOfBestPack(); // aprovechamos el for
+														// para reiniciar los
+														// packs
 
-						//en transporte ya no miramos que sea del mismo destino porque esta carta esta linkada al alojamiento
+						// en transporte ya no miramos que sea del mismo destino
+						// porque esta carta esta linkada al alojamiento
 						if (!ptsCard.getParentCardIds().isEmpty()) {
 							for (String tCardId : ptsCard.getParentCardIds()) {
-								TransportCard tcCard = (TransportCard) getCard(tCardId, "transport", group);
-								tcCard.setDeleteOfBestPack();		//aprovechamos el for para reiniciar los packs
+								TransportCard tcCard = (TransportCard) getCard(
+										tCardId, "transport", group);
+								tcCard.setDeleteOfBestPack(); // aprovechamos el
+																// for para
+																// reiniciar los
+																// packs
 
-								ponderation = calculatePackPercentage(tcCard, ptsCard, group);
-															
+								ponderation = calculatePackPercentage(tcCard,
+										ptsCard, group);
+
 								if (ponderation > bestTempValoration) {
 									bestTempValoration = ponderation;
 									bestTempTransportCard = tcCard;
@@ -685,18 +706,20 @@ public class GroupServiceImpl implements GroupService {
 						}
 					}
 				}
-				//activamos el flag de best pack para las cards de transporte y de alojamiento de cada destino
-				if ((bestTempTransportCard!=null)&&(bestPlaceToSleepCard!=null)) {
+				// activamos el flag de best pack para las cards de transporte y
+				// de alojamiento de cada destino
+				if ((bestTempTransportCard != null)
+						&& (bestPlaceToSleepCard != null)) {
 					bestTempTransportCard.setBestPack();
 					bestPlaceToSleepCard.setBestPack();
-					for (Destination destiny : group.getDestinations()){
+					for (Destination destiny : group.getDestinations()) {
 						group.getDestinations().remove(destiny);
 						if (destiny.getName().equals(destino))
 							destiny.setPercentage(bestTempValoration);
 						group.getDestinations().add(destiny);
 					}
 				}
-				
+
 				this.putGroup(group);
 			}
 		}
@@ -708,80 +731,81 @@ public class GroupServiceImpl implements GroupService {
 		double avg, avg2, resultTrans, resultAloj, otherResult = 0;
 		double resultFinal = 0;
 		members = group.getUsers().size();
-		
-		//Votacion transporte
+
+		// Votacion transporte
 		avg = tcCard.getAverage() * 0.7 * 2;
-		avg2 = (tcCard.getVotes().size()/members) * 0.3 * 10;
-		resultTrans = (avg+avg2) * 0.4;
-				
-		//Votacion alojamiento
+		avg2 = (tcCard.getVotes().size() / members) * 0.3 * 10;
+		resultTrans = (avg + avg2) * 0.4;
+
+		// Votacion alojamiento
 		avg = ptsCard.getAverage() * 0.7 * 2;
-		avg2 = (ptsCard.getVotes().size()/members) * 0.3 * 10;
-		resultAloj = (avg+avg2) * 0.4;
-				
-		//Votacion other cards
-		if (!group.getOtherCards().isEmpty()){
+		avg2 = (ptsCard.getVotes().size() / members) * 0.3 * 10;
+		resultAloj = (avg + avg2) * 0.4;
+
+		// Votacion other cards
+		if (!group.getOtherCards().isEmpty()) {
 			for (OtherCard otherCard : group.getOtherCards()) {
 				if (otherCard.getDestination().equals(tcCard.getDestination())) {
 					numOtherCards++;
 					avg = otherCard.getAverage() * 0.7 * 2;
-					avg2 = (otherCard.getVotes().size()/members) * 0.3 * 10;
+					avg2 = (otherCard.getVotes().size() / members) * 0.3 * 10;
 					otherResult = ((avg + avg2) * 0.2) + otherResult;
 				}
 			}
-			resultFinal = (otherResult/numOtherCards);
+			resultFinal = (otherResult / numOtherCards);
 		}
-		
-		//calculo final
+
+		// calculo final
 		resultFinal = resultTrans + resultAloj + resultFinal;
 		resultFinal = 10 * resultFinal;
 		return resultFinal;
 	}
-	
+
 	public Group finalProposition(String groupId, String idTransporte,
-			String idAlojamiento) throws Exception{
+			String idAlojamiento) throws Exception {
 		Group group;
 		boolean found = false;
-		
+
 		try {
 			group = this.getGroup(groupId);
 		} catch (Exception e) {
 			throw new ElementNotFoundServiceException("Group " + groupId
 					+ " not found");
 		}
-		
+
 		for (TransportCard tranCard : group.getTransportCards()) {
 
-			//esto reinicia a false la propuesta, por si se cambia de propuesta
+			// esto reinicia a false la propuesta, por si se cambia de propuesta
 			tranCard.setfinalProposition(false);
-			if (tranCard.getCardId().equals(idTransporte)){
+			if (tranCard.getCardId().equals(idTransporte)) {
 				found = true;
 				tranCard.setfinalProposition(found);
 			}
 
 		}
 
-		if (found == false){
-			throw new ElementNotFoundServiceException("Transport card " + idTransporte
-					+ " not found");
+		if (found == false) {
+			throw new ElementNotFoundServiceException("Transport card "
+					+ idTransporte + " not found");
 		}
-		
+
 		found = false;
 		for (PlaceToSleepCard alojCard : group.getPlaceToSleepCards()) {
-			//esto reinicia a false la propuesta, por si se cambia de propuesta
+			// esto reinicia a false la propuesta, por si se cambia de propuesta
 			alojCard.setfinalProposition(false);
-			if (alojCard.getCardId().equals(idAlojamiento)){
+			if (alojCard.getCardId().equals(idAlojamiento)) {
 				found = true;
 				alojCard.setfinalProposition(found);
 			}
 		}
-		
-		if (found == false){
-			throw new ElementNotFoundServiceException("Place to sleep " + idAlojamiento
-					+ " not found");
+
+		if (found == false) {
+			throw new ElementNotFoundServiceException("Place to sleep "
+					+ idAlojamiento + " not found");
 		}
-		
+
 		this.putGroup(group);
-		return group;	
+		this.definePack(group);
+		return group;
 	}
 }
