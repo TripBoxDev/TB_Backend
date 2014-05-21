@@ -58,8 +58,8 @@ public class GroupServiceImpl implements GroupService {
 
 		// si el Group es nuevo le asignamos una id
 		if (group.getId() == null) {
-
 			group = putNewGroup(group);
+			
 		} else {
 
 			try {

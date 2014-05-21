@@ -35,7 +35,6 @@ public class GroupServiceImplTest {
 	static ArrayList<String> groups = new ArrayList<String>();
 	static ArrayList<String> users = new ArrayList<String>();
 	static ArrayList<String> usuarios = new ArrayList<String>();
-	//static ArrayList<Destination> destinations = new ArrayList<Destination>();
 	
 	static Destination RomaDestination;
 	static Destination ParisDestination;
@@ -194,10 +193,17 @@ public class GroupServiceImplTest {
 		try {
 			resultGroupNoDelete = grupoServ.putGroup(putDeleteTestGroup);
 			assertNotNull(putDeleteTestGroup.getId());
-			assertNotNull(grupoServ.getGroup(putDeleteTestGroup.getId()));
+
 			assertTrue(resultGroupNoDelete.getId() == putDeleteTestGroup
 					.getId());
-			assertNotNull(resultGroupNoDelete.getUsers());
+			
+			resultGroupNoDelete = grupoServ.getGroup(resultGroupNoDelete.getId());
+			
+			assertTrue(resultGroupNoDelete.getUsers().contains(usuario.getId()));
+			
+			User usr = userService.getUser(usuario.getId());
+			System.out.println(usr.getGroups() + "\tgroupId" + resultGroupNoDelete.getId());
+			assertTrue(usr.getGroups().contains(resultGroupNoDelete.getId()));
 
 		} catch (InvalidIdsException e) {
 			fail();
@@ -233,16 +239,26 @@ public class GroupServiceImplTest {
 
 	@Test
 	public void testDeleteGroup() throws Exception {
-
+		System.out.println("\nID usuario: " + usuario.getId() + "\tID Grup: " + putDeleteTestGroup.getId());
+		System.out.println("users que estan en aquest grup" + putDeleteTestGroup.getUsers());
+		
+		usuario = userService.getUser(usuario.getId());
+		System.out.println("grups que te l'usuari: " + usuario.getGroups());
 		try {
 			grupoServ.deleteGroup(putDeleteTestGroup.getId());
-		} catch (ElementNotFoundServiceException e) {
-			fail(); // El grupo existe, asi que no tiene que fallar
 		} catch (Exception e) {
 			e.printStackTrace();
-			fail();
+			fail(); // El grupo existe, asi que no tiene que fallar
 		}
 
+		//Intentamos borrar el mismo grupo otra vez. Como ya ha sido borrado deberia saltar una excepcion
+		try {
+			grupoServ.deleteGroup(putDeleteTestGroup.getId());
+			fail();	
+		} catch (Exception e) {
+
+		}
+		
 		try {
 			grupoServ.deleteGroup("52");
 			fail(); // No existe el grupo, asi que tiene que fallar
@@ -255,7 +271,7 @@ public class GroupServiceImplTest {
 	public void testDeleteUserToGroup() throws Exception {
 		Group deleteTestGroup = new Group();
 		deleteTestGroup.setName("deletetestGroup");
-		deleteTestGroup.setUsers(users);
+		deleteTestGroup.setUsers(usuarios);
 
 		deleteTestGroup = grupoServ.putGroup(deleteTestGroup);
 		deleteTestGroup = grupoServ.getGroup(deleteTestGroup.getId());
@@ -274,8 +290,23 @@ public class GroupServiceImplTest {
 			fail();
 		}
 
-		// Como "usuario" era el unico user en "deleteTestGroup" ahora
-		// "deleteTestGroup" deberia haber sido borrado
+		//Comprobamos que el array de usuarios del grupo ya no contiene la ID de "usuario" pero si la de "usuario2"
+		deleteTestGroup = grupoServ.getGroup(deleteTestGroup.getId());
+		assertFalse(deleteTestGroup.getUsers().contains(usuario.getId()));
+		assertTrue(deleteTestGroup.getUsers().contains(usuario2.getId()));
+		
+		//Comprobamos que el array de grupos del usuario ya no contiene la ID de "deleteTestGroup"
+		usuario = userService.getUser(usuario.getId());
+		assertFalse(usuario.getGroups().contains(deleteTestGroup.getId()));
+		fail(); //TODO els users no tenen groups a la array. Fins que no s'arregli error de putGroup no pdoem estar segurs que aixo es correcte
+		//Borraremos usuario2 del grupo para comprobar si al no tener usuarios el grupo se borra automaticamente
+		try {
+			grupoServ.deleteUserToGroup(deleteTestGroup.getId(), usuario2.getId());
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+		
 		try {
 			grupoServ.getGroup(deleteTestGroup.getId());
 			fail();
@@ -327,6 +358,8 @@ public class GroupServiceImplTest {
 
 			boolean foundDest = false;
 			for (Destination dest : resultGroupNoDelete.getDestinations()) {
+				//Comprobamos que todos los destinos dentro del grupo tienen ID
+				assertNotNull(dest.getId());
 				if (dest.getName().equalsIgnoreCase("Tokyo")) {
 					foundDest = true;
 				}
@@ -334,11 +367,8 @@ public class GroupServiceImplTest {
 			
 			assertTrue(foundDest);
 
-		} catch (ElementNotFoundServiceException e) {
-			fail();
-		} catch (DestinationAlreadyExistException e) {
-			fail();
 		} catch (Exception e) {
+			e.printStackTrace();
 			fail();
 		}
 	}
@@ -387,45 +417,43 @@ public class GroupServiceImplTest {
 		
 		destTestGroup = grupoServ.putGroup(destTestGroup);
 
-		grupoServ.putDestination(destTestGroup.getId(), "Roma");
-		grupoServ.putDestination(destTestGroup.getId(), "Paris");
+		Destination rDest = grupoServ.putDestination(destTestGroup.getId(), "Roma");
+		Destination pDest = grupoServ.putDestination(destTestGroup.getId(), "Paris");
 		
-		grupoServ.putCard(destTestGroup.getId(), destTestCard);
+		destTestCard = (TransportCard) grupoServ.putCard(destTestGroup.getId(), destTestCard);
 
 		destTestGroup = grupoServ.getGroup(destTestGroup.getId());
 
 		try {
-			ArrayList<TransportCard> tCards = destTestGroup.getTransportCards();
 			// Nos aseguramos que haya una card con destino a Paris
-			
+			ArrayList<TransportCard> tCards = destTestGroup.getTransportCards();
 			assertEquals(tCards.get(0).getDestination(), "Paris");
-			String idDeleteDest = null;
-			// Se elimina Paris como destino
-			for (Destination dest: destTestGroup.getDestinations()) {
-				if (dest.getName().equalsIgnoreCase("Paris")) {
-					idDeleteDest = dest.getId();
-				}
-			}
 			
-			if (idDeleteDest != null) {
-				
-				grupoServ.deleteDestination(destTestGroup.getId(), idDeleteDest);
-				
-			} else {
-				fail();
-			}
+			// Se elimina Paris como destino
+			grupoServ.deleteDestination(destTestGroup.getId(), pDest.getId());
 			
 			resultGroup = grupoServ.getGroup(destTestGroup.getId());
 
-			// Comprobamos que Paris ya no esta entre las destinaciones del
-			// grupo
-			assertFalse(resultGroup.getDestinations().contains("Paris"));
+			// Comprobamos que Paris ya no existe en la array de destinos, pero Roma si.
+			boolean parisDest = false;
+			boolean romeDest = false;
+			for (Destination dest: resultGroup.getDestinations()) {
+				if (dest.getId().equalsIgnoreCase(pDest.getId())) {
+					parisDest = true;
+				}
+				
+				if (dest.getId().equalsIgnoreCase(rDest.getId())) {
+					romeDest = true;
+				}
+			}
+			
+			assertFalse(parisDest);
+			assertTrue(romeDest);
 
-			// Comprobamos que se hayan eliminado las cards relacionadas con
-			// Paris
-			assertFalse(destTestGroup.getTransportCards()
-					.contains(destTestCard));
-
+			// Comprobamos que la card con destino a Paris se ha eliminado
+			TransportCard foundCard = (TransportCard) grupoServ.cardExistOnArray(destTestCard.getCardId(), resultGroup.getTransportCards());
+			assertNull(foundCard);
+			
 		} catch (ElementNotFoundServiceException e) {
 			fail();
 		} catch (Exception e) {
@@ -467,7 +495,7 @@ public class GroupServiceImplTest {
 	public void testPutCard() throws Exception {
 		TransportCard resultTCard = null;
 		PlaceToSleepCard resultPtsCard = null;
-		OtherCard resultOCard;
+		OtherCard resultOCard = null;
 		try {
 			resultTCard = (TransportCard) grupoServ.putCard(cardTestGroup.getId(), tTestCard);
 		} catch (Exception e) {
@@ -496,7 +524,13 @@ public class GroupServiceImplTest {
 		assertNotNull(tTestCard.getCardId());
 		assertNotNull(ptsTestCard.getCardId());
 		assertNotNull(oTestCard.getCardId());
-
+		assertNotNull(tTestCard.getCreationDate());
+		assertNotNull(ptsTestCard.getCreationDate());
+		assertNotNull(oTestCard.getCreationDate());
+		
+		assertEquals(tTestCard.getCreationDate(), ptsTestCard.getCreationDate(), 10);
+		assertEquals(tTestCard.getCreationDate(), oTestCard.getCreationDate(), 10);
+		
 		cardTestGroup = grupoServ.getGroup(cardTestGroup.getId());
 
 		assertEquals(cardTestGroup.getTransportCards().get(0).getName(),
@@ -581,7 +615,7 @@ public class GroupServiceImplTest {
 			e.printStackTrace();
 			fail();
 		}
-
+		
 		cardTestGroup = grupoServ.getGroup(cardTestGroup.getId());
 		
 		//Miramos en una direccion
