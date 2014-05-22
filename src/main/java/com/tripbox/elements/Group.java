@@ -25,6 +25,8 @@ public class Group {
 	private ArrayList<TransportCard> transportCards = new ArrayList<TransportCard>();
 	private ArrayList<PlaceToSleepCard> placeToSleepCards = new ArrayList<PlaceToSleepCard>();
 	private ArrayList<OtherCard> otherCards = new ArrayList<OtherCard>();
+	private ArrayList<User> negativeVotes = new ArrayList<User>();
+	private ArrayList<User> positiveVotes = new ArrayList<User>();
 
 	/**
 	 * Flag de la imagen
@@ -38,7 +40,8 @@ public class Group {
 			ArrayList<String> users, ArrayList<Destination> destinations,
 			ArrayList<TransportCard> transportCards,
 			ArrayList<PlaceToSleepCard> placeToSleepCards,
-			ArrayList<OtherCard> otherCards, boolean flagImage) {
+			ArrayList<OtherCard> otherCards, boolean flagImage, ArrayList<User> negativeVotes,
+			ArrayList<User> positiveVotes) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -49,6 +52,8 @@ public class Group {
 		this.placeToSleepCards = placeToSleepCards;
 		this.otherCards = otherCards;
 		this.flagImage = flagImage;
+		this.negativeVotes = negativeVotes;
+		this.positiveVotes = positiveVotes;
 	}
 
 	public String getId() {
@@ -130,6 +135,22 @@ public class Group {
 
 	public void setOtherCards(ArrayList<OtherCard> otherCards) {
 		this.otherCards = otherCards;
+	}
+
+	public ArrayList<User> getNegativeVotes() {
+		return negativeVotes;
+	}
+
+	public void setNegativeVotes(ArrayList<User> negativeVotes) {
+		this.negativeVotes = negativeVotes;
+	}
+
+	public ArrayList<User> getPositiveVotes() {
+		return positiveVotes;
+	}
+
+	public void setPositiveVotes(ArrayList<User> positiveVotes) {
+		this.positiveVotes = positiveVotes;
 	}
 
 }
