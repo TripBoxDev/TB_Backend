@@ -23,6 +23,7 @@ import com.tripbox.elements.Group;
 import com.tripbox.elements.OtherCard;
 import com.tripbox.elements.PlaceToSleepCard;
 import com.tripbox.elements.TransportCard;
+import com.tripbox.elements.User;
 import com.tripbox.elements.Vote;
 import com.tripbox.services.GroupServiceImpl;
 import com.tripbox.services.exceptions.CardTypeException;
@@ -234,7 +235,6 @@ public class GroupRESTImpl implements GroupREST {
 
 	@PUT
 	@Path("/{groupId}/transport/{idTransporte}/sleep/{idAlojamiento}")
-	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response finalProposition(@PathParam("groupId") String groupId, @PathParam("idTransporte") String idTransporte,
 			@PathParam("idAlojamiento") String idAlojamiento) {
@@ -244,6 +244,19 @@ public class GroupRESTImpl implements GroupREST {
 			throw new ElementNotFoundException(exc.getMessage());
 		} catch (Exception e) {
 			throw new ElementNotFoundException("Item not found");
+		}
+	}
+	
+	@PUT
+	@Path("/{groupId}/{userId}/finalProposition/{vote}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response putVoteFinalProposition(@PathParam("groupId") String groupId, @PathParam("userId") String userId, @PathParam("vote") boolean vote) {
+		try {
+			return Response.ok(groupService.putVoteFinalProposition(groupId, userId, vote)).build();
+		}catch (InvalidIdsException exc) {
+				throw new ElementNotFoundException(exc.getMessage());
+		} catch (Exception e) {
+			throw new WebApplicationException();
 		}
 	}
 }

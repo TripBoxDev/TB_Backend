@@ -122,4 +122,7 @@ public interface GroupService {
 	*/
 	public Group finalProposition(String groupId, String idTransporte,
 			String idAlojamiento) throws Exception;
+
+	public Group putVoteFinalProposition(String groupId, String userId,
+			boolean vote);
 }

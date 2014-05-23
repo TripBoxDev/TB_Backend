@@ -808,4 +808,11 @@ public class GroupServiceImpl implements GroupService {
 		this.definePack(group);
 		return group;
 	}
+
+	@Override
+	public Group putVoteFinalProposition(String groupId, String userId,
+			boolean vote) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
