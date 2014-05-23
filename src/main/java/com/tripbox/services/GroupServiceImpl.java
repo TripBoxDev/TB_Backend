@@ -809,10 +809,35 @@ public class GroupServiceImpl implements GroupService {
 		return group;
 	}
 
-	@Override
+
 	public Group putVoteFinalProposition(String groupId, String userId,
-			boolean vote) {
-		// TODO Auto-generated method stub
-		return null;
+			boolean vote) throws Exception {
+		Group group;
+		
+		try {
+			group = this.getGroup(groupId);
+		} catch (Exception e) {
+			throw new ElementNotFoundServiceException("Group " + groupId
+					+ " not found");
+		}
+
+		//comprobamos que no existe el usuario en el array de votos negativos
+		//si existe lo borramos del array
+		if (group.getNegativeVotes().contains(userId)){
+			group.getNegativeVotes().remove(userId);
+		}else{
+			if (group.getPositiveVotes().contains(userId)){
+				group.getPositiveVotes().remove(userId);
+			} 
+		}
+		
+		if (vote == true){
+			group.getPositiveVotes().add(userId);
+		}else{
+			group.getNegativeVotes().add(userId);
+		}
+		
+		this.putGroup(group);
+		return group;
 	}
 }

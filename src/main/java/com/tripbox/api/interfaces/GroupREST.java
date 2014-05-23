@@ -146,7 +146,7 @@ public interface GroupREST {
 	 * @param groupId String indica que grupo es.
 	 * @param vote boolean indica si el voto es positivo (true) o negativo (false)
 	 * @param userId String id del usuario que vota
-	 * @return Group grupo actualizado
+	 * @return Response estado de la petición
 	 */
-	public Response putVoteFinalProposition(String groupId, boolean vote, String userId);
+	public Response putVoteFinalProposition(String groupId, String userId, boolean vote);
 }

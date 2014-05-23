@@ -8,6 +8,7 @@ import com.tripbox.elements.Group;
 import com.tripbox.elements.PlaceToSleepCard;
 import com.tripbox.elements.TransportCard;
 import com.tripbox.elements.Vote;
+import com.tripbox.services.exceptions.ElementNotFoundServiceException;
 
 public interface GroupService {
 
@@ -123,6 +124,15 @@ public interface GroupService {
 	public Group finalProposition(String groupId, String idTransporte,
 			String idAlojamiento) throws Exception;
 
+	/**
+	 * Funcion para votar una propuesta final.
+	 *
+	 * @param groupId String indica que grupo es.
+	 * @param vote boolean indica si el voto es positivo (true) o negativo (false)
+	 * @param userId String id del usuario que vota
+	 * @return Group grupo actualizado
+	 * @throws Exception 
+	 */
 	public Group putVoteFinalProposition(String groupId, String userId,
-			boolean vote);
+			boolean vote) throws Exception;
 }
