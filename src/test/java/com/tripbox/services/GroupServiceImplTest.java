@@ -49,6 +49,7 @@ public class GroupServiceImplTest {
 	static Group resultGroupNoDelete;
 	static Group putDeleteTestGroup;
 	static Group finalgroup;
+	static Group testVoteFinal;
 
 	static User usuario;
 	static User usuario2;
@@ -165,6 +166,12 @@ public class GroupServiceImplTest {
 				.setDescription("grupo para testeo de funciones de las cards");
 		cardTestGroup.setUsers(users);
 
+		testVoteFinal = new Group();
+		testVoteFinal.setName("voteTestGroup");
+		testVoteFinal
+				.setDescription("grupo para testeo de funciones de las cards");
+		testVoteFinal.setUsers(usuarios);
+		
 		cardTestGroupWrInputs = new Group();
 		cardTestGroupWrInputs.setName("cardTestGroupWrInputsName");
 		cardTestGroupWrInputs
@@ -1366,7 +1373,57 @@ public class GroupServiceImplTest {
 		assertTrue(d.getfinalProposition() == true);
 		assertTrue(c.getfinalProposition() == true);
 	}
+	
+	@Test
+	public void testVoteFinalProposition() throws Exception {
+		testVoteFinal = grupoServ.putGroup(testVoteFinal);
+		
+		assertTrue(testVoteFinal.getPositiveVotes().isEmpty());
+		assertTrue(testVoteFinal.getNegativeVotes().isEmpty());
+		
+		//groupId no existe
+		try {
+			testVoteFinal = grupoServ.putVoteFinalProposition("ddf1dg5fdf",
+					usuario.getId(), true);
+			fail();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		//usuario no existe
+		try {
+			testVoteFinal = grupoServ.putVoteFinalProposition(testVoteFinal.getId(),
+					"25g15f1ht5h", true);
+			fail();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
+		
+		//añade a array positivos
+		try {
+			testVoteFinal = grupoServ.putVoteFinalProposition(testVoteFinal.getId(),
+					usuario.getId(), true);
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+		
+		assertTrue(testVoteFinal.getPositiveVotes().get(0).equals(usuario.getId()));
+		assertTrue(testVoteFinal.getNegativeVotes().isEmpty());
 
+		//añade a array negativos y borra el positivo
+		try {
+			testVoteFinal = grupoServ.putVoteFinalProposition(testVoteFinal.getId(),
+					usuario.getId(), false);
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+		
+		assertTrue(testVoteFinal.getNegativeVotes().get(0).equals(usuario.getId()));
+		assertTrue(testVoteFinal.getPositiveVotes().isEmpty());
+	}
+	
 	@After
 	public void tearDown() throws Exception {
 		try {

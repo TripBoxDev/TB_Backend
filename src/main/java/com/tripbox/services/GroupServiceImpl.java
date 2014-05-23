@@ -814,10 +814,17 @@ public class GroupServiceImpl implements GroupService {
 			boolean vote) throws Exception {
 		Group group;
 		
+		//comprobamos que exista el grupo
 		try {
 			group = this.getGroup(groupId);
 		} catch (Exception e) {
 			throw new ElementNotFoundServiceException("Group " + groupId
+					+ " not found");
+		}
+		
+		//comprobamos que exista el usuario
+		if (!group.getUsers().contains(userId)){
+			throw new ElementNotFoundServiceException("User " + userId
 					+ " not found");
 		}
 
