@@ -227,7 +227,7 @@ public class GroupRESTImpl implements GroupREST {
 		} catch (InvalidIdsException exc) {
 			throw new ElementNotFoundException(exc.getMessage());
 		} catch (Exception e) {
-			throw new ElementNotFoundException("Item not found");
+			throw new WebApplicationException();
 		}
 
 		return Response.status(200).build();
@@ -243,7 +243,7 @@ public class GroupRESTImpl implements GroupREST {
 		} catch (InvalidIdsException exc) {
 			throw new ElementNotFoundException(exc.getMessage());
 		} catch (Exception e) {
-			throw new ElementNotFoundException("Item not found");
+			throw new WebApplicationException();
 		}
 	}
 	
