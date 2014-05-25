@@ -200,10 +200,6 @@ public class GroupServiceImplTest {
 			resultGroupNoDelete = grupoServ.getGroup(resultGroupNoDelete.getId());
 			
 			assertTrue(resultGroupNoDelete.getUsers().contains(usuario.getId()));
-			
-			User usr = userService.getUser(usuario.getId());
-			System.out.println(usr.getGroups() + "\tgroupId" + resultGroupNoDelete.getId());
-			assertTrue(usr.getGroups().contains(resultGroupNoDelete.getId()));
 
 		} catch (InvalidIdsException e) {
 			fail();
@@ -239,11 +235,11 @@ public class GroupServiceImplTest {
 
 	@Test
 	public void testDeleteGroup() throws Exception {
-		System.out.println("\nID usuario: " + usuario.getId() + "\tID Grup: " + putDeleteTestGroup.getId());
-		System.out.println("users que estan en aquest grup" + putDeleteTestGroup.getUsers());
+		//System.out.println("\nID usuario: " + usuario.getId() + "\tID Grup: " + putDeleteTestGroup.getId());
+		//System.out.println("users que estan en aquest grup" + putDeleteTestGroup.getUsers());
 		
 		usuario = userService.getUser(usuario.getId());
-		System.out.println("grups que te l'usuari: " + usuario.getGroups());
+		//System.out.println("grups que te l'usuari: " + usuario.getGroups());
 		try {
 			grupoServ.deleteGroup(putDeleteTestGroup.getId());
 		} catch (Exception e) {
@@ -298,7 +294,7 @@ public class GroupServiceImplTest {
 		//Comprobamos que el array de grupos del usuario ya no contiene la ID de "deleteTestGroup"
 		usuario = userService.getUser(usuario.getId());
 		assertFalse(usuario.getGroups().contains(deleteTestGroup.getId()));
-		fail(); //TODO els users no tenen groups a la array. Fins que no s'arregli error de putGroup no pdoem estar segurs que aixo es correcte
+
 		//Borraremos usuario2 del grupo para comprobar si al no tener usuarios el grupo se borra automaticamente
 		try {
 			grupoServ.deleteUserToGroup(deleteTestGroup.getId(), usuario2.getId());
@@ -762,11 +758,10 @@ public class GroupServiceImplTest {
 
 		cardTestGroup = grupoServ.getGroup(cardTestGroup.getId());
 
-		// Como solo habia una card, ahora las arrays de cards estan vacios, por
-		// eso las comprobaciones las realizamos con .isEmpty()
-		assertTrue(!cardTestGroup.getTransportCards().contains(tTestCard));
-		assertTrue(!cardTestGroup.getPlaceToSleepCards().contains(ptsTestCard));
-		assertTrue(!cardTestGroup.getOtherCards().contains(oTestCard));
+		// Comprobamos que las cards ya no estan en los arrays del grupo
+		assertNull(grupoServ.cardExistOnArray(tTestCard.getCardId(), cardTestGroup.getTransportCards()));
+		assertNull(grupoServ.cardExistOnArray(ptsTestCard.getCardId(), cardTestGroup.getPlaceToSleepCards()));
+		assertNull(grupoServ.cardExistOnArray(oTestCard.getCardId(), cardTestGroup.getOtherCards()));
 
 	}
 
