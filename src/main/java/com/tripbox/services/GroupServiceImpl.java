@@ -803,7 +803,11 @@ public class GroupServiceImpl implements GroupService {
 			throw new ElementNotFoundServiceException("Place to sleep "
 					+ idAlojamiento + " not found");
 		}
-
+		
+		//reiniciamos los arrays de votos
+		group.getNegativeVotes().clear();
+		group.getPositiveVotes().clear();
+		
 		this.putGroup(group);
 		this.definePack(group);
 		return group;
