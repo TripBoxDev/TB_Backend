@@ -203,6 +203,7 @@ public class GroupServiceImpl implements GroupService {
 				}
 
 				cardFound.getVotes().remove(foundVote);// eliminamos el voto
+				this.definePack(group);
 				cardFound.calculateAverage();
 				this.putCard(groupId, cardFound);
 			}
@@ -624,7 +625,7 @@ public class GroupServiceImpl implements GroupService {
 			foundCard.calculateAverage();
 
 			this.putCard(groupId, foundCard);
-
+			this.definePack(group);
 			return foundCard;
 
 		} else {
@@ -667,17 +668,20 @@ public class GroupServiceImpl implements GroupService {
 		PlaceToSleepCard bestPlaceToSleepCard = null;
 		double bestTempValoration = 0;
 		String destino = null;
+		int i = 0;
 		double ponderation;
 
 		// miramos las cartas segun los destinos que hay
 		for (Destination destination : group.getDestinations()) {
+
 			bestTempValoration = 0;
 			// miramos si la card de alojamiento es del destino que estamos
 			// buscando
 
 			if (!group.getPlaceToSleepCards().isEmpty()) {
+
 				for (PlaceToSleepCard ptsCard : group.getPlaceToSleepCards()) {
-					if (ptsCard.getDestination().equals(destination)) {
+					if (ptsCard.getDestination().equals(destination.getName())) {
 						ptsCard.setDeleteOfBestPack(); // aprovechamos el for
 														// para reiniciar los
 														// packs
@@ -685,6 +689,7 @@ public class GroupServiceImpl implements GroupService {
 						// en transporte ya no miramos que sea del mismo destino
 						// porque esta carta esta linkada al alojamiento
 						if (!ptsCard.getParentCardIds().isEmpty()) {
+							
 							for (String tCardId : ptsCard.getParentCardIds()) {
 								TransportCard tcCard = (TransportCard) getCard(
 										tCardId, "transport", group);
@@ -695,7 +700,6 @@ public class GroupServiceImpl implements GroupService {
 
 								ponderation = calculatePackPercentage(tcCard,
 										ptsCard, group);
-
 								if (ponderation > bestTempValoration) {
 									bestTempValoration = ponderation;
 									bestTempTransportCard = tcCard;
@@ -712,14 +716,17 @@ public class GroupServiceImpl implements GroupService {
 						&& (bestPlaceToSleepCard != null)) {
 					bestTempTransportCard.setBestPack();
 					bestPlaceToSleepCard.setBestPack();
+					i=0;
 					for (Destination destiny : group.getDestinations()) {
-						group.getDestinations().remove(destiny);
-						if (destiny.getName().equals(destino))
-							destiny.setPercentage(bestTempValoration);
-						group.getDestinations().add(destiny);
+						
+						if (destiny.getName().equalsIgnoreCase(destino)){
+							group.getDestinations().get(i).setPercentage(bestTempValoration);
+							break;
+						}
+						
+						i++;
 					}
 				}
-
 				this.putGroup(group);
 			}
 		}

@@ -872,7 +872,6 @@ public class GroupServiceImplTest {
 			// Nuevo voto
 			resultCard = (TransportCard) grupoServ.putVote(
 					putVoteGroup.getId(), tTestCard3.getCardId(), voto);
-
 			assertTrue(resultCard.getVotes().get(0).getValue() == 4);
 			assertTrue(resultCard.getAverage() == 4);
 
@@ -1387,7 +1386,7 @@ public class GroupServiceImplTest {
 					usuario.getId(), true);
 			fail();
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		
 		//usuario no existe
@@ -1396,7 +1395,7 @@ public class GroupServiceImplTest {
 					"25g15f1ht5h", true);
 			fail();
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}		
 		
 		//añade a array positivos

@@ -17,7 +17,6 @@ public class Group {
 	private String name = null;
 	private String description = null;
 	private ArrayList<String> users = new ArrayList<String>();
-	private double percentage = 0;
 	/**
 	 * Array con los destinos creados en un Group.
 	 */
@@ -78,14 +77,6 @@ public class Group {
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	public double getPercentage() {
-		return percentage;
-	}
-
-	public void setPercentage(double perc) {
-		this.percentage = perc;
 	}
 	
 	public boolean getFlagImage() {
