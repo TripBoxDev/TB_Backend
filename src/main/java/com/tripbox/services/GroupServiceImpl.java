@@ -765,6 +765,7 @@ public class GroupServiceImpl implements GroupService {
 		// calculo final
 		resultFinal = resultTrans + resultAloj + resultFinal;
 		resultFinal = 10 * resultFinal;
+		resultFinal = (double)Math.round(resultFinal*100)/100;
 		return resultFinal;
 	}
 
