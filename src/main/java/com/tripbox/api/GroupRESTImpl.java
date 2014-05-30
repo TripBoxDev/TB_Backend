@@ -232,6 +232,26 @@ public class GroupRESTImpl implements GroupREST {
 
 		return Response.status(200).build();
 	}
+	
+	@PUT
+	@Path("/{cardId}/image/card")
+	@Consumes("image/jpeg")
+	public Response saveCardImage(@PathParam("cardId") String cardId,
+			File fileImage) {
+
+		String uploadedFileLocation = "/var/www/cardImgs/" + cardId + ".jpg";
+
+		try {
+			groupService.saveGroupImage(cardId, fileImage,
+					uploadedFileLocation);
+		} catch (InvalidIdsException exc) {
+			throw new ElementNotFoundException(exc.getMessage());
+		} catch (Exception e) {
+			throw new WebApplicationException();
+		}
+
+		return Response.status(200).build();
+	}
 
 	@PUT
 	@Path("/{groupId}/transport/{idTransporte}/sleep/{idAlojamiento}")

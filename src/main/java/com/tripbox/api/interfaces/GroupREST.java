@@ -121,13 +121,22 @@ public interface GroupREST {
 	public Response putVote(String groupId, String cardId, Vote vote);
 	
 	/**
-	 * Funcion para subir una imagen al servidor, el nombre de la imagen es el ID.
+	 * Funcion para subir una imagen de grupo al servidor, el nombre de la imagen es el ID.
 	 *
 	 * @param groupId String indica que grupo es.
 	 * @param fileImage Archivo en si.
 	 * @return the response
 	 */
 	public Response saveGroupImage(String groupId, File fileImage);
+	
+	/**
+	 * Funcion para subir una imagen de Card al servidor, el nombre de la imagen es el ID.
+	 *
+	 * @param groupId String indica que grupo es.
+	 * @param fileImage Archivo en si.
+	 * @return the response
+	 */
+	public Response saveCardImage(String groupId, File fileImage);
 	
 	/**
 	 * Funcion para marcar cual es la propuesta definitiva.
