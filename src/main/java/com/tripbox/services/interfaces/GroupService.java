@@ -104,6 +104,15 @@ public interface GroupService {
 	String uploadedFileLocation) throws Exception;
 	
 	/**
+	* Función que permite subir una imagen al servidor.
+	* @param groupId String Id del Group.
+	* @param fileImage File Archivo en si.
+	* @param uploadedFileLocation String Localització on guardar l'arxiu.
+	*/
+	public void saveCardImage(String cardId, String groupId, String type, File fileImage,
+	String uploadedFileLocation) throws Exception;
+	
+	/**
 	 * Funcion que permite definir el pack mejor valorado de un destino.
 	 */
 	public void definePack(Group group) throws Exception;

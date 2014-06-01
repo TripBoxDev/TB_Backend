@@ -899,7 +899,7 @@ public class GroupServiceImplTest {
 			putVoteGroup = grupoServ.getGroup(putVoteGroup.getId());
 			resultCard = (TransportCard) grupoServ.cardExistOnArray(
 					resultCard.getCardId(), putVoteGroup.getTransportCards());
-
+			
 			assertTrue(resultCard.getAverage() == 4);
 
 		} catch (Exception e) {
@@ -1137,7 +1137,6 @@ public class GroupServiceImplTest {
 		//deberia ser parte del mejor pack de Roma
 		ptsCard4 = (PlaceToSleepCard) grupoServ.putVote(packTestGroup.getId(), ptsCard3.getCardId(), voto3);
 		ptsCard4 = (PlaceToSleepCard) grupoServ.putVote(packTestGroup.getId(), ptsCard3.getCardId(), voto4);
-		
 		packTestGroup = grupoServ.getGroup(packTestGroup.getId());
 		
 		try{

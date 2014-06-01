@@ -16,6 +16,8 @@ public abstract class Card {
 	private String lastNameCreator = null;
 	private ArrayList<Vote> votes = new ArrayList<Vote>();
 	private boolean bestPack = false;
+	private boolean flagImage = false;
+	
 	
 	/**
 	 * Valor m��ximo de un voto.
@@ -168,4 +170,11 @@ public abstract class Card {
 		this.setAverage(totalValue / votes.size());
 	}
 
+	public boolean getFlagImage() {
+		return flagImage;
+	}
+
+	public void setFlagImage(boolean flagImage) {
+		this.flagImage = flagImage;
+	}
 }

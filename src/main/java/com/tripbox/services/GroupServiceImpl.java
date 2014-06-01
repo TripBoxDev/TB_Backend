@@ -662,6 +662,38 @@ public class GroupServiceImpl implements GroupService {
 		}
 
 	}
+	
+	public void saveCardImage(String cardId, String groupId, String type,  File fileImage,
+			String uploadedFileLocation) throws Exception {
+		InputStream is = new FileInputStream(fileImage);
+		Card card;
+		Group group;
+		
+		try {
+			OutputStream out = null;
+			int read = 0;
+			byte[] bytes = new byte[1024];
+
+			out = new FileOutputStream(new File(uploadedFileLocation));
+			while ((read = is.read(bytes)) != -1) {
+				out.write(bytes, 0, read);
+			}
+			out.flush();
+			out.close();
+			group = getGroup(groupId);
+			card = getCard(cardId, type, group);
+
+			if (!card.getFlagImage()) {
+				card.setFlagImage(true);
+			}
+			this.putCard(groupId, card);
+
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		}
+
+	}
 
 	public void definePack(Group group) throws Exception {
 		TransportCard bestTempTransportCard = null;
@@ -720,14 +752,21 @@ public class GroupServiceImpl implements GroupService {
 					for (Destination destiny : group.getDestinations()) {
 						
 						if (destiny.getName().equalsIgnoreCase(destino)){
+							System.out.println("best: " + bestTempValoration);
 							group.getDestinations().get(i).setPercentage(bestTempValoration);
+							System.out.println("name: " + group.getDestinations().get(i).getName());
+							System.out.println("perc: " + group.getDestinations().get(i).getPercentage());
+							System.out.println("------------------------------------");
 							break;
 						}
 						
 						i++;
 					}
 				}
+				System.out.println("nombre final: " + group.getDestinations().get(1).getName());
+				System.out.println("percfinal: " + group.getDestinations().get(1).getPercentage());
 				this.putGroup(group);
+				System.out.println("vamonos: " + mongo.getGroup(group.getId()).getDestinations().get(1).getPercentage());
 			}
 		}
 	}

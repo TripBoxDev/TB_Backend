@@ -363,6 +363,35 @@ public class GroupRESTImplTest {
 		}
 
 	}
+	
+	@Test
+	public void testSaveCardImage() {
+		try {
+			testGroupIMGID = "dcZmh5ahHMKd";
+			WebResource webResource = client
+					.resource("http://localhost:8080/TB_Backend/api/group/"
+							+ testGroupIMGID + "/image/card");
+
+			File f = new File("C:/Users/Cristian/Pictures/014.jpg");
+			
+			ClientResponse reString = webResource.type("image/jpeg").put(
+					ClientResponse.class, f);
+
+			WebResource webResource2 = client
+					.resource("http://localhost:8080/TB_Backend/api/group/"
+							+ testGroupIMGID);
+
+			response = webResource2.type("application/json").get(
+					ClientResponse.class);
+			String output = response.getEntity(String.class);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+
+	}
 
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {

@@ -4,6 +4,7 @@ import java.io.File;
 
 import javax.ws.rs.core.Response;
 
+import com.tripbox.elements.Card;
 import com.tripbox.elements.Group;
 import com.tripbox.elements.OtherCard;
 import com.tripbox.elements.PlaceToSleepCard;
@@ -136,7 +137,7 @@ public interface GroupREST {
 	 * @param fileImage Archivo en si.
 	 * @return the response
 	 */
-	public Response saveCardImage(String groupId, File fileImage);
+	public Response saveCardImage(String groupId, String cardId, String type, File fileImage);
 	
 	/**
 	 * Funcion para marcar cual es la propuesta definitiva.
