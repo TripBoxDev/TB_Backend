@@ -167,7 +167,7 @@ public abstract class Card {
 		for (Vote vote : votes) {
 			totalValue += vote.getValue();
 		}
-		this.setAverage(totalValue / votes.size());
+		this.setAverage((double)Math.round(totalValue / votes.size()));
 	}
 
 	public boolean getFlagImage() {

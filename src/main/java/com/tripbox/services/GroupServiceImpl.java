@@ -752,21 +752,14 @@ public class GroupServiceImpl implements GroupService {
 					for (Destination destiny : group.getDestinations()) {
 						
 						if (destiny.getName().equalsIgnoreCase(destino)){
-							System.out.println("best: " + bestTempValoration);
 							group.getDestinations().get(i).setPercentage(bestTempValoration);
-							System.out.println("name: " + group.getDestinations().get(i).getName());
-							System.out.println("perc: " + group.getDestinations().get(i).getPercentage());
-							System.out.println("------------------------------------");
 							break;
 						}
 						
 						i++;
 					}
 				}
-				System.out.println("nombre final: " + group.getDestinations().get(1).getName());
-				System.out.println("percfinal: " + group.getDestinations().get(1).getPercentage());
 				this.putGroup(group);
-				System.out.println("vamonos: " + mongo.getGroup(group.getId()).getDestinations().get(1).getPercentage());
 			}
 		}
 	}
