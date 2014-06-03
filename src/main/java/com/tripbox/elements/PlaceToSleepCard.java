@@ -8,7 +8,6 @@ public class PlaceToSleepCard extends Card {
 	private long initDate=0l;
 	private long finalDate=0l;
 	private String placeType=null;
-	private boolean finalProposition = false;
 	
 	
 	public PlaceToSleepCard() {}
@@ -17,14 +16,13 @@ public class PlaceToSleepCard extends Card {
 			String description, long creationDate, String link, double price,
 			String destination, String userId, String nameCreator,
 			String lastNameCreator,ArrayList<String> parentCardIds, long initDate,
-			long finalDate, String placeType, boolean finalProposition) {
+			long finalDate, String placeType) {
 		super(cardId, "placeToSleep", name, description, creationDate, link, price,
 				destination, userId, nameCreator, lastNameCreator);
 		this.parentCardIds = parentCardIds;
 		this.initDate = initDate;
 		this.finalDate = finalDate;
 		this.placeType = placeType;
-		this.finalProposition = finalProposition;
 	}
 	
 	
@@ -59,14 +57,6 @@ public class PlaceToSleepCard extends Card {
 
 	public void setPlaceType(String placeType) {
 		this.placeType = placeType;
-	}
-
-	public boolean getfinalProposition() {
-		return finalProposition;
-	}
-
-	public void setfinalProposition(boolean finalProposition) {
-		this.finalProposition = finalProposition;
 	}
 
 }

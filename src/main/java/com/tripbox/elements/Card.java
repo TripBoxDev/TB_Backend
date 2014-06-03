@@ -16,6 +16,7 @@ public abstract class Card {
 	private String lastNameCreator = null;
 	private ArrayList<Vote> votes = new ArrayList<Vote>();
 	private boolean bestPack = false;
+	private boolean finalProposition = false;
 	private boolean flagImage = false;
 	
 	
@@ -140,12 +141,18 @@ public abstract class Card {
 	public boolean getBestPack() {
 		return bestPack;
 	}
-	public void setBestPack() {
-		this.bestPack = true;
+	public void setBestPack(boolean bestPack) {
+		this.bestPack = bestPack;
 	}
-	public void setDeleteOfBestPack(){
-		this.bestPack = false;
+	
+	public boolean getFinalProposition() {
+		return finalProposition;
 	}
+
+	public void setFinalProposition(boolean finalProposition) {
+		this.finalProposition = finalProposition;
+	}
+	
 	public ArrayList<Vote> getVotes() {
 		return votes;
 	}

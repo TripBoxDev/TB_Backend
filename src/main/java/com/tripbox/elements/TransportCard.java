@@ -8,21 +8,19 @@ public class TransportCard extends Card {
 	private long finalDate=0l;
 	private String transportType=null;
 	private ArrayList<String> childCardsId=new ArrayList<String>();
-	private boolean finalProposition = false;
 	
 	public TransportCard(){}
 	
 	public TransportCard(String cardId, String name,
 			String description, long creationDate, String link, double price,
 			String destination, String userId, String nameCreator,
-			String lastNameCreator,long initDate, long finalDate, String transportType, boolean finalProposition) {
+			String lastNameCreator,long initDate, long finalDate, String transportType) {
 		super(cardId, "transport", name, description, creationDate, link, price,
 				destination, userId, nameCreator, lastNameCreator);
 		
 		this.initDate = initDate;
 		this.finalDate = finalDate;
 		this.transportType = transportType;
-		this.finalProposition = finalProposition;
 	}
 
 	public long getInitDate() {
@@ -55,14 +53,6 @@ public class TransportCard extends Card {
 
 	public void setChildCardsId(ArrayList<String> childCardsId) {
 		this.childCardsId = childCardsId;
-	}
-
-	public boolean getfinalProposition() {
-		return finalProposition;
-	}
-
-	public void setfinalProposition(boolean finalProposition) {
-		this.finalProposition = finalProposition;
 	}
 	
 }
