@@ -860,7 +860,7 @@ public class GroupServiceImpl implements GroupService {
 	}
 
 	
-	public void deleteFinalProposition(String groupId, String transportId, String placeToSleepId) throws Exception{
+	public Group deleteFinalProposition(String groupId, String transportId, String placeToSleepId) throws Exception{
 		Group group = this.getGroup(groupId);
 		boolean found = false;
 		
@@ -872,6 +872,7 @@ public class GroupServiceImpl implements GroupService {
 		}
 		
 		if (found == false) {
+			System.out.println("je");
 			throw new ElementNotFoundServiceException("Transport card "
 					+ transportId + " not found");
 		}
@@ -885,11 +886,12 @@ public class GroupServiceImpl implements GroupService {
 		}
 		
 		if (found == false) {
+			System.out.println("ja");
 			throw new ElementNotFoundServiceException("Place to sleep "
 					+ placeToSleepId + " not found");
 		}
 		
-		this.putGroup(group);
+		return this.putGroup(group);
 	}
 	
 	

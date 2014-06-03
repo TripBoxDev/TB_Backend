@@ -1351,12 +1351,12 @@ public class GroupServiceImplTest {
 		assertTrue(c.getFinalProposition() == true);
 		
 		//ahora lo eliminamos con la funcion "deleteFinalProposition"
-		grupoServ.deleteFinalProposition(grupo.getId(), d.getCardId(), c.getCardId());
+		grupo = grupoServ.deleteFinalProposition(grupo.getId(), d.getCardId(), c.getCardId());
 		
 		//lo cojemos otra vez porque el grupo cambia
 		c = (PlaceToSleepCard) grupoServ.cardExistOnArray(c.getCardId(), grupo.getPlaceToSleepCards());
 		d = (TransportCard) grupoServ.cardExistOnArray(d.getCardId(), grupo.getTransportCards());
-		
+
 		//para comprobar que se ha borrado la proposición anterior
 		assertTrue(d.getFinalProposition() == false);
 		assertTrue(c.getFinalProposition() == false);

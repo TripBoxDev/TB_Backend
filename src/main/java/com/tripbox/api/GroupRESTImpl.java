@@ -271,8 +271,7 @@ public class GroupRESTImpl implements GroupREST {
 	@Path("/{groupId}/transport/{transportId}/alojamiento/{placeToSleepId}/deleteProp")
 	public Response deleteProposition(@PathParam("groupId") String groupId, @PathParam("transportId") String transportId, @PathParam("placeToSleepId") String placeToSleepId) {
 		try {
-			groupService.deleteFinalProposition(groupId, transportId, placeToSleepId);
-			return Response.ok().build();
+			return Response.ok(groupService.deleteFinalProposition(groupId, transportId, placeToSleepId)).build();
 		} catch (InvalidIdsException exc) {
 			throw new ElementNotFoundException(exc.getMessage());
 		} catch (Exception e) {

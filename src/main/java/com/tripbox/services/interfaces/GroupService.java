@@ -138,9 +138,10 @@ public interface GroupService {
 	* @param groupId String indica en que grupo estan las cards.
 	* @param transportId String indica que transporte es.
 	* @param placeToSleepId String indica que alojamiento es. 
+	 * @return 
 	* @throws Exception 
 	*/
-	public void deleteFinalProposition(String groupId, String transportId,
+	public Group deleteFinalProposition(String groupId, String transportId,
 			String placeToSleepId) throws Exception;
 	
 	/**
