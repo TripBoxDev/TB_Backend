@@ -1316,8 +1316,8 @@ public class GroupServiceImplTest {
 		grupo.setTransportCards(grupo.getTransportCards());
 		
 		finalgroup = grupoServ.putGroup(grupo);
-		assertTrue(tTestCard.getfinalProposition() == false);
-		assertTrue(ptsTestCard.getfinalProposition() == false);
+		assertTrue(tTestCard.getFinalProposition() == false);
+		assertTrue(ptsTestCard.getFinalProposition() == false);
 		try {
 			grupo = grupoServ.finalProposition(finalgroup.getId(), tTestCard.getCardId(), ptsTestCard.getCardId());
 			a = (PlaceToSleepCard) grupoServ.cardExistOnArray(ptsTestCard.getCardId(), grupo.getPlaceToSleepCards());
@@ -1326,11 +1326,11 @@ public class GroupServiceImplTest {
 			e.printStackTrace();
 			fail();
 		}
-		assertTrue(b.getfinalProposition() == true);
-		assertTrue(a.getfinalProposition() == true);
+		assertTrue(b.getFinalProposition() == true);
+		assertTrue(a.getFinalProposition() == true);
 		
-		assertTrue(tTestCard2.getfinalProposition() == false);
-		assertTrue(ptsTestCard2.getfinalProposition() == false);
+		assertTrue(tTestCard2.getFinalProposition() == false);
+		assertTrue(ptsTestCard2.getFinalProposition() == false);
 		try {
 			grupo = grupoServ.finalProposition(finalgroup.getId(), tTestCard2.getCardId(), ptsTestCard2.getCardId());
 			c = (PlaceToSleepCard) grupoServ.cardExistOnArray(ptsTestCard2.getCardId(), grupo.getPlaceToSleepCards());
@@ -1340,14 +1340,26 @@ public class GroupServiceImplTest {
 			fail();
 		}
 		
+		//lo cojemos otra vez porque el grupo cambia
 		a = (PlaceToSleepCard) grupoServ.cardExistOnArray(ptsTestCard.getCardId(), grupo.getPlaceToSleepCards());
 		b = (TransportCard) grupoServ.cardExistOnArray(tTestCard.getCardId(), grupo.getTransportCards());
 		
 		//para comprobar que han cambiado la propuesta
-		assertTrue(b.getfinalProposition() == false);
-		assertTrue(a.getfinalProposition() == false);
-		assertTrue(d.getfinalProposition() == true);
-		assertTrue(c.getfinalProposition() == true);
+		assertTrue(b.getFinalProposition() == false);
+		assertTrue(a.getFinalProposition() == false);
+		assertTrue(d.getFinalProposition() == true);
+		assertTrue(c.getFinalProposition() == true);
+		
+		//ahora lo eliminamos con la funcion "deleteFinalProposition"
+		grupoServ.deleteFinalProposition(grupo.getId(), d.getCardId(), c.getCardId());
+		
+		//lo cojemos otra vez porque el grupo cambia
+		c = (PlaceToSleepCard) grupoServ.cardExistOnArray(c.getCardId(), grupo.getPlaceToSleepCards());
+		d = (TransportCard) grupoServ.cardExistOnArray(d.getCardId(), grupo.getTransportCards());
+		
+		//para comprobar que se ha borrado la proposición anterior
+		assertTrue(d.getFinalProposition() == false);
+		assertTrue(c.getFinalProposition() == false);
 	}
 	
 	@Test

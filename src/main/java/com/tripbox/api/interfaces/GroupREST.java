@@ -149,6 +149,16 @@ public interface GroupREST {
 	 */
 	public Response finalProposition(String groupId, String idTransporte, String idAlojamiento);
 	
+	/**
+	 * Funcio de la API que borra la propuesta final (las cards que la forman no)
+	 *
+	 * @param groupId            Identificador del grupo donde estan las cards que hay que borrar de la propuesta final
+	 * @param transportId            Identificador de la card de transporte que hay que borrar de la propuesta final
+	 * @param placeToSleepId		 Identificador de la card de alojamiento que hay que borrar de la propuesta final
+	 * @return the response
+	 */
+	public Response deleteProposition(String groupId, String transportId, String placeToSleepId);
+	
 	
 	/**
 	 * Funcion para votar una propuesta final.

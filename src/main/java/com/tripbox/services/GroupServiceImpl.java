@@ -714,7 +714,7 @@ public class GroupServiceImpl implements GroupService {
 
 				for (PlaceToSleepCard ptsCard : group.getPlaceToSleepCards()) {
 					if (ptsCard.getDestination().equals(destination.getName())) {
-						ptsCard.setDeleteOfBestPack(); // aprovechamos el for
+						ptsCard.setBestPack(false); // aprovechamos el for
 														// para reiniciar los
 														// packs
 
@@ -725,7 +725,7 @@ public class GroupServiceImpl implements GroupService {
 							for (String tCardId : ptsCard.getParentCardIds()) {
 								TransportCard tcCard = (TransportCard) getCard(
 										tCardId, "transport", group);
-								tcCard.setDeleteOfBestPack(); // aprovechamos el
+								tcCard.setBestPack(false); // aprovechamos el
 																// for para
 																// reiniciar los
 																// packs
@@ -746,8 +746,8 @@ public class GroupServiceImpl implements GroupService {
 				// de alojamiento de cada destino
 				if ((bestTempTransportCard != null)
 						&& (bestPlaceToSleepCard != null)) {
-					bestTempTransportCard.setBestPack();
-					bestPlaceToSleepCard.setBestPack();
+					bestTempTransportCard.setBestPack(true);
+					bestPlaceToSleepCard.setBestPack(true);
 					i=0;
 					for (Destination destiny : group.getDestinations()) {
 						
@@ -814,12 +814,12 @@ public class GroupServiceImpl implements GroupService {
 		}
 
 		for (TransportCard tranCard : group.getTransportCards()) {
-
+			
 			// esto reinicia a false la propuesta, por si se cambia de propuesta
-			tranCard.setfinalProposition(false);
+			tranCard.setFinalProposition(false);
 			if (tranCard.getCardId().equals(idTransporte)) {
 				found = true;
-				tranCard.setfinalProposition(found);
+				tranCard.setFinalProposition(found);
 			}
 
 		}
@@ -832,13 +832,20 @@ public class GroupServiceImpl implements GroupService {
 		found = false;
 		for (PlaceToSleepCard alojCard : group.getPlaceToSleepCards()) {
 			// esto reinicia a false la propuesta, por si se cambia de propuesta
-			alojCard.setfinalProposition(false);
+			alojCard.setFinalProposition(false);
 			if (alojCard.getCardId().equals(idAlojamiento)) {
 				found = true;
-				alojCard.setfinalProposition(found);
+				alojCard.setFinalProposition(found);
 			}
 		}
-
+		for (Card card : group.getPlaceToSleepCards()){
+			card.setFinalProposition(false);
+			if (card.getCardId().equals(idAlojamiento)) {
+				found = true;
+				card.setFinalProposition(found);
+			}
+			
+		}
 		if (found == false) {
 			throw new ElementNotFoundServiceException("Place to sleep "
 					+ idAlojamiento + " not found");
@@ -849,11 +856,43 @@ public class GroupServiceImpl implements GroupService {
 		group.getPositiveVotes().clear();
 		
 		this.putGroup(group);
-		this.definePack(group);
 		return group;
 	}
 
-
+	
+	public void deleteFinalProposition(String groupId, String transportId, String placeToSleepId) throws Exception{
+		Group group = this.getGroup(groupId);
+		boolean found = false;
+		
+		for (Card card : group.getTransportCards()){
+			if (card.getCardId().equals(transportId)){
+				found = true;
+				card.setFinalProposition(false);
+			}
+		}
+		
+		if (found == false) {
+			throw new ElementNotFoundServiceException("Transport card "
+					+ transportId + " not found");
+		}
+		
+		found = false;
+		for (Card card : group.getPlaceToSleepCards()){
+			if (card.getCardId().equals(placeToSleepId)){
+				found = true;
+				card.setFinalProposition(false);
+			}
+		}
+		
+		if (found == false) {
+			throw new ElementNotFoundServiceException("Place to sleep "
+					+ placeToSleepId + " not found");
+		}
+		
+		this.putGroup(group);
+	}
+	
+	
 	public Group putVoteFinalProposition(String groupId, String userId,
 			boolean vote) throws Exception {
 		Group group;
@@ -891,4 +930,5 @@ public class GroupServiceImpl implements GroupService {
 		this.putGroup(group);
 		return group;
 	}
+
 }

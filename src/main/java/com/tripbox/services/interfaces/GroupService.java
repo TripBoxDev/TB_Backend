@@ -128,11 +128,21 @@ public interface GroupService {
 	* @param groupId String indica que grupo es.
 	* @param idTransporte String indica que transporte es.
 	* @param idAlojamiento String indica que alojamiento es.
-	 * @return 
+	* @return 
 	*/
 	public Group finalProposition(String groupId, String idTransporte,
 			String idAlojamiento) throws Exception;
 
+	/**
+	* Funcion para eliminar una proposicion final
+	* @param groupId String indica en que grupo estan las cards.
+	* @param transportId String indica que transporte es.
+	* @param placeToSleepId String indica que alojamiento es. 
+	* @throws Exception 
+	*/
+	public void deleteFinalProposition(String groupId, String transportId,
+			String placeToSleepId) throws Exception;
+	
 	/**
 	 * Funcion para votar una propuesta final.
 	 *
@@ -144,4 +154,5 @@ public interface GroupService {
 	 */
 	public Group putVoteFinalProposition(String groupId, String userId,
 			boolean vote) throws Exception;
+
 }
