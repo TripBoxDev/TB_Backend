@@ -1,7 +1,7 @@
 package com.tripbox.bbdd.exceptions;
 
 /**
- * Excepción utilizada para indicar que no se ha encontrado un objeto en la bbdd.
+ * Excepcion utilizada para indicar que no se ha encontrado un objeto en la bbdd.
  * @author santi
  *
  */

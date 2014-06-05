@@ -19,154 +19,153 @@ import com.tripbox.elements.Vote;
 public interface GroupREST {
 
 	/**
-	 * Funcio de la API que retorna un grup a partir de la seva ID.
+	 * Funcion de la API que retorna un grupo a partir de la id del grupo.
 	 * 
-	 * @param id
-	 *            Identificador del grup que s'ha de retornar
-	 * @return Retorna el grup amb l'identificador d'entrada
+	 * @param id Identificador del grupo que se ha de retornar
+	 * @return Devuelve el estado de la petición y el grupo seleccionado gracias a la id
 	 */
 	public Response getGroup(String id);
 
 	/**
-	 * Funcio de la API que modifica un grup a la BD o li assigna una ID i
-	 * l'inserta si es nou.
+	 * Funcion de la API que modifica un grupo en la BD si el grupo ya existe o le asigna una ID i
+	 * lo inserta si el grupo es nuevo.
 	 * 
-	 * @param group
-	 *            Objecte grup que ha de ser inserit o modificat a la BD.
-	 * @return Retorna el grup modificat, amb la nova ID si correspont, i una
-	 *         resposta 200 si s'ha fet l'operacio correctament.
+	 * @param group Objeto grupo que tiene que ser modificado o insertado nuevo en la BD.
+	 * @return Devuelve el estado de la peticion y el grupo modificado, con la nueva ID si el grupo es nuevo
 	 */
 	public Response putGroup(Group group);
 
 	/**
-	 * Funcio de la API que esborra un grup a partir de la seva ID.
+	 * Funcion de la API que borra un grupo de la BD a partir de su ID.
 	 *
-	 * @param id            Identificador del grup que s'ha d'esborrar
-	 * @return the response
+	 * @param id  Identificador del grupo que se tiene que borrar
+	 * @return Devuelve el estado de la peticion
 	 */
 	public Response deleteGroup(String id);
 
 	/**
 	 * Funcion de la API que nos permite eliminar un User de un Group. En el
-	 * caso que el Group se quede sin Users se elimina.
+	 * caso que el Group se quede sin Users se elimina el grupo.
 	 *
-	 * @param groupId the group id
-	 * @param userId the user id
-	 * @return the response
+	 * @param groupId Identificador del grupo del cual queremos borrar al usuario
+	 * @param userId Identificador del usuario que queremos borrar del grupo
+	 * @return Devuelve el estado de la peticion
 	 */
 	public Response deleteUserToGroup(String groupId, String userId);
 
 	/**
-	 * Funcion de la API que nos permite anadir un destino al Group.
+	 * Funcion de la API que nos permite anadir un destino al Group indicado.
 	 *
-	 * @param id            Id del Group donde queremos anadir el destino.
-	 * @param newDestination            Nueva destinacion que queremos anadir al Group.
-	 * @return the response
+	 * @param id Id del Group donde queremos anadir el destino.
+	 * @param newDestination Nueva destinacion que queremos anadir al Group.
+	 * @return Devuelve el estado de la petición y el nuevo objeto Destination creado.
 	 */
 	public Response putDestination(String id, String newDestination);
 
 	/**
 	 * Funcion de la API que nos permite eliminar un destino de un Group.
 	 *
-	 * @param groupId the group id
-	 * @param idDestination            Destino que queremos eliminar.
-	 * @return the response
+	 * @param groupId Identificador del grupo al que pertenece el destino que queremos borrar.
+	 * @param idDestination  Id del destino que queremos eliminar.
+	 * @return Devuelve el estado de la petición
 	 */
 	public Response deleteDestination(String groupId, String idDestination);
 
 	/**
 	 * Funcion de la API que nos permite agregar una Card a un Group segun el
-	 * tipo de Card que es.
+	 * tipo de Card que es (Transport, PlaceToSleep, Other).
 	 *
-	 * @param id            Id del Group donde queremos anadir la Card.
-	 * @param card            Card que queremos anadir. El campo cardType es obligatorio.
-	 * @return the response
+	 * @param id    Id del Group donde queremos anadir la Card.
+	 * @param card  Card que queremos anadir. El campo cardType es obligatorio.
+	 * @return Devuelve la Card añadida
 	 */
 	public Response putCard(String id, TransportCard card);
 
 	/**
-	 * Put card.
+	 * Funcion de la API que nos permite agregar una Card a un Group segun el
+	 * tipo de Card que es (Transport, PlaceToSleep, Other).
 	 *
-	 * @param id the id
-	 * @param card the card
-	 * @return the response
+	 * @param id    Id del Group donde queremos anadir la Card.
+	 * @param card  Card que queremos anadir. El campo cardType es obligatorio.
+	 * @return Devuelve la Card añadida
 	 */
 	public Response putCard(String id, PlaceToSleepCard card);
 
 	/**
-	 * Put card.
+	 * Funcion de la API que nos permite agregar una Card a un Group segun el
+	 * tipo de Card que es (Transport, PlaceToSleep, Other).
 	 *
-	 * @param id the id
-	 * @param card the card
-	 * @return the response
+	 * @param id    Id del Group donde queremos anadir la Card.
+	 * @param card  Card que queremos anadir. El campo cardType es obligatorio.
+	 * @return Devuelve la Card añadida
 	 */
 	public Response putCard(String id, OtherCard card);
 
 	/**
 	 * Funcion de la API que nos permite eliminar una Card de un Group.
 	 *
-	 * @param groupId            Id del Group.
-	 * @param cardId            Id de la Card que queremos eliminar.
-	 * @return the response
+	 * @param groupId   Id del Group al que pertenece la Card que queremos eliminar.
+	 * @param cardId   Id de la Card que queremos eliminar.
+	 * @return Devuelve el estado de la peticion
 	 */
 	public Response deleteCard(String groupId, String cardId);
 
 	/**
 	 * Función de la API que nos permite añadir un voto a una card.
 	 *
-	 * @param groupId the group id
-	 * @param cardId the card id
-	 * @param vote the vote
-	 * @return the response
+	 * @param groupId Id del Group al que pertenece la Card que queremos votar.
+	 * @param cardId Id de la Card que queremos votar.
+	 * @param vote Objeto Vote que contiene el valor del voto y el id del usuario que vota.
+	 * @return Devuelve la card votada y el estado de la peticion.
 	 */
 	public Response putVote(String groupId, String cardId, Vote vote);
 	
 	/**
-	 * Funcion para subir una imagen de grupo al servidor, el nombre de la imagen es el ID.
+	 * Funcion para subir una imagen de grupo al servidor, el nombre de la imagen es el ID del grupo.
 	 *
-	 * @param groupId String indica que grupo es.
-	 * @param fileImage Archivo en si.
-	 * @return the response
+	 * @param groupId Identificador del grupo al que le queremos subir la imagen.
+	 * @param fileImage Archivo que queremos subir como imagen.
+	 * @return Devuelve el estado de la peticion.
 	 */
 	public Response saveGroupImage(String groupId, File fileImage);
 	
 	/**
-	 * Funcion para subir una imagen de Card al servidor, el nombre de la imagen es el ID.
+	 * Funcion para subir una imagen para una Card al servidor, el nombre de la imagen es el ID de la Card.
 	 *
-	 * @param groupId String indica que grupo es.
-	 * @param fileImage Archivo en si.
-	 * @return the response
+	 * @param groupId Identificador del grupo al que le queremos subir la imagen.
+	 * @param fileImage Archivo que queremos subir como imagen.
+	 * @return Devuelve el estado de la peticion.
 	 */
 	public Response saveCardImage(String groupId, String cardId, String type, File fileImage);
 	
 	/**
-	 * Funcion para marcar cual es la propuesta definitiva.
+	 * Funcion para marcar cuales son las cards que conforman la propuesta definitiva
 	 *
-	 * @param groupId String indica que grupo es.
-	 * @param idTransporte String indica que transporte es.
-	 * @param idAlojamiento String indica que alojamiento es.
-	 * @return the response
+	 * @param groupId Identificador del grupo al que pertenecen las cards propuestas como plan final.
+	 * @param idTransporte Identificador de la Card de transporte.
+	 * @param idAlojamiento Identificador de la Card de PlaceToSleep.
+	 * @return Devuelve el grupo actualizado con la propuesta final marcada y el estado de la peticion.
 	 */
 	public Response finalProposition(String groupId, String idTransporte, String idAlojamiento);
 	
 	/**
-	 * Funcio de la API que borra la propuesta final (las cards que la forman no)
+	 * Funcio de la API que elimina la propuesta final de un grupo (las cards que la forman no).
 	 *
-	 * @param groupId            Identificador del grupo donde estan las cards que hay que borrar de la propuesta final
-	 * @param transportId            Identificador de la card de transporte que hay que borrar de la propuesta final
-	 * @param placeToSleepId		 Identificador de la card de alojamiento que hay que borrar de la propuesta final
+	 * @param groupId    Identificador del grupo donde estan las cards que hay que borrar de la propuesta final
+	 * @param transportId    Identificador de la card de transporte que hay que borrar de la propuesta final
+	 * @param placeToSleepId	Identificador de la card de alojamiento que hay que borrar de la propuesta final
 	 * @return the response
 	 */
 	public Response deleteProposition(String groupId, String transportId, String placeToSleepId);
 	
 	
 	/**
-	 * Funcion para votar una propuesta final.
+	 * Funcion de la API para votar una propuesta final.
 	 *
-	 * @param groupId String indica que grupo es.
-	 * @param vote boolean indica si el voto es positivo (true) o negativo (false)
-	 * @param userId String id del usuario que vota
-	 * @return Response estado de la petición
+	 * @param groupId Identificador del grupo donde estan las cards a votar.
+	 * @param vote Booleano que indica si el voto del usuario es positivo (true) o negativo (false).
+	 * @param userId Identificador del usuario que vota.
+	 * @return Devuelve el estado de la petición y el grupo actualizado.
 	 */
 	public Response putVoteFinalProposition(String groupId, String userId, boolean vote);
 }
